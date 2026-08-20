@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 export default function Page() {
   const [email, setEmail] = useState('');
@@ -10,7 +11,7 @@ export default function Page() {
   const HandleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/usuario', {
+      const response = await fetch('http://localhost:5000/api/register/usuario', {
         method:'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -20,11 +21,11 @@ export default function Page() {
       const resultado = await response.json();
 
       if (response.ok) {
-        console.log('Login realizado:', resultado);
-        router.replace('/')
+        console.log('Cadastro realizado:', resultado);
+        router.replace('/login')
       }
       else if (response.status === 400) {
-        console.warn('Dados incorretos:', resultado);
+        console.warn('Dados inválidos:', resultado);
       }
     } catch (error) {
       console.error('Falha na conexão:', error);
@@ -40,7 +41,7 @@ export default function Page() {
             src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
             className="mx-auto h-10 w-auto"
           />
-          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Entre em sua conta</h2>
+          <h2 className="mt-10 text-center text-2xl/9 font-bold tracking-tight text-white">Registre sua conta</h2>
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -91,15 +92,15 @@ export default function Page() {
                 type="submit"
                 className="flex w-full justify-center rounded-md bg-indigo-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
               >
-                Entrar
+                Cadastrar-se
               </button>
             </div>
           </form>
 
           <p className="mt-10 text-center text-sm/6 text-gray-400">
-            Não é membro?{' '}
-            <a href="/register" className="font-semibold text-indigo-400 hover:text-indigo-300">
-              Registre-se
+            Já é membro?{' '}
+            <a href="/login" className="font-semibold text-indigo-400 hover:text-indigo-300">
+              Login
             </a>
           </p>
         </div>

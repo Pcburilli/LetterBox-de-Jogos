@@ -2,12 +2,14 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
+from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv # Senhas seguras no .env
 
 load_dotenv()
 
 app = Flask(__name__)
+CORS(app)
 app.config['SECRET_KEY'] = os.getenv('PASSWORD')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL') # Utilizando PostgreSQL
@@ -42,6 +44,7 @@ with app.app_context():
 @app.route('/api/auth/usuario', methods=['POST'])
 def validar_usuario():
     dados_usuario = request.get_json()
+    print('DADOS:', dados_usuario)
     email = dados_usuario['email']
     senha = dados_usuario['password']
 
@@ -50,24 +53,23 @@ def validar_usuario():
         login_user(usuario)
         return jsonify('Login Válido.'), 200
         
-    return jsonify('Login Inválido'), 400
+    return jsonify('Email ou Senha incorretas'), 400
 
 # Registrar usuário
 @app.route('/api/register/usuario', methods=['POST'])
 def registrar_usuario():
     dados_usuario = request.get_json()
-    username = dados_usuario['username']
     email = dados_usuario['email']
     senha = dados_usuario['password']
 
     senha_hash = generate_password_hash(senha)
     try:
-        novo_usuario = Usuario(username=username, email=email, senha=senha_hash)
+        novo_usuario = Usuario(email=email, senha=senha_hash)
         db.session.add(novo_usuario)
         db.session.commit()
     except:
         db.session.rollback()
-        return jsonify({'erro': 'email já cadastrado.'}), 404
+        return jsonify('Email ou username já cadastrado.'), 400
     return jsonify('Cadastro realizado.'), 200
 
 # Retornar usuários

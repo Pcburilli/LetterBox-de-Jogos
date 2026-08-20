@@ -1,7 +1,6 @@
 import Link from 'next/link';
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
 
   return (
     <footer className="w-full bg-slate-900 text-slate-400 border-t border-slate-800 mt-auto">
@@ -69,7 +68,7 @@ export default function Footer() {
 
         {/* Linha de Copyright */}
         <div className="border-t border-slate-800 mt-2 pt-2 text-center text-xs text-slate-500">
-          <p>&copy; {currentYear} Letterbox. Todos os direitos reservados.</p>
+          <p>2026 Letterbox. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
