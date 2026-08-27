@@ -1,14 +1,13 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
-export default function Page() {
+export default function RegisterPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const HandleLogin = async (e) => {
+  const HandleRegister = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:5000/api/register/usuario', {
@@ -45,7 +44,7 @@ export default function Page() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={HandleLogin} action="#" method="POST" className="space-y-6">
+          <form onSubmit={HandleRegister} action="#" method="POST" className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
                 E-mail

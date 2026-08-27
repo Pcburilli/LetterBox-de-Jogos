@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_cors import CORS
@@ -9,7 +9,8 @@ from dotenv import load_dotenv # Senhas seguras no .env
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://192.168.1.4:3000"]) # Suporte a comunicação em um unico PC e adicionado suporte ao envio de cookies para o front-end
+
 app.config['SECRET_KEY'] = os.getenv('PASSWORD')
 
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL') # Utilizando PostgreSQL
@@ -19,6 +20,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login" # Se tentar acessar uma aba "login_required" será direcionado para login
 
+#TABELAS do Bando de Dados
 class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuario'
     id = db.Column(db.Integer, primary_key=True)
@@ -33,25 +35,67 @@ class Usuario(db.Model, UserMixin):
             'email': self.email
         }
 
+class Jogos(db.Model, UserMixin):
+    __tablename__='jogos'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+
+    def to_dict(self): # Função que transforma informações em dicionário
+            return {
+                'name': self.name
+            }
+
+#Configuração de segurança de usuário
 @login_manager.user_loader
 def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
+# Criar tabelas SQL
 with app.app_context():
-    db.create_all() # Criar tabelas SQL
+    db.create_all()
 
+# API JOGOS
+@app.route('/api/jogos')
+def listar_jogos():
+    jogos = db.session.scalars(db.select(Jogos)).all()
+    jogos_dict = [u.to_dict() for u in jogos]
+    return jsonify(jogos_dict), 200
+
+@app.route('/api/jogos', methods=['POST'])
+def adicionar_jogo():
+    dados_jogo = request.get_json()
+
+    name = dados_jogo['name'].lower().strip()
+    try:
+        novo_jogo = Jogos(name=name)
+        db.session.add(novo_jogo)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        return jsonify('Jogo já cadastrado.'), 400
+    return jsonify('Cadastro do jogo realizado.'), 200
+
+# API USUARIOS
 # Autorizar acesso usuário
 @app.route('/api/auth/usuario', methods=['POST'])
 def validar_usuario():
     dados_usuario = request.get_json()
     print('DADOS:', dados_usuario)
-    email = dados_usuario['email']
+    email = dados_usuario['email'].lower()
     senha = dados_usuario['password']
 
     usuario = db.session.scalars(db.select(Usuario).filter_by(email=email)).first()
     if usuario and check_password_hash(usuario.senha, senha):
-        login_user(usuario)
-        return jsonify('Login Válido.'), 200
+        resposta = make_response(jsonify({'mensagem': 'Login aprovado.'})) # Make response -> controle total do headers, status code e cookies
+
+        token_usuario = f"token_usuario{usuario.id}" # Token unico para cada usuario
+        resposta.set_cookie(
+            'token_usuario',
+            value=token_usuario,
+            httponly=True,
+            max_age=86400
+        ) # Configurando token e definindo algumas medidas de segurança
+        return resposta, 200
         
     return jsonify('Email ou Senha incorretas'), 400
 
@@ -59,7 +103,7 @@ def validar_usuario():
 @app.route('/api/register/usuario', methods=['POST'])
 def registrar_usuario():
     dados_usuario = request.get_json()
-    email = dados_usuario['email']
+    email = dados_usuario['email'].lower()
     senha = dados_usuario['password']
 
     senha_hash = generate_password_hash(senha)
@@ -81,4 +125,4 @@ def listar_usuarios():
     return jsonify(usuarios_dict), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

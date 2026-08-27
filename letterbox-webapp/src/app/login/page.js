@@ -1,10 +1,10 @@
 'use client';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; // Usado para direcionamento
 
-export default function Page() {
+export default function LoginPage() {
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('')
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
   const HandleLogin = async (e) => {
@@ -15,6 +15,7 @@ export default function Page() {
         headers: {
           'Content-Type': 'application/json'
         },
+        credentials: 'include', // necessário para salvar cookies
         body: JSON.stringify({email, password}),
       });
       const resultado = await response.json();

@@ -24,11 +24,8 @@ export default function Header() {
             <Link href="/" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
               Início
             </Link>
-            <Link href="/explorar" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
-              {/* Explorar */}
-            </Link>
-            <Link href="/sobre" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
-              {/* Sobre */}
+            <Link href="/admin" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+              admin
             </Link>
           </nav>
 
