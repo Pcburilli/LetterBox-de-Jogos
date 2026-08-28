@@ -12,6 +12,7 @@ export default function Page() {
 
       if (response.ok) {
         const dados = await response.json();
+        console.log(dados)
         setJogos(dados)
       }
       } catch (error) {
@@ -25,17 +26,20 @@ export default function Page() {
   }, []);
   return (
     <div id='div_principal'>
-      <div style={{ padding: '20px', textAlign: 'center'}}>
+      <div className='grid justify-items-center'>
         <h1 style={{fontSize: '3em'}}>Lista de Jogos Cadastrados</h1>
-        {carregando ? (
-          <p>Carregando jogos...</p>
-        ) : (
-          <ul className="grid grid-cols-3 gap-1 max-w-4xl mx-auto">
-            {jogos.map((jogo, index) => (
-              <li key={jogo.id || index} className="capitalize">{jogo.name}</li>
-            ))}
-          </ul>
-        )}
+        <div id='tabela_jogos' className='grid grid-cols-10 gap-4 justify-items-center pb-3'>
+          {carregando ? (
+            <p>Carregando jogos...</p>
+          ) : (
+            jogos.map((jogo) => (
+              <div key={jogo.name} className='w-40'>
+                <img src={jogo.img_url} className="w-full h-50 object-cover"></img>
+                <p className='capitalize text-center'>{jogo.name}</p>
+              </div>
+            ))
+          )}
+        </div>
       </div>
     </div>
   );

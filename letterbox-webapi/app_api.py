@@ -20,7 +20,7 @@ db = SQLAlchemy(app)
 login_manager = LoginManager(app)
 login_manager.login_view = "login" # Se tentar acessar uma aba "login_required" será direcionado para login
 
-#TABELAS do Bando de Dados
+# TABELAS do Bando de Dados
 class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuario'
     id = db.Column(db.Integer, primary_key=True)
@@ -38,12 +38,19 @@ class Usuario(db.Model, UserMixin):
 class Jogos(db.Model, UserMixin):
     __tablename__='jogos'
     id = db.Column(db.Integer, primary_key=True)
+    rawg_id = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(80), unique=True)
+    ano = db.Column(db.String(15))
+    capa_url = db.Column(db.Text)
 
     def to_dict(self): # Função que transforma informações em dicionário
-            return {
-                'name': self.name
-            }
+        return {
+            'id': self.id,
+            'rawg_id': self.rawg_id,
+            'name': self.name,
+            'ano': self.ano,
+            'img_url': self.capa_url
+        }
 
 #Configuração de segurança de usuário
 @login_manager.user_loader
@@ -63,11 +70,14 @@ def listar_jogos():
 
 @app.route('/api/jogos', methods=['POST'])
 def adicionar_jogo():
-    dados_jogo = request.get_json()
-
+    dados_jogo = request.get_json()['jogo']
     name = dados_jogo['name'].lower().strip()
+    rawg_id = dados_jogo['id']
+    ano = dados_jogo['released']
+    capa_url = dados_jogo['background_image']
+
     try:
-        novo_jogo = Jogos(name=name)
+        novo_jogo = Jogos(name=name, rawg_id=rawg_id, ano=ano, capa_url=capa_url)
         db.session.add(novo_jogo)
         db.session.commit()
     except:
