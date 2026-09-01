@@ -25,17 +25,24 @@ export default function Page() {
     BuscarJogos();
   }, []);
   return (
-    <div id='div_principal'>
-      <div className='grid justify-items-center'>
-        <h1 style={{fontSize: '3em'}}>Lista de Jogos Cadastrados</h1>
-        <div id='tabela_jogos' className='grid grid-cols-10 gap-4 justify-items-center pb-3'>
+    <div id="div_principal" className="w-full max-w-7xl mx-auto px-4 py-6">
+      <div className="flex flex-col items-center">
+        <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
+          Lista de Jogos Cadastrados
+        </h1>
+
+        <div id="tabela_jogos" className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full justify-items-center">
           {carregando ? (
-            <p>Carregando jogos...</p>
+            <p className="col-span-full text-center">Carregando jogos...</p>
           ) : (
             jogos.map((jogo) => (
-              <div key={jogo.name} className='w-40'>
-                <img src={jogo.img_url} className="w-full h-50 object-cover"></img>
-                <p className='capitalize text-center'>{jogo.name}</p>
+              <div key={jogo.id || jogo.name} className="w-full flex flex-col items-center">
+                <img 
+                  src={jogo.img_url} 
+                  alt={jogo.name} 
+                  className="w-full h-48 object-cover rounded-md"
+                />
+                <p className="capitalize text-center mt-2 text-sm font-medium">{jogo.name}</p>
               </div>
             ))
           )}

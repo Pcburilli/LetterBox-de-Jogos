@@ -62,12 +62,14 @@ with app.app_context():
     db.create_all()
 
 # API JOGOS
+# Obter jogos
 @app.route('/api/jogos')
 def listar_jogos():
     jogos = db.session.scalars(db.select(Jogos)).all()
     jogos_dict = [u.to_dict() for u in jogos]
     return jsonify(jogos_dict), 200
 
+# Adicionar jogo
 @app.route('/api/jogos', methods=['POST'])
 def adicionar_jogo():
     dados_jogo = request.get_json()['jogo']
@@ -84,6 +86,15 @@ def adicionar_jogo():
         db.session.rollback()
         return jsonify('Jogo já cadastrado.'), 400
     return jsonify('Cadastro do jogo realizado.'), 200
+
+# Excluir jogo
+@app.route('/api/jogos/<id>', methods=['DELETE'])
+def excluir_jogo(id):
+    jogo = db.get_or_404(Jogos, id)
+    dados_jogo = jogo.to_dict()
+    db.session.delete(jogo)
+    db.session.commit()
+    return jsonify(dados_jogo)
 
 # API USUARIOS
 # Autorizar acesso usuário
