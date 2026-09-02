@@ -5,11 +5,12 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv # Senhas seguras no .env
+from datetime import datetime
 
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://192.168.1.4:3000"]) # Suporte a comunicação em um unico PC e adicionado suporte ao envio de cookies para o front-end
+CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://127.0.0.1:3000"]) # Suporte a comunicação em um unico PC e adicionado suporte ao envio de cookies para o front-end
 
 app.config['SECRET_KEY'] = os.getenv('PASSWORD')
 
@@ -18,7 +19,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
-login_manager.login_view = "login" # Se tentar acessar uma aba "login_required" será direcionado para login
 
 # TABELAS do Bando de Dados
 class Usuario(db.Model, UserMixin):
@@ -43,7 +43,7 @@ class Jogos(db.Model, UserMixin):
     ano = db.Column(db.String(15))
     capa_url = db.Column(db.Text)
 
-    def to_dict(self): # Função que transforma informações em dicionário
+    def to_dict(self):
         return {
             'id': self.id,
             'rawg_id': self.rawg_id,
@@ -52,10 +52,23 @@ class Jogos(db.Model, UserMixin):
             'img_url': self.capa_url
         }
 
+class Usuarios_Jogos(db.Model):
+    __tablename__ = 'usuarios_jogos'
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), primary_key=True)
+    id_jogo = db.Column(db.Integer, db.ForeignKey('jogos.id'), primary_key=True)
+    data_adicionado = db.Column(db.DateTime, default=datetime.now)
+
+    def to_dict(self):
+        return {
+            'id_usuario': self.id_usuario,
+            'id_jogo': self.id_jogo,
+            'data_adicionado': self.data_adicionado
+        }
+
 #Configuração de segurança de usuário
 @login_manager.user_loader
 def load_user(user_id):
-    return Usuario.query.get(int(user_id))
+    return db.session.get(Usuario, int(user_id))
 
 # Criar tabelas SQL
 with app.app_context():
@@ -97,9 +110,9 @@ def excluir_jogo(id):
     return jsonify(dados_jogo)
 
 # API USUARIOS
-# Autorizar acesso usuário
-@app.route('/api/auth/usuario', methods=['POST'])
-def validar_usuario():
+# Login
+@app.route('/api/auth/login', methods=['POST'])
+def login_usuario():
     dados_usuario = request.get_json()
     print('DADOS:', dados_usuario)
     email = dados_usuario['email'].lower()
@@ -107,18 +120,33 @@ def validar_usuario():
 
     usuario = db.session.scalars(db.select(Usuario).filter_by(email=email)).first()
     if usuario and check_password_hash(usuario.senha, senha):
-        resposta = make_response(jsonify({'mensagem': 'Login aprovado.'})) # Make response -> controle total do headers, status code e cookies
-
-        token_usuario = f"token_usuario{usuario.id}" # Token unico para cada usuario
-        resposta.set_cookie(
-            'token_usuario',
-            value=token_usuario,
-            httponly=True,
-            max_age=86400
-        ) # Configurando token e definindo algumas medidas de segurança
-        return resposta, 200
+        login_user(usuario)
+        return jsonify({
+            'mensagem': 'Login realizado com sucesso!',
+            'usuario': usuario.to_dict()
+        }), 200
         
-    return jsonify('Email ou Senha incorretas'), 400
+    return jsonify('Email ou Senha incorretas'), 404
+
+# Logout
+@app.route('/api/auth/logout', methods=['POST'])
+@login_required
+def logout_usuario():
+    logout_user()
+
+    resposta = make_response(jsonify({'mensagem': 'Logout realizado com sucesso!'}))
+    resposta.set_cookie('session', '', expires=0)
+    return resposta, 200
+
+# Validar token
+@app.route('/api/auth/me', methods=['GET'])
+@login_required
+def meu_perfil():
+    return jsonify({
+        'user_id': current_user.id,
+        'email': current_user.email,
+        'username': current_user.username
+    }), 200
 
 # Registrar usuário
 @app.route('/api/register/usuario', methods=['POST'])
@@ -134,7 +162,7 @@ def registrar_usuario():
         db.session.commit()
     except:
         db.session.rollback()
-        return jsonify('Email ou username já cadastrado.'), 400
+        return jsonify('Email ou username já cadastrado.'), 404
     return jsonify('Cadastro realizado.'), 200
 
 # Retornar usuários
@@ -144,6 +172,36 @@ def listar_usuarios():
     usuarios_dict = [u.to_dict() for u in usuarios]
     print(usuarios_dict)
     return jsonify(usuarios_dict), 200
+
+# BIBLIOTECA USUÁRIO
+# Retornar biblioteca
+@app.route('/api/catalog', methods=['GET'])
+@login_required
+def meu_catalogo():
+    jogos_do_usuario = db.session.query(Jogos)\
+    .join(Usuarios_Jogos, Jogos.id == Usuarios_Jogos.id_jogo)\
+    .filter(Usuarios_Jogos.id_usuario == current_user.id)\
+    .all()
+    jogos_do_usuario_dict = [u.to_dict() for u in jogos_do_usuario]
+    return jsonify(jogos_do_usuario_dict), 200
+
+# Adicionar Jogo a biblioteca
+@app.route('/api/catalog/add', methods=['POST'])
+@login_required
+def add_jogo_catalogo():
+    id_usuario = current_user.id
+    id_jogo = request.get_json()['id_jogo']
+    try:
+        adicionar = Usuarios_Jogos(id_jogo=id_jogo, id_usuario=id_usuario)
+        db.session.add(adicionar)
+        db.session.commit()
+    except:
+        db.session.rollback()
+        return jsonify('Jogo já cadastrado.'), 404
+    return jsonify({
+        'id_usuario': id_usuario,
+        'id_jogo': id_jogo
+    }), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
