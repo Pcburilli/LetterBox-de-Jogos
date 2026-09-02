@@ -23,7 +23,7 @@ export default function RegisterPage() {
         console.log('Cadastro realizado:', resultado);
         router.replace('/login')
       }
-      else if (response.status === 400) {
+      else if (response.status === 404) {
         console.warn('Dados inválidos:', resultado);
       }
     } catch (error) {

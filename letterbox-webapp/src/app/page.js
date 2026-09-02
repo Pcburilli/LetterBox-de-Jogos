@@ -12,7 +12,6 @@ export default function Page() {
 
       if (response.ok) {
         const dados = await response.json();
-        console.log(dados)
         setJogos(dados)
       }
       } catch (error) {
@@ -35,14 +34,14 @@ export default function Page() {
           {carregando ? (
             <p className="col-span-full text-center">Carregando jogos...</p>
           ) : (
-            jogos.map((jogo) => (
-              <div key={jogo.id || jogo.name} className="w-full flex flex-col items-center">
+            jogos?.map((jogo) => (
+              <div key={jogo?.id || jogo?.name} className="w-full flex flex-col items-center">
                 <img 
-                  src={jogo.img_url} 
-                  alt={jogo.name} 
+                  src={jogo?.img_url} 
+                  alt={jogo?.name} 
                   className="w-full h-48 object-cover rounded-md"
                 />
-                <p className="capitalize text-center mt-2 text-sm font-medium">{jogo.name}</p>
+                <p className="capitalize text-center mt-2 text-sm font-medium">{jogo?.name}</p>
               </div>
             ))
           )}

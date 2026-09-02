@@ -14,7 +14,7 @@ export default function AdminPage() {
 
   const PesquisarJogo = async (e) => {
     e.preventDefault()
-    const key_RAWG = '002cc90d42da48d39e2fc01f5b232936'
+    const key_RAWG = 'bf7ce09f1afa45a4b7fb51ac39492f01'
 
     try {
       const response = await fetch(`https://api.rawg.io/api/games?key=${key_RAWG}&search=${busca}&stores=1,2,3,5,6,11`)
@@ -44,6 +44,7 @@ export default function AdminPage() {
         },
 
         body: JSON.stringify({jogo}),
+        credentials: 'include'
       });
       console.log('Jogo:', jogo)
       const resultado = await response.json();
@@ -76,7 +77,8 @@ export default function AdminPage() {
 
     try {
     const response = await fetch(`http://localhost:5000/api/jogos/${jogo_deletado.id}`, {
-      method:'DELETE'
+      method:'DELETE',
+      credentials: 'include'
     });
 
     if (response.ok) {
@@ -136,11 +138,11 @@ export default function AdminPage() {
             <p></p>
             ) : (<div id='tabela_jogos' className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center p-2 pt-3'>
             {dados?.results?.map((jogo) => (
-                <form key={jogo.id} className="w-full" onSubmit={(e) => AdicionarJogo(e, jogo)}>
-                  <img loading="lazy" src={jogo.background_image} className="w-full h-50 object-cover rounded-md"></img>
-                  <h3 className='text-center'>{jogo.name}</h3>
-                  <p>Ano: {jogo.released}</p>
-                  <p>ID API: {jogo.id}</p>
+                <form key={jogo?.id} className="w-full" onSubmit={(e) => AdicionarJogo(e, jogo)}>
+                  <img loading="lazy" src={jogo?.background_image} className="w-full h-50 object-cover rounded-md"></img>
+                  <h3 className='text-center'>{jogo?.name}</h3>
+                  <p>Ano: {jogo?.released}</p>
+                  <p>ID API: {jogo?.id}</p>
                   <button
                     type="submit"
                     className="w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors cursor-pointer"

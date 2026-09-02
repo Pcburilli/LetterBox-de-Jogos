@@ -10,7 +10,7 @@ export default function LoginPage() {
   const HandleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/auth/usuario', {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
         method:'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -24,7 +24,7 @@ export default function LoginPage() {
         console.log('Login realizado:', resultado);
         router.replace('/')
       }
-      else if (response.status === 400) {
+      else if (response.status === 404) {
         console.warn('Dados incorretos:', resultado);
       }
     } catch (error) {
