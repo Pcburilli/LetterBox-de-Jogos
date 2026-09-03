@@ -22,7 +22,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log('Login realizado:', resultado);
-        router.replace('/')
+        router.replace('/perfil')
       }
       else if (response.status === 404) {
         console.warn('Dados incorretos:', resultado);
