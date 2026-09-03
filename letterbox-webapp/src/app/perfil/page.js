@@ -1,37 +1,14 @@
 'use client';
+
+import PerfilCard from '@/components/perfil/PerfilCard';
 import { useState, useEffect } from 'react';
 
 export default function PerfilPage() {
-  const [nome, setNome] = useState('carregando..')
   const [catalogo, setCatalogo] = useState(null)
-  console.log(catalogo)
   const [carregando, setCarregando] = useState(true)
-  const ObterPerfil = async (e) => {
-    try {
-    const response = await fetch('http://localhost:5000/api/auth/me', {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include'
-    })
-
-    if(response.ok) {
-      const dados = await response.json();
-      if (dados.username === null) {
-        setNome(dados.email)
-      }
-      else {
-        setNome(dados.username)
-      }
-    }
-    } catch (error) {
-      console.error('Deu ruim:', error)
-    }
-  }
 
   useEffect(() => {
-    ObterPerfil(); ObterCatalogo();
+    ObterCatalogo();
   }, []);
 
   const ObterCatalogo = async (e) => {
@@ -56,8 +33,8 @@ export default function PerfilPage() {
   }
   return (
     <div>
-      <h1>Perfil</h1>
-      <p>Seja bem vindo: {nome}</p>
+      <PerfilCard />
+      <h1>Catálogo</h1>
       {carregando ? (
         <p>Carregando...</p>
       ) : (
