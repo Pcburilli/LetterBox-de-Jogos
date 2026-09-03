@@ -97,7 +97,7 @@ def adicionar_jogo():
         db.session.commit()
     except:
         db.session.rollback()
-        return jsonify('Jogo já cadastrado.'), 400
+        return jsonify('Jogo já cadastrado.'), 409
     return jsonify('Cadastro do jogo realizado.'), 200
 
 # Excluir jogo
@@ -126,7 +126,7 @@ def login_usuario():
             'usuario': usuario.to_dict()
         }), 200
         
-    return jsonify('Email ou Senha incorretas'), 404
+    return jsonify('Email ou Senha incorretas'), 401
 
 # Logout
 @app.route('/api/auth/logout', methods=['POST'])
@@ -162,8 +162,20 @@ def registrar_usuario():
         db.session.commit()
     except:
         db.session.rollback()
-        return jsonify('Email ou username já cadastrado.'), 404
+        return jsonify('Email ou username já cadastrado.'), 409
     return jsonify('Cadastro realizado.'), 200
+
+# Alterar Username
+@app.route('/api/register/username', methods=['PUT'])
+@login_required
+def alterar_username():
+    username = request.get_json()['username'].lower().strip()
+    current_user.username = username
+    db.session.commit()
+
+    return jsonify({
+        'mensagem': 'Perfil atualizado com sucesso!',
+    }), 200
 
 # Retornar usuários
 @app.route('/api/usuarios')
@@ -197,7 +209,7 @@ def add_jogo_catalogo():
         db.session.commit()
     except:
         db.session.rollback()
-        return jsonify('Jogo já cadastrado.'), 404
+        return jsonify('Jogo já cadastrado.'), 409
     return jsonify({
         'id_usuario': id_usuario,
         'id_jogo': id_jogo
