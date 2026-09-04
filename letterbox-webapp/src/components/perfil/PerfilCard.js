@@ -55,8 +55,8 @@ export default function PerfilCard() {
   const podeAlterar = username.trim() !== '' && username !== dadosUsuario?.username;
 
   return (
-    <div id="Perfil" className="grid w-max p-3 m-2 bg-slate-900/95 text-white rounded-2xl gap-2">
-      <p>*Foto de perfil*</p>
+    <div id="Perfil" className="flex flex-col p-3 m-2 bg-slate-900/95 text-white rounded-2xl gap-2 w-fit">
+      <p className='w-full h-50 bg-amber-300 rounded-4xl'></p>
       
       <label htmlFor="nome" className="flex items-center">
         Username:
@@ -64,11 +64,11 @@ export default function PerfilCard() {
           type="text"
           id="nome"
           name="nome"
-          placeholder="(máx. 10 caracteres)"
-          maxLength={10}
+          placeholder=" máx. 12 caract."
+          maxLength={12}
           onChange={(e) => setUsername(e.target.value)}
           value={username}
-          className="capitalize ml-1 rounded bg-slate-800 text-white focus:outline-none"
+          className="capitalize ml-1 rounded bg-slate-800 text-white focus:outline-none max-w-32"
         />
       </label>
 
