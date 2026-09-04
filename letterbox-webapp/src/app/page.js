@@ -1,10 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
   const [jogos, setJogos] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const router = useRouter();
 
   const BuscarJogos = async () => {
     try {
@@ -23,6 +25,39 @@ export default function Page() {
   useEffect(() => {
     BuscarJogos();
   }, []);
+
+  const AdicionarJogo = async (e, jogo) => {
+    e.preventDefault();
+    try {
+      const response = await fetch('http://localhost:5000/api/catalog/add', {
+        method:'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+
+        body: JSON.stringify({'id_jogo':jogo.id}),
+        credentials: 'include'
+      });
+      const resultado = await response.json();
+
+      if (response.ok) {
+        alert('Registro realizado.')
+        console.log('Registro realizado:', resultado);
+      }
+      else if (response.status === 401) {
+        alert('Precisa estar logado.')
+        console.warn('Erro:', resultado);
+        router.replace('/login')
+      }
+      else if (response.status === 409) {
+        alert('Jogo já cadastrado.')
+        console.warn('Erro:', resultado);
+      }
+    } catch (error) {
+      console.error('Falha na conexão:', error);
+    }
+  }
+
   return (
     <div id="div_principal" className="w-full max-w-7xl mx-auto px-4 py-6">
       <div className="flex flex-col items-center">
@@ -35,13 +70,14 @@ export default function Page() {
             <p className="col-span-full text-center">Carregando jogos...</p>
           ) : (
             jogos?.map((jogo) => (
-              <div key={jogo?.id || jogo?.name} className="w-full flex flex-col items-center">
+              <div key={jogo?.id || jogo?.name} className="w-full flex flex-col items-center bg-slate-900 rounded-3xl p-2">
+                <p className="capitalize text-center text-sm font-medium">{jogo?.name}</p>
                 <img 
                   src={jogo?.img_url} 
                   alt={jogo?.name} 
-                  className="w-full h-48 object-cover rounded-md"
+                  className="w-full h-48 object-cover rounded-t-3xl"
                 />
-                <p className="capitalize text-center mt-2 text-sm font-medium">{jogo?.name}</p>
+                <button className='bg-emerald-700 hover:bg-emerald-500 w-full rounded-b-3xl' onClick={(e) => {AdicionarJogo(e, jogo)}}>Adicionar Jogo</button>
               </div>
             ))
           )}
