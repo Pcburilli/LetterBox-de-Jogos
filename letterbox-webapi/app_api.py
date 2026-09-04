@@ -28,12 +28,14 @@ class Usuario(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     senha = db.Column(db.String(200), nullable=False)
 
+    jogos = db.relationship('Usuarios_Jogos', backref='usuario', cascade="all, delete-orphan")
     def to_dict(self): # Função que transforma informações em dicionário
         return {
             'id': self.id,
             'username': self.username,
             'email': self.email
         }
+    
 
 class Jogos(db.Model, UserMixin):
     __tablename__='jogos'
@@ -42,6 +44,8 @@ class Jogos(db.Model, UserMixin):
     name = db.Column(db.String(80), unique=True)
     ano = db.Column(db.String(15))
     capa_url = db.Column(db.Text)
+
+    usuario = db.relationship('Usuarios_Jogos', backref='jogo', cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
@@ -54,8 +58,8 @@ class Jogos(db.Model, UserMixin):
 
 class Usuarios_Jogos(db.Model):
     __tablename__ = 'usuarios_jogos'
-    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id'), primary_key=True)
-    id_jogo = db.Column(db.Integer, db.ForeignKey('jogos.id'), primary_key=True)
+    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id', ondelete='CASCADE'), primary_key=True)
+    id_jogo = db.Column(db.Integer, db.ForeignKey('jogos.id', ondelete='CASCADE'), primary_key=True)
     data_adicionado = db.Column(db.DateTime, default=datetime.now)
 
     def to_dict(self):
@@ -69,6 +73,13 @@ class Usuarios_Jogos(db.Model):
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(Usuario, int(user_id))
+
+# Configuração do @login_required para retornar JSON (401)
+@login_manager.unauthorized_handler
+def unauthorized():
+    return jsonify({
+        'mensagem': 'Acesso negado.'
+    }), 401
 
 # Criar tabelas SQL
 with app.app_context():
