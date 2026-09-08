@@ -57,6 +57,10 @@ export default function AdminPage() {
         alert('Jogo já cadastrado.')
         console.warn('Erro:', resultado);
       }
+      else if (response.status === 403) {
+        alert('Somente Admins.')
+        console.warn('Erro:', resultado);
+      }
     } catch (error) {
       console.error('Falha na conexão:', error);
     } finally {
@@ -89,6 +93,10 @@ export default function AdminPage() {
     else if (response.status === 404) {
       alert('Jogo inexistente.')
       console.warn('Erro:', response.status);
+    }
+    else if (response.status === 403) {
+      alert('Somente Admins.')
+      console.warn('Erro:', resultado);
     }
     } catch (error) {
       console.error('Falha na conexão:', error);
