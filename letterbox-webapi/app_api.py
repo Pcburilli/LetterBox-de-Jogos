@@ -6,6 +6,7 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv # Senhas seguras no .env
 from datetime import datetime
+from functools import wraps
 
 load_dotenv()
 
@@ -27,13 +28,15 @@ class Usuario(db.Model, UserMixin):
     username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(120), unique=True, nullable=False)
     senha = db.Column(db.String(200), nullable=False)
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
     jogos = db.relationship('Usuarios_Jogos', backref='usuario', cascade="all, delete-orphan")
     def to_dict(self): # Função que transforma informações em dicionário
         return {
             'id': self.id,
             'username': self.username,
-            'email': self.email
+            'email': self.email,
+            'is_admin': self.is_admin
         }
     
 
@@ -69,17 +72,45 @@ class Usuarios_Jogos(db.Model):
             'data_adicionado': self.data_adicionado
         }
 
+class Avaliacao(db.Model):
+    __tablename__ = 'avaliacoes'
+
+    id = db.Column(db.Integer, primary_key=True)
+    nota = db.Column(db.Integer, nullable=False)
+    resenha = db.Column(db.Text, nullable=True) 
+    data_criacao = db.Column(db.DateTime, default=datetime.now)
+
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'nota': self.nota,
+            'resenha': self.resenha,
+            'data_criacao': self.data_criacao
+        }
+
 #Configuração de segurança de usuário
 @login_manager.user_loader
 def load_user(user_id):
     return db.session.get(Usuario, int(user_id))
 
-# Configuração do @login_required para retornar JSON (401)
+# Configuração do decorador @login_required para retornar JSON (401)
 @login_manager.unauthorized_handler
 def unauthorized():
     return jsonify({
         'mensagem': 'Acesso negado.'
     }), 401
+
+# Decorador para verificar se um usuário é adm
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or not getattr(current_user, 'is_admin', False):
+            return jsonify({'erro': 'Acesso negado.'}), 403
+        return f(*args, **kwargs)
+    return decorated_function
 
 # Criar tabelas SQL
 with app.app_context():
@@ -94,7 +125,10 @@ def listar_jogos():
     return jsonify(jogos_dict), 200
 
 # Adicionar jogo
+
 @app.route('/api/jogos', methods=['POST'])
+@login_required
+@admin_required
 def adicionar_jogo():
     dados_jogo = request.get_json()['jogo']
     name = dados_jogo['name'].lower().strip()
@@ -113,6 +147,8 @@ def adicionar_jogo():
 
 # Excluir jogo
 @app.route('/api/jogos/<id>', methods=['DELETE'])
+@login_required
+@admin_required
 def excluir_jogo(id):
     jogo = db.get_or_404(Jogos, id)
     dados_jogo = jogo.to_dict()
