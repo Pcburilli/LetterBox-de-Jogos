@@ -34,26 +34,44 @@ export default function AdminPage() {
     }
   }
 
+  const PesquisarJogoID = async (jogoid) => {
+    const key_RAWG = 'bf7ce09f1afa45a4b7fb51ac39492f01'
+
+    try {
+      const response = await fetch(`https://api.rawg.io/api/games/${jogoid}?key=${key_RAWG}`)
+
+      if (response.ok) {
+        const resultado = await response.json();
+        return resultado
+      }
+    } catch(error) {
+      console.error('Erro na pesquisa:', error);
+    }
+  }
+
   const AdicionarJogo = async (e, jogo) => {
     e.preventDefault();
+    
     try {
+      const jogo_response = await PesquisarJogoID(jogo.id)
+      console.log('Dados do Jogo obtidos do RAWG:', jogo_response);
+
       const response = await fetch('http://localhost:5000/api/jogos', {
         method:'POST',
         headers: {
           'Content-Type': 'application/json'
         },
 
-        body: JSON.stringify({jogo}),
+        body: JSON.stringify(jogo_response),
         credentials: 'include'
       });
-      console.log('Jogo:', jogo)
       const resultado = await response.json();
 
       if (response.ok) {
         alert('Registro realizado.')
         console.log('Registro realizado:', resultado);
       }
-      else if (response.status === 400) {
+      else if (response.status === 409) {
         alert('Jogo já cadastrado.')
         console.warn('Erro:', resultado);
       }

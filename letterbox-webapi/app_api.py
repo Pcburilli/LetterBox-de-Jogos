@@ -91,6 +91,13 @@ class Avaliacao(db.Model):
             'data_criacao': self.data_criacao
         }
 
+# Definir um usuário como admin
+'''with app.app_context():
+    admin = Usuario.query.filter_by(email='admin@gmail.com').first()
+    if admin:
+        admin.is_admin = True
+        db.session.commit()'''
+
 #Configuração de segurança de usuário
 @login_manager.user_loader
 def load_user(user_id):
@@ -130,7 +137,7 @@ def listar_jogos():
 @login_required
 @admin_required
 def adicionar_jogo():
-    dados_jogo = request.get_json()['jogo']
+    dados_jogo = request.get_json()
     name = dados_jogo['name'].lower().strip()
     rawg_id = dados_jogo['id']
     ano = dados_jogo['released']
