@@ -51,7 +51,7 @@ export default function AdminPage() {
 
   const AdicionarJogo = async (e, jogo) => {
     e.preventDefault();
-    
+
     try {
       const jogo_response = await PesquisarJogoID(jogo.id)
       console.log('Dados do Jogo obtidos do RAWG:', jogo_response);
@@ -75,7 +75,7 @@ export default function AdminPage() {
         alert('Jogo já cadastrado.')
         console.warn('Erro:', resultado);
       }
-      else if (response.status === 403) {
+      else if (response.status === 403 || 401) {
         alert('Somente Admins.')
         console.warn('Erro:', resultado);
       }

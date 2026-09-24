@@ -21,16 +21,18 @@ db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
 
-# TABELAS do Bando de Dados
+# TABELAS do Banco de Dados
 class Usuario(db.Model, UserMixin):
-    __tablename__ = 'usuario'
+    __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
-    email = db.Column(db.String(120), unique=True, nullable=False)
-    senha = db.Column(db.String(200), nullable=False)
+    email = db.Column(db.String(80), unique=True, nullable=False)
+    senha = db.Column(db.String(255), nullable=False)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
-    jogos = db.relationship('Usuarios_Jogos', backref='usuario', cascade="all, delete-orphan")
+    avaliacoes = db.relationship('Avaliacoes', backref='usuarios', cascade="all, delete-orphan")
+    colecao = db.relationship('Usuarios_Jogos', backref='usuarios', lazy=True)
+
     def to_dict(self): # Função que transforma informações em dicionário
         return {
             'id': self.id,
@@ -38,17 +40,20 @@ class Usuario(db.Model, UserMixin):
             'email': self.email,
             'is_admin': self.is_admin
         }
-    
 
-class Jogos(db.Model, UserMixin):
+class Jogos(db.Model):
     __tablename__='jogos'
     id = db.Column(db.Integer, primary_key=True)
     rawg_id = db.Column(db.Integer, unique=True)
-    name = db.Column(db.String(80), unique=True)
-    ano = db.Column(db.String(15))
-    capa_url = db.Column(db.Text)
+    name = db.Column(db.String(80), nullable=False, unique=True)
+    ano = db.Column(db.String(15), nullable=True)
+    capa_url = db.Column(db.Text, nullable=True)
+    description = db.Column(db.Text, nullable=True)
 
-    usuario = db.relationship('Usuarios_Jogos', backref='jogo', cascade="all, delete-orphan")
+    usuarios = db.relationship('Usuarios_Jogos', backref='jogo', lazy=True, cascade="all, delete-orphan")
+    desenvolvedores = db.relationship('Desenvolvedor_Jogos', backref='jogo', lazy=True, cascade="all, delete-orphan")
+    tags = db.relationship('Tags_Jogos', backref='jogo', lazy=True, cascade="all, delete-orphan")
+    avaliacoes = db.relationship('Avaliacoes', backref='jogo', lazy=True, cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
@@ -56,44 +61,65 @@ class Jogos(db.Model, UserMixin):
             'rawg_id': self.rawg_id,
             'name': self.name,
             'ano': self.ano,
-            'img_url': self.capa_url
+            'img_url': self.capa_url,
+            'description': self.description,
+            'tags': [t.tag for t in self.tags],
+            'desenvolvedores': [d.name for d in self.desenvolvedores]
         }
 
-class Usuarios_Jogos(db.Model):
-    __tablename__ = 'usuarios_jogos'
-    id_usuario = db.Column(db.Integer, db.ForeignKey('usuario.id', ondelete='CASCADE'), primary_key=True)
-    id_jogo = db.Column(db.Integer, db.ForeignKey('jogos.id', ondelete='CASCADE'), primary_key=True)
-    data_adicionado = db.Column(db.DateTime, default=datetime.now)
-
-    def to_dict(self):
-        return {
-            'id_usuario': self.id_usuario,
-            'id_jogo': self.id_jogo,
-            'data_adicionado': self.data_adicionado
-        }
-
-class Avaliacao(db.Model):
+class Avaliacoes(db.Model):
     __tablename__ = 'avaliacoes'
 
     id = db.Column(db.Integer, primary_key=True)
-    nota = db.Column(db.Integer, nullable=False)
-    resenha = db.Column(db.Text, nullable=True) 
-    data_criacao = db.Column(db.DateTime, default=datetime.now)
-
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuario.id'), nullable=False)
+    nota = db.Column(db.Integer, nullable=True)
+    resenha = db.Column(db.Text, nullable=True)
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
+
+class Desenvolvedor_Jogos(db.Model):
+    __tablename__ = 'desenvolvedor_jogos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
+    name = db.Column(db.Text, nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
-            'nota': self.nota,
-            'resenha': self.resenha,
-            'data_criacao': self.data_criacao
+            'name': self.name
+        }
+
+class Tags_Jogos(db.Model):
+    __tablename__ = 'tags_jogos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
+    tag = db.Column(db.Text, nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'jogo_id': self.jogo_id,
+            'tag':self.tag
+        }
+
+class Usuarios_Jogos(db.Model):
+    __tablename__ = 'usuarios_jogos'
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id', ondelete='CASCADE'), primary_key=True)
+    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id', ondelete='CASCADE'), primary_key=True)
+    data_adicionado = db.Column(db.DateTime, default=datetime.now)
+    status = db.Column(db.Text, default='Na Fila')
+
+    def to_dict(self):
+        return {
+            'usuario_id': self.usuario_id,
+            'jogo_id': self.jogo_id,
+            'data_adicionado': self.data_adicionado
         }
 
 # Definir um usuário como admin
 '''with app.app_context():
-    admin = Usuario.query.filter_by(email='admin@gmail.com').first()
+    admin = Usuario.query.filter_by(email='admin@admin.com').first()
     if admin:
         admin.is_admin = True
         db.session.commit()'''
@@ -132,7 +158,6 @@ def listar_jogos():
     return jsonify(jogos_dict), 200
 
 # Adicionar jogo
-
 @app.route('/api/jogos', methods=['POST'])
 @login_required
 @admin_required
@@ -142,10 +167,33 @@ def adicionar_jogo():
     rawg_id = dados_jogo['id']
     ano = dados_jogo['released']
     capa_url = dados_jogo['background_image']
+    description = dados_jogo['description']
+    tags = []
+    for tag in dados_jogo['tags']:
+        if tag['language'] == 'eng':
+            tags.append(tag['slug'])
+    for genre in dados_jogo['genres']:
+        tags.append(genre['slug'])
+    devs = []
+    for developer in dados_jogo['developers']:
+        devs.append(developer['slug'])
 
     try:
-        novo_jogo = Jogos(name=name, rawg_id=rawg_id, ano=ano, capa_url=capa_url)
+        # Adicionando informações na tabela jogos
+        novo_jogo = Jogos(name=name, rawg_id=rawg_id, ano=ano, capa_url=capa_url, description=description)
         db.session.add(novo_jogo)
+        db.session.commit()
+
+        # Adicionando TAGS do jogo na tabela Tags_jogos
+        jogo_id = db.session.execute(db.select(Jogos).filter_by(rawg_id=rawg_id)).scalar_one().to_dict()['id']
+        for tag in tags:
+            nova_tag = Tags_Jogos(jogo_id=jogo_id, tag=tag)
+            db.session.add(nova_tag)
+
+        # Adicionando Desenvolvedor na tabela Desenvolvedor_Jogos
+        for dev in devs:
+            novo_dev = Desenvolvedor_Jogos(jogo_id=jogo_id, name=dev)
+            db.session.add(novo_dev)
         db.session.commit()
     except:
         db.session.rollback()
@@ -245,8 +293,8 @@ def listar_usuarios():
 @login_required
 def meu_catalogo():
     jogos_do_usuario = db.session.query(Jogos)\
-    .join(Usuarios_Jogos, Jogos.id == Usuarios_Jogos.id_jogo)\
-    .filter(Usuarios_Jogos.id_usuario == current_user.id)\
+    .join(Usuarios_Jogos, Jogos.id == Usuarios_Jogos.jogo_id)\
+    .filter(Usuarios_Jogos.usuario_id == current_user.id)\
     .all()
     jogos_do_usuario_dict = [u.to_dict() for u in jogos_do_usuario]
     return jsonify(jogos_do_usuario_dict), 200
@@ -257,8 +305,9 @@ def meu_catalogo():
 def add_jogo_catalogo():
     id_usuario = current_user.id
     id_jogo = request.get_json()['id_jogo']
+    print(id_jogo)
     try:
-        adicionar = Usuarios_Jogos(id_jogo=id_jogo, id_usuario=id_usuario)
+        adicionar = Usuarios_Jogos(jogo_id=id_jogo, usuario_id=id_usuario)
         db.session.add(adicionar)
         db.session.commit()
     except:
