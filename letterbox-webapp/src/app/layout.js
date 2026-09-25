@@ -1,15 +1,18 @@
 import "./globals.css";
 import Header from '@/components/header';
 import Footer from '@/components/footer'
+import { cookies } from 'next/headers'
 
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const cookieStore = await cookies()
+  const isLoggedIn = cookieStore.has('session');
   return (
     <html lang="pt-br">
-      <body className="bg-slate-950 min-h-screen flex flex-col text-slate-100 antialiased" suppressHydrationWarning>
-        <Header/>
-        <main className="grow">
+      <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
+        <Header isLoggedIn={isLoggedIn}/>
+        <main className="w-full max-w-6xl mx-auto px-4">
           {children}
-          </main>
+        </main>
         <Footer/>
       </body>
     </html>
