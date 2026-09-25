@@ -22,6 +22,7 @@ export default function LoginPage() {
 
       if (response.ok) {
         console.log('Login realizado:', resultado);
+        router.refresh(); 
         router.replace('/perfil')
       }
       else if (response.status === 404) {

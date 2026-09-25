@@ -141,68 +141,70 @@ export default function AdminPage() {
     }, []);
 
   return (
-    <div className='grid'>
-      <div className='grid justify-items-center grid-flow-row' id='cadastro_jogo'>
-        <form className='w-max p-5 bg-slate-900/95 mt-2 rounded-md' onSubmit={PesquisarJogo}>
-          <input
-            id="nome_jogo"
-            type='text'
-            required
-            value= {busca}
-            onChange= {(e) => setBusca(e.target.value)}
-            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 mb-2"
-          />
-          <button
-            type="submit"
-            className="w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors cursor-pointer"
-          >
-            Pesquisar Jogo
-          </button>
-        </form>
-        <div className='grid justify-items-center'>
-          {carregando ? (
-            <p></p>
-            ) : (<div id='tabela_jogos' className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center p-2 pt-3'>
-            {dados?.results?.map((jogo) => (
-                <form key={jogo?.id} className="w-full" onSubmit={(e) => AdicionarJogo(e, jogo)}>
-                  <img loading="lazy" src={jogo?.background_image} className="w-full h-50 object-cover rounded-md"></img>
-                  <h3 className='text-center'>{jogo?.name}</h3>
-                  <p>Ano: {jogo?.released}</p>
-                  <p>ID API: {jogo?.id}</p>
-                  <button
-                    type="submit"
-                    className="w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors cursor-pointer"
-                  >
-                    Adicionar Jogo
-                  </button>
-                </form>
+    <main className='grid place-items-center'>
+      <div className='grid grid-cols-2 gap-10'>
+        <div className='grid justify-items-center grid-flow-row' id='cadastro_jogo'>
+          <form className='w-max p-5 bg-slate-900/95 mt-2 rounded-md' onSubmit={PesquisarJogo}>
+            <input
+              id="nome_jogo"
+              type='text'
+              required
+              value= {busca}
+              onChange= {(e) => setBusca(e.target.value)}
+              className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 mb-2"
+            />
+            <button
+              type="submit"
+              className="w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors cursor-pointer"
+            >
+              Pesquisar Jogo
+            </button>
+          </form>
+        </div>
+        <div className='grid justify-items-center h-max' id='deletar_jogo'>
+          <form className='w-max p-5 bg-slate-900/95 mt-2 rounded-md' onSubmit={DeletarJogo}>
+            <input
+              type='text'
+              list='lista_jogos'
+              value={jogoEncontrado}
+              onChange={(e) => setJogoEncontrado(e.target.value)}
+              required
+              className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 mb-2"
+            />
+            <datalist id='lista_jogos'>
+              {jogos.map((jogo) => (
+                <option key={jogo.id} value={jogo.name} />
               ))}
-            </div>)}
-          </div>
+            </datalist>
+            <button
+              type="submit"
+              className="w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors cursor-pointer"
+            >
+              Remover Jogo
+            </button>
+          </form>
+        </div>
       </div>
-      <div className='grid justify-items-center' id='deletar_jogo'>
-        <form className='w-max p-5 bg-slate-900/95 mt-2 rounded-md' onSubmit={DeletarJogo}>
-          <input
-            type='text'
-            list='lista_jogos'
-            value={jogoEncontrado}
-            onChange={(e) => setJogoEncontrado(e.target.value)}
-            required
-            className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6 mb-2"
-          />
-          <datalist id='lista_jogos'>
-            {jogos.map((jogo) => (
-              <option key={jogo.id} value={jogo.name} />
+      <div className='grid'>
+        {carregando ? (
+          <></>
+          ) : (<div id='tabela_jogos' className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 justify-items-center p-2 pt-3'>
+          {dados?.results?.map((jogo) => (
+              <form key={jogo?.id} className="w-full" onSubmit={(e) => AdicionarJogo(e, jogo)}>
+                <img loading="lazy" src={jogo?.background_image} className="w-full h-50 object-cover rounded-md"></img>
+                <h3 className='text-center'>{jogo?.name}</h3>
+                <p>Ano: {jogo?.released}</p>
+                <p>ID API: {jogo?.id}</p>
+                <button
+                  type="submit"
+                  className="w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors cursor-pointer"
+                >
+                  Adicionar Jogo
+                </button>
+              </form>
             ))}
-          </datalist>
-          <button
-            type="submit"
-            className="w-full justify-center rounded-md bg-indigo-500 px-3 py-2 text-sm/6 font-semibold text-white shadow-sm hover:bg-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 transition-colors cursor-pointer"
-          >
-            Remover Jogo
-          </button>
-        </form>
-      </div>
-    </div>
+          </div>)}
+        </div>
+    </main>
   )
 };

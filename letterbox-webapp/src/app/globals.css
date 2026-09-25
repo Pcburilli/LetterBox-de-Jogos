@@ -3,6 +3,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
 }
 
 @theme inline {
@@ -10,17 +11,33 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  --color-primary-50: #f0f2f8;
+  --color-primary-100: #e1e5f1;
+  --color-primary-200: #c8cde3;
+  --color-primary-300: #a2add0;
+  --color-primary-400: #7882b0;
+  --color-primary-500: #586396;
+  --color-primary-600: #424c7d;
+  --color-primary-700: #3c487d;
+  --color-primary-800: #151e4a;
+  --color-primary-900: #020618;
+  --color-primary-950: #01030d;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
+    --background: #020618;
     --foreground: #ededed;
   }
 }
 
 body {
-  background: var(--background);
+  @apply bg-primary-900 bg-linear-to-b from-primary-800/30 via-primary-900;
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+body:has(.home-page) {
+  @apply bg-none bg-primary-900;
 }
