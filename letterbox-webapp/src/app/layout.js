@@ -6,6 +6,7 @@ import { cookies } from 'next/headers'
 export default async function RootLayout({ children }) {
   const cookieStore = await cookies()
   const isLoggedIn = cookieStore.has('session');
+
   return (
     <html lang="pt-br">
       <body className="min-h-screen flex flex-col antialiased" suppressHydrationWarning>
