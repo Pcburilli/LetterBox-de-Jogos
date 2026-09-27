@@ -90,7 +90,7 @@ export default function GamePage({ isLoggedIn }) {
           </div>
         </div>
       </div>
-      <div className='h-fit mb-2 p-2'>
+      <div className='h-fit mb-2'>
         <h2 className='font-bold text-2xl'>Resumo</h2>
         <p className='text-justify text-primary-200'>
           {jogo?.description}

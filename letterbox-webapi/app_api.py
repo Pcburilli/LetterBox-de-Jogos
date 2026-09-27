@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from dotenv import load_dotenv # Senhas seguras no .env
 from datetime import datetime
 from functools import wraps
+import json
 
 load_dotenv()
 
@@ -20,6 +21,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 login_manager = LoginManager(app)
+
+# Chamando tags_to_remove.json para aplicar filtro de tags a serem removidas
+with open('tags_to_remove.json', 'r', encoding='utf-8') as f:
+    tags_remove = set(json.load(f)['tags_to_remove'])
 
 # TABELAS do Banco de Dados
 class Usuario(db.Model, UserMixin):
@@ -181,7 +186,7 @@ def adicionar_jogo():
     description = dados_jogo['description'].replace('<p>', '').replace('</p>', '').replace('<em>', '').replace('</em>', '').replace('<br />', '')
     tags = []
     for tag in dados_jogo['tags']:
-        if tag['language'] == 'eng':
+        if tag['language'] == 'eng' and tag['slug'] not in tags_remove:
             tags.append(tag['slug'])
     for genre in dados_jogo['genres']:
         tags.append(genre['slug'])
@@ -193,17 +198,17 @@ def adicionar_jogo():
         # Adicionando informações na tabela jogos
         novo_jogo = Jogos(name=name, name_slug=name_slug, rawg_id=rawg_id, ano=ano, capa_url=capa_url, description=description)
         db.session.add(novo_jogo)
-        db.session.commit()
+        db.session.flush() # Usando flush pq ele não finaliza a ação (como o commit)
 
         # Adicionando TAGS do jogo na tabela Tags_jogos
-        jogo_id = db.session.execute(db.select(Jogos).filter_by(rawg_id=rawg_id)).scalar_one().to_dict()['id']
+        print(novo_jogo.id)
         for tag in tags:
-            nova_tag = Tags_Jogos(jogo_id=jogo_id, tag=tag)
+            nova_tag = Tags_Jogos(jogo_id=novo_jogo.id, tag=tag)
             db.session.add(nova_tag)
 
         # Adicionando Desenvolvedor na tabela Desenvolvedor_Jogos
         for dev in devs:
-            novo_dev = Desenvolvedor_Jogos(jogo_id=jogo_id, name=dev)
+            novo_dev = Desenvolvedor_Jogos(jogo_id=novo_jogo.id, name=dev)
             db.session.add(novo_dev)
         db.session.commit()
     except:
