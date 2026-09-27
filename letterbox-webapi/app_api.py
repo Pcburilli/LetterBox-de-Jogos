@@ -46,6 +46,7 @@ class Jogos(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     rawg_id = db.Column(db.Integer, unique=True)
     name = db.Column(db.String(80), nullable=False, unique=True)
+    name_slug = db.Column(db.String(80), nullable=False, unique=True)
     ano = db.Column(db.String(15), nullable=True)
     capa_url = db.Column(db.Text, nullable=True)
     description = db.Column(db.Text, nullable=True)
@@ -60,6 +61,7 @@ class Jogos(db.Model):
             'id': self.id,
             'rawg_id': self.rawg_id,
             'name': self.name,
+            'name_slug': self.name_slug,
             'ano': self.ano,
             'img_url': self.capa_url,
             'description': self.description,
@@ -157,17 +159,26 @@ def listar_jogos():
     jogos_dict = [u.to_dict() for u in jogos]
     return jsonify(jogos_dict), 200
 
+# Obter jogo via slug
+@app.route('/api/jogos/<name_slug>')
+def listar_jogo(name_slug):
+    jogo = db.one_or_404(db.select(Jogos).filter_by(name_slug=name_slug))
+    dados_jogo = jogo.to_dict()
+
+    return jsonify(dados_jogo), 200
+
 # Adicionar jogo
 @app.route('/api/jogos', methods=['POST'])
 @login_required
 @admin_required
 def adicionar_jogo():
     dados_jogo = request.get_json()
-    name = dados_jogo['name'].lower().strip()
+    name = dados_jogo['name'].strip()
+    name_slug = name.lower().replace(' ', '-')
     rawg_id = dados_jogo['id']
     ano = dados_jogo['released']
     capa_url = dados_jogo['background_image']
-    description = dados_jogo['description']
+    description = dados_jogo['description'].replace('<p>', '').replace('</p>', '').replace('<em>', '').replace('</em>', '').replace('<br />', '')
     tags = []
     for tag in dados_jogo['tags']:
         if tag['language'] == 'eng':
@@ -180,7 +191,7 @@ def adicionar_jogo():
 
     try:
         # Adicionando informações na tabela jogos
-        novo_jogo = Jogos(name=name, rawg_id=rawg_id, ano=ano, capa_url=capa_url, description=description)
+        novo_jogo = Jogos(name=name, name_slug=name_slug, rawg_id=rawg_id, ano=ano, capa_url=capa_url, description=description)
         db.session.add(novo_jogo)
         db.session.commit()
 

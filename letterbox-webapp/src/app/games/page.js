@@ -34,7 +34,7 @@ export default function GamesPage() {
           ) : (
             jogos?.map((jogo) => (
               <div key={jogo?.id || jogo?.name} className="w-full flex flex-col items-center bg-slate-900 rounded-3xl p-2">
-                <a href={`/games/${jogo?.name}`}>
+                <a href={`/games/${jogo?.name_slug}`}>
                   <img
                     src={jogo?.img_url} 
                     alt={jogo?.name} 
