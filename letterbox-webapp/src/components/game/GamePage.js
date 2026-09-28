@@ -66,7 +66,7 @@ export default function GamePage({ isLoggedIn }) {
         <div id='lateral' className='grow-2 flex flex-col items-center md:min-w-90 md:max-w-90 h-fit gap-2'>
           <div className='h-130 w-full center bg-cover bg-center bg-no-repeat md:w-full rounded-2xl' style={{ backgroundImage: `url(${jogo?.img_url})`}}></div>
           {isLoggedIn ? (
-            <button className='bg-primary-700 hover:bg-primary-500 text-primary-900 text w-full rounded-3xl p-2 font-bold' onClick={(e) => {AdicionarJogo(e, jogo)}}>+ Adicionar Jogo</button>
+            <button className='bg-primary-700 hover:bg-primary-500 text-primary-900 text w-full rounded-3xl p-2 font-bold cursor-pointer' onClick={(e) => {AdicionarJogo(e, jogo)}}>+ Adicionar Jogo</button>
           ) : (
             <></>
           )}

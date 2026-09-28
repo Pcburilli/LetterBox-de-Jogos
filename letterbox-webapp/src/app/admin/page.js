@@ -114,7 +114,7 @@ export default function AdminPage() {
     }
     else if (response.status === 403) {
       alert('Somente Admins.')
-      console.warn('Erro:', resultado);
+      console.warn('Erro:', response.status);
     }
     } catch (error) {
       console.error('Falha na conexão:', error);
