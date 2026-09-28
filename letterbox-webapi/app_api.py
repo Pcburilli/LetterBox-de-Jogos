@@ -30,10 +30,11 @@ with open('tags_to_remove.json', 'r', encoding='utf-8') as f:
 class Usuario(db.Model, UserMixin):
     __tablename__ = 'usuarios'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(80), unique=True)
     email = db.Column(db.String(80), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False)
+    username = db.Column(db.String(80), unique=True)
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
+    icone_url = db.Column(db.String(255), nullable=True, default='/icons_user/icon1.png')
 
     avaliacoes = db.relationship('Avaliacoes', backref='usuarios', cascade="all, delete-orphan")
     colecao = db.relationship('Usuarios_Jogos', backref='usuarios', lazy=True)
@@ -43,7 +44,7 @@ class Usuario(db.Model, UserMixin):
             'id': self.id,
             'username': self.username,
             'email': self.email,
-            'is_admin': self.is_admin
+            'icone_url': self.icone_url
         }
 
 class Jogos(db.Model):
@@ -263,7 +264,8 @@ def meu_perfil():
     return jsonify({
         'user_id': current_user.id,
         'email': current_user.email,
-        'username': current_user.username
+        'username': current_user.username,
+        'icone_url': current_user.icone_url
     }), 200
 
 # Registrar usuário
@@ -289,6 +291,18 @@ def registrar_usuario():
 def alterar_username():
     username = request.get_json()['username'].lower().strip()
     current_user.username = username
+    db.session.commit()
+
+    return jsonify({
+        'mensagem': 'Perfil atualizado com sucesso!',
+    }), 200
+
+# Alterar Icone
+@app.route('/api/register/icon', methods=['PUT'])
+@login_required
+def alterar_icone():
+    icon = request.get_json()['icone_url']
+    current_user.icone_url = icon
     db.session.commit()
 
     return jsonify({
