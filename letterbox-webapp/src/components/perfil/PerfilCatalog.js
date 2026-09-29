@@ -31,16 +31,16 @@ export default function PerfilCatalog() {
     }
   }
   return (
-    <div className='grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 gap-4 justify-items-center p-2'>
+    <div className='flex flex-wrap justify-center gap-2'>
       {carregando ? (
         <p>Carregando...</p>
       ) : (
         catalogo?.map((jogo) => (
-          <div key={jogo?.id} className=''>
+          <div key={jogo?.id} className='mb-2'>
             <a href={`/games/${jogo?.name_slug}`}>
               <img 
                 src={jogo?.img_url}
-                className="w-full h-full object-cover rounded-md"
+                className="h-30 w-50 object-cover rounded-md"
               />
             </a>
           </div>

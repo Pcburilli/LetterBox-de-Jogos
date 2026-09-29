@@ -7,12 +7,12 @@ import { useState, useEffect } from 'react';
 export default function PerfilPage() {
   
   return (
-    <div className='flex w-full min-h-screen mt-2'>
-      <div id='aside' className='w-63 shrink-0'>
+    <div className='flex md:flex-nowrap flex-wrap w-full mt-2'>
+      <div className='grow md:mr-2'>
         <PerfilCard />
       </div>
-      <div id='conteudo' className='flex flex-col flex-1 items-center min-w-0'>
-        <h1 className='text-3xl md:text-4xl font-bold mb-6 text-center'>Catálogo</h1>
+      <div id='conteudo' className='grow-100'>
+        <h1 className='text-3xl md:text-4xl font-bold mb-6 text-center'>Seu catálogo</h1>
         <PerfilCatalog/>
       </div>
     </div>

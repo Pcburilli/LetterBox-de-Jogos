@@ -89,7 +89,7 @@ export default function PerfilCard() {
   }
 
   return (
-    <div id="Perfil" className="flex flex-col p-3 m-2 bg-primary-800 rounded-2xl gap-2 w-fit">
+    <div id="Perfil" className="flex flex-col p-3 mb-2 bg-primary-800 rounded-2xl gap-2 w-full h-fit">
       <div className='flex relative w-full h-50 bg-primary-900 rounded-2xl justify-center items-center'>
         <img 
           className='h-15/16'
@@ -99,18 +99,18 @@ export default function PerfilCard() {
           <button className='mt-0.5 mr-0.2 hover:text-primary-200 cursor-pointer' onClick={() => setAba('visible')}>
             +
           </button>
-          <div className='absolute w-30 bg-primary-800 top-0.5 -right-24 rounded-b-2xl rounded-tr-2xl' style={{visibility: aba}}>
+          <div className='absolute w-30 bg-primary-800 top-0.5 right-0.5 md:-right-24 rounded-bl-2xl md:rounded-b-2xl rounded-tr-2xl' style={{visibility: aba}}>
             <div className='relative mt-1.5'>
-              <button className='absolute left-[7.3] top-[-7] hover:text-primary-200 cursor-pointer' onClick={() => setAba('hidden')}>
+              <button className='absolute right-[5.5] md:left-[8] top-[-7] hover:text-primary-200 cursor-pointer w-fit' onClick={() => setAba('hidden')}>
                 ×
               </button>
-              <div className=' grid grid-cols-3 w-full pr-1 pl-5 pb-1 gap-1'>
+              <div className='flex flex-wrap justify-start w-full pl-2.5 md:pl-5 pb-1 gap-1 '>
                 {icons_user.map((icon) => (
-                  <img key={icon} src={icon} className='h-7 w-7' onClick={() => setIcon(icon)}></img>
+                  <img key={icon} src={icon} className='h-7 w-7 cursor-pointer' onClick={() => setIcon(icon)}></img>
                 ))}
               </div>
               {dadosUsuario?.icone_url !== icon ? (
-                <button className='w-full bg-blue-600 hover:bg-blue-500 rounded-b-2xl transition cursor-pointer' onClick={alternarIcone}>Alterar icone</button>
+                <button className='w-full bg-blue-600 hover:bg-blue-500 rounded-bl-2xl md:rounded-b-2xl transition cursor-pointer' onClick={alternarIcone}>Alterar icone</button>
               ) : (
                 <></>
               )}

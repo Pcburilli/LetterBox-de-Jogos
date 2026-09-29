@@ -27,63 +27,54 @@ export default function Header({ isLoggedIn }) {
   };
 
   return (
-    <header className="w-full bg-primary-900 text-white sticky top-0 z-50">
+    <header className="w-full bg-primary-900 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="shrink-0">
-            <Link
-              href="/"
-              className="text-xl font-bold tracking-tight text-primary-300 hover:text-primary-100 transition-colors"
-            >
-              StockG
-            </Link>
+            <a href='/'>
+              <div className="bg-[url('/icone_site.png')] hover:bg-[url('/icone_site_hover.png')] bg-contain bg-center bg-no-repeat h-12 w-fit text-[18px] content-center text-center">
+              <h1 className='font-bold text-primary-200'>StockG</h1>
+              </div>
+            </a>
           </div>
-
-          <nav className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-8">
             {isLoggedIn ? (
               <>
-                <Link href="/perfil" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
-                  PERFIL
-                </Link>
-                <Link href="/games" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
-                  GAMES
-                </Link>
-                <Link href="/admin" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
-                  ADMIN
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                  LOGIN
-                </Link>
-                <Link href="/register" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                  CRIAR CONTA
-                </Link>
-                <Link href="/games" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
-                  GAMES
-                </Link>
-              </>
-            )}
-          </nav>
-
-          <div className="hidden md:flex items-center gap-4">
-            {isLoggedIn ? (
-              <>
+                <nav className='flex gap-8'>
+                  <Link href="/perfil" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                    PERFIL
+                  </Link>
+                  <Link href="/games" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                    GAMES
+                  </Link>
+                </nav>
                 <div className="w-35 h-7 bg-amber-200 rounded-4xl grid place-items-end">
                   <div className='bg-green-300 h-7 w-7 rounded-r-2xl'></div>
                 </div>
                 <button
                   onClick={Logout}
-                  className="px-5 py-2 text-sm font-semibold text-primary-900 bg-primary-500 hover:bg-primary-700 rounded-lg shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-2 focus:ring-offset-primary-900"
+                  className="px-5 py-2 text-sm font-semibold text-primary-900 bg-primary-500 hover:bg-primary-700 rounded-lg shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-2 focus:ring-offset-primary-900 cursor-pointer"
                 >
                   SAIR
                 </button>
               </>
             ) : (
-              <div className="w-35 h-7 bg-amber-200 rounded-4xl grid place-items-end">
-                <div className='bg-green-300 h-7 w-7 rounded-r-2xl'></div>
-              </div>
+              <>
+                <nav className='flex gap-8'>
+                  <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                    LOGIN
+                  </Link>
+                  <Link href="/register" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                    CRIAR CONTA
+                  </Link>
+                  <Link href="/games" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                    GAMES
+                  </Link>
+                </nav>
+                <div className="w-35 h-7 bg-amber-200 rounded-4xl grid place-items-end">
+                  <div className='bg-green-300 h-7 w-7 rounded-r-2xl'></div>
+                </div>
+              </>
             )}
           </div>
 
@@ -122,13 +113,6 @@ export default function Header({ isLoggedIn }) {
                 className="block text-slate-300 hover:text-white py-1 text-base font-medium"
                 >
                 GAMES
-              </Link>
-              <Link
-                href="/admin"
-                onClick={() => setIsMenuOpen(false)}
-                className="block text-slate-300 hover:text-white py-1 text-base font-medium"
-                >
-                ADMIN
               </Link>
             </>
           ) : (

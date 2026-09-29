@@ -26,7 +26,7 @@ export default function GamesPage() {
   }, []);
 
   return (
-    <div id="div_principal" className="w-full max-w-6xl mx-auto px-4">
+    <div id="div_principal" className="w-full max-w-6xl mx-auto">
       <div className="flex flex-col items-center">
         <div id="tabela_jogos" className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full justify-items-center p-2">
           {carregando ? (

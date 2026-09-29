@@ -37,7 +37,7 @@ export default function Home() {
             Avalie seus jogos preferidos.<br/>Salve aqueles que deseja jogar.<br/>Se divirta!
           </h1>
         </div>
-        <div id="tabela_jogos" className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full justify-items-center p-2">
+        <div id="tabela_jogos" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full justify-items-center p-2">
           {carregando ? (
             <p className="col-span-full text-center">Carregando jogos...</p>
           ) : (
@@ -47,7 +47,7 @@ export default function Home() {
                   <img
                     src={jogo?.img_url} 
                     alt={jogo?.name}
-                    className="w-full h-48 object-cover rounded-3xl"
+                    className="w-60 md:w-100 h-48 object-cover rounded-3xl"
                   />
                 </a>
               </div>
