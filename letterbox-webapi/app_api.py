@@ -257,16 +257,23 @@ def logout_usuario():
     resposta.set_cookie('session', '', expires=0)
     return resposta, 200
 
-# Validar token
+# Validar token_user
 @app.route('/api/auth/me', methods=['GET'])
 @login_required
-def meu_perfil():
+def auth_user():
     return jsonify({
         'user_id': current_user.id,
         'email': current_user.email,
         'username': current_user.username,
-        'icone_url': current_user.icone_url
+        'icone_url': current_user.icone_url,
     }), 200
+
+# Validar token_admin
+@app.route('/api/auth/admin', methods=['GET'])
+@login_required
+@admin_required
+def auth_admin():
+    return '', 200
 
 # Registrar usuário
 @app.route('/api/register/usuario', methods=['POST'])
