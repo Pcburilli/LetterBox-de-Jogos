@@ -147,7 +147,7 @@ export default function Header({ isLoggedIn }) {
                   setIsMenuOpen(false);
                   Logout(e);
                 }}
-                className="block w-full text-center px-4 py-2 text-sm font-semibold text-primary-900 bg-primary-500 hover:bg-primary-700 rounded-lg transition-colors"
+                className="block w-full text-center px-4 py-2 text-sm font-semibold text-primary-900 bg-primary-500 hover:bg-primary-700 rounded-lg transition-colors cursor-pointer"
                 >
                 Sair
               </button>
