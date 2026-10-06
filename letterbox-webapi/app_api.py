@@ -33,8 +33,8 @@ class Usuario(db.Model, UserMixin):
     email = db.Column(db.String(80), unique=True, nullable=False)
     senha = db.Column(db.String(255), nullable=False)
     username = db.Column(db.String(80), unique=True)
-    is_admin = db.Column(db.Boolean, default=False, nullable=False)
     icone_url = db.Column(db.String(255), nullable=True, default='/icons_user/icon1.png')
+    is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
     avaliacoes = db.relationship('Avaliacoes', backref='usuarios', cascade="all, delete-orphan")
     colecao = db.relationship('Usuarios_Jogos', backref='usuarios', lazy=True)
@@ -88,42 +88,48 @@ class Desenvolvedor_Jogos(db.Model):
     __tablename__ = 'desenvolvedor_jogos'
 
     id = db.Column(db.Integer, primary_key=True)
-    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
     name = db.Column(db.Text, nullable=False)
+    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
-            'name': self.name
+            'name': self.name,
+            'jogo_id': self.jogo_id,
         }
 
 class Tags_Jogos(db.Model):
     __tablename__ = 'tags_jogos'
 
     id = db.Column(db.Integer, primary_key=True)
-    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
     tag = db.Column(db.Text, nullable=False)
+    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
 
     def to_dict(self):
         return {
             'id': self.id,
+            'tag':self.tag,
             'jogo_id': self.jogo_id,
-            'tag':self.tag
         }
 
 class Usuarios_Jogos(db.Model):
     __tablename__ = 'usuarios_jogos'
-    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id', ondelete='CASCADE'), primary_key=True)
-    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id', ondelete='CASCADE'), primary_key=True)
     data_adicionado = db.Column(db.DateTime, default=datetime.now)
     status = db.Column(db.Text, default='Na Fila')
+    usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id', ondelete='CASCADE'), primary_key=True)
+    jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id', ondelete='CASCADE'), primary_key=True)
 
     def to_dict(self):
         return {
             'usuario_id': self.usuario_id,
             'jogo_id': self.jogo_id,
-            'data_adicionado': self.data_adicionado
+            'data_adicionado': self.data_adicionado,
+            'status': self.status
         }
+
+# Criar tabelas SQL
+with app.app_context():
+    db.create_all()
 
 # Definir um usuário como admin
 '''with app.app_context():
@@ -152,10 +158,6 @@ def admin_required(f):
             return jsonify({'erro': 'Acesso negado.'}), 403
         return f(*args, **kwargs)
     return decorated_function
-
-# Criar tabelas SQL
-with app.app_context():
-    db.create_all()
 
 # API JOGOS
 # Obter jogos
@@ -325,7 +327,7 @@ def listar_usuarios():
     return jsonify(usuarios_dict), 200
 
 # BIBLIOTECA USUÁRIO
-# Retornar biblioteca
+# Retornar biblioteca (Jogos) do usuário
 @app.route('/api/catalog', methods=['GET'])
 @login_required
 def meu_catalogo():
@@ -335,6 +337,18 @@ def meu_catalogo():
     .all()
     jogos_do_usuario_dict = [u.to_dict() for u in jogos_do_usuario]
     return jsonify(jogos_do_usuario_dict), 200
+
+# Retorna False ou dados do jogo (Se há ou não jogo na biblioteca do usuário)
+@app.route('/api/catalog/<jogo_id>')
+@login_required
+def jogo_catalogo(jogo_id):
+    jogo = db.session.query(Usuarios_Jogos)\
+    .join(Jogos, Usuarios_Jogos.jogo_id == Jogos.id)\
+    .filter(Usuarios_Jogos.jogo_id == jogo_id, Usuarios_Jogos.usuario_id == current_user.id)\
+    .first()
+    if jogo is None:
+        return jsonify({'status': False}), 200
+    return jsonify(jogo.to_dict()), 200
 
 # Adicionar Jogo a biblioteca
 @app.route('/api/catalog/add', methods=['POST'])
