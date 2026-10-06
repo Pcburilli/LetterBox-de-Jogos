@@ -1,27 +1,19 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import { ObterJogos } from '@/services/api';
 
 export default function Home() {
   const [jogosTotal, setJogosTotal] = useState([]);
   const [jogosLimite, setJogosLimite] = useState(0);
   const [carregando, setCarregando] = useState(true);
 
-  const BuscarJogos = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/jogos');
-
-      if (response.ok) {
-        const dados = await response.json();
-        setJogosTotal(dados)
-        LimiteJogos(dados)
-      }
-      } catch (error) {
-      console.error('Erro ao buscar jogo:', error);
-    } finally {
-      setCarregando(false)
-    }
-  };
+  useEffect(() => {
+    ObterJogos()
+    .then((dados) => {setJogosTotal(dados), LimiteJogos(dados)})
+    .catch((error) => console.error('Erro ao buscar jogo:', error))
+    .finally(setCarregando(false));
+  }, []);
 
   const LimiteJogos = async (dados) => {
     const jogos_len = dados.length
@@ -33,10 +25,6 @@ export default function Home() {
       setJogosLimite(jogosLimite + soma)
     }
   }
-
-  useEffect(() => {
-    BuscarJogos();
-  }, []);
 
   return (
     <main className="home-page">

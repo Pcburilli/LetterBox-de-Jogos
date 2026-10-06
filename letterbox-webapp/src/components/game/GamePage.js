@@ -1,61 +1,43 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { usePathname, useRouter} from 'next/navigation'
+import { usePathname } from 'next/navigation'
+import { ObterJogo, adicionarAoCatalogo, ObterPerfil } from '@/services/api';
 
 export default function GamePage({ isLoggedIn }) {
-  const router = useRouter();
   const pathname = usePathname().slice(7)
   const [jogo, setJogo] = useState(null)
-  
-  const BuscarJogo = async () => {
-    try {
-      const response = await fetch(`http://localhost:5000/api/jogos/${pathname}`);
+  const [dadosUsuario, setDadosUsuario] = useState(null);
 
-      if (response.ok) {
-        const dados = await response.json();
-        setJogo(dados)
-      }
-      } catch (error) {
-      console.error('Erro ao buscar jogo:', error);
+  useEffect(() => {
+    ObterJogo(pathname)
+    .then(setJogo)
+    .catch((error) => console.error('Erro ao buscar jogo:', error));
+
+    if (isLoggedIn === true) {
+    ObterPerfil()
+    .then(setDadosUsuario)
+    .catch((error) => console.error('Erro ao buscar usuário:', error))
     }
-  };
+  }, [pathname]);
 
-  const AdicionarJogo = async (e, jogo) => {
+  const AdicionarJogo = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5000/api/catalog/add', {
-        method:'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-
-        body: JSON.stringify({'id_jogo':jogo.id}),
-        credentials: 'include'
-      });
-      const resultado = await response.json();
+      const response = await adicionarAoCatalogo(jogo.id);
+      const resultado = await response;
 
       if (response.ok) {
-        alert('Registro realizado.')
-        console.log('Registro realizado:', resultado);
-      }
-      else if (response.status === 401) {
-        alert('Precisa estar logado.')
-        console.warn('Erro:', resultado);
-        router.replace('/login')
-      }
-      else if (response.status === 409) {
-        alert('Jogo já cadastrado.')
-        console.warn('Erro:', resultado);
+        alert('Registro realizado.');
+      } else if (response.status === 401) {
+        alert('Precisa estar logado.');
+      } else if (response.status === 409) {
+        alert('Jogo já cadastrado.');
       }
     } catch (error) {
       console.error('Falha na conexão:', error);
     }
-  }
-
-  useEffect(() => {
-    BuscarJogo();
-  }, [pathname]);
+  };
 
   if (!jogo) {
     return <p className='w-full text-center'>Carregando...</p>;
@@ -66,7 +48,7 @@ export default function GamePage({ isLoggedIn }) {
         <div id='lateral' className='grow-2 flex flex-col items-center md:min-w-90 md:max-w-90 h-fit gap-2'>
           <div className='h-130 w-full center bg-cover bg-center bg-no-repeat md:w-full rounded-2xl' style={{ backgroundImage: `url(${jogo?.img_url})`}}></div>
           {isLoggedIn ? (
-            <button className='bg-primary-700 hover:bg-primary-500 text-primary-900 text w-full rounded-3xl p-2 font-bold cursor-pointer' onClick={(e) => {AdicionarJogo(e, jogo)}}>+ Adicionar Jogo</button>
+            <button className='bg-primary-700 hover:bg-primary-500 text-primary-900 text w-full rounded-3xl p-2 font-bold cursor-pointer' onClick={(e) => {AdicionarJogo(e)}}>+ Adicionar Jogo</button>
           ) : (
             <></>
           )}

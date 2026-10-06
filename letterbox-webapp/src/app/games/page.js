@@ -2,27 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { ObterJogos } from '@/services/api';
 
 export default function GamesPage() {
   const [jogos, setJogos] = useState([]);
   const [carregando, setCarregando] = useState(true);
-
-  const BuscarJogos = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/jogos');
-
-      if (response.ok) {
-        const dados = await response.json();
-        setJogos(dados)
-      }
-      } catch (error) {
-      console.error('Erro ao buscar jogo:', error);
-    } finally {
-      setCarregando(false)
-    }
-  };
+  
   useEffect(() => {
-    BuscarJogos();
+    ObterJogos()
+    .then(setJogos)
+    .catch((error) => console.error('Erro ao buscar jogo:', error))
+    .finally(setCarregando(false));
   }, []);
 
   return (

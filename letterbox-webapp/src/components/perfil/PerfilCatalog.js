@@ -1,35 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { ObterCatalogo } from '@/services/api';
 
 export default function PerfilCatalog() {
   const [catalogo, setCatalogo] = useState(null)
   const [carregando, setCarregando] = useState(true)
 
   useEffect(() => {
-    ObterCatalogo();
+    ObterCatalogo()
+    .then(setCatalogo)
+    .catch((error) => console.warn('Error:', error))
+    .finally(setCarregando(false));
   }, []);
-
-  const ObterCatalogo = async (e) => {
-    try {
-      const response = await fetch('http://localhost:5000/api/catalog', {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json',
-        },
-        credentials: 'include'
-      })
-
-      if(response.ok) {
-        const dados = await response.json();
-        setCatalogo(dados)
-      }
-    } catch (error) {
-      console.warn('Error:', error)
-    } finally {
-      setCarregando(false)
-    }
-  }
+  
   return (
     <div className='flex flex-wrap justify-center gap-2'>
       {carregando ? (

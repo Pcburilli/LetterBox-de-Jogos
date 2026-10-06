@@ -1,5 +1,6 @@
 'use client';
 import { useState, useEffect } from 'react';
+import { ObterPerfil } from '@/services/api';
 
 const icons_user = [
   '/icons_user/icon1.png',
@@ -15,27 +16,14 @@ export default function PerfilCard() {
   const [aba, setAba] = useState('hidden');
   const [icon, setIcon] = useState(null)
 
-  const ObterPerfil = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/me', {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-        credentials: 'include'
-      });
-
-      if (response.ok) {
-        const dados = await response.json();
-        setDadosUsuario(dados);
-        setUsername(dados.username || '');
-        setIcon(dados?.icone_url || null)
-      }
-    } catch (error) {
-      console.error('Deu ruim ao carregar perfil:', error);
-    }
-  };
-
   useEffect(() => {
-    ObterPerfil();
+    ObterPerfil()
+    .then((dados) => {
+      setDadosUsuario(dados);
+      setUsername(dados.username || '');
+      setIcon(dados.icone_url || null);
+    })
+    .catch((error) => console.error('Deu ruim ao carregar perfil:', error));
   }, []);
 
   const alterarUsername = async (e) => {
