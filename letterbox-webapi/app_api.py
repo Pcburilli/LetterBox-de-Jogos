@@ -369,5 +369,24 @@ def add_jogo_catalogo():
         'id_jogo': id_jogo
     }), 200
 
+# Alterar Status Jogo da biblioteca usuario
+@app.route('/api/catalog/<jogo_id>', methods=['PUT'])
+@login_required
+def change_status(jogo_id):
+    new_status = request.get_json()['new_status']
+    jogo = db.session.query(Usuarios_Jogos)\
+        .join(Jogos, Usuarios_Jogos.jogo_id == Jogos.id)\
+        .filter(Usuarios_Jogos.jogo_id == jogo_id, Usuarios_Jogos.usuario_id == current_user.id)\
+        .first()
+    if jogo.status == new_status:
+        return jsonify('Status igual ao atual.'), 409
+    jogo.status = new_status
+    db.session.commit()
+
+    return jsonify({
+        'mensagem': 'Status atualizado com sucesso!',
+    }), 200
+    
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
