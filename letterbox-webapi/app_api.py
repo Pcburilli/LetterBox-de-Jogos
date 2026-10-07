@@ -78,11 +78,24 @@ class Jogos(db.Model):
 class Avaliacoes(db.Model):
     __tablename__ = 'avaliacoes'
 
+    __table_args__ = (
+        db.UniqueConstraint('usuario_id', 'jogo_id', name='uq_usuario_jogo_avaliacao'),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     nota = db.Column(db.Integer, nullable=True)
     resenha = db.Column(db.Text, nullable=True)
     usuario_id = db.Column(db.Integer, db.ForeignKey('usuarios.id'), nullable=False)
     jogo_id = db.Column(db.Integer, db.ForeignKey('jogos.id'), nullable=False)
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'usuario_id': self.usuario_id,
+            'jogo_id': self.jogo_id,
+            'nota': self.nota,
+            'resenha': self.resenha,
+        }
 
 class Desenvolvedor_Jogos(db.Model):
     __tablename__ = 'desenvolvedor_jogos'
@@ -228,7 +241,7 @@ def excluir_jogo(id):
     dados_jogo = jogo.to_dict()
     db.session.delete(jogo)
     db.session.commit()
-    return jsonify(dados_jogo)
+    return jsonify(dados_jogo), 200
 
 # API USUARIOS
 # Login
@@ -342,12 +355,14 @@ def meu_catalogo():
 @app.route('/api/catalog/<jogo_id>')
 @login_required
 def jogo_catalogo(jogo_id):
-    jogo = db.session.query(Usuarios_Jogos)\
-    .join(Jogos, Usuarios_Jogos.jogo_id == Jogos.id)\
-    .filter(Usuarios_Jogos.jogo_id == jogo_id, Usuarios_Jogos.usuario_id == current_user.id)\
-    .first()
-    if jogo is None:
+    try:
+        jogo = db.session.execute(db.select(Usuarios_Jogos)\
+        .filter(Usuarios_Jogos.jogo_id == jogo_id, Usuarios_Jogos.usuario_id == current_user.id))\
+        .scalar_one()
+    except:
         return jsonify({'status': False}), 200
+    
+    print(jogo.to_dict())
     return jsonify(jogo.to_dict()), 200
 
 # Adicionar Jogo a biblioteca
@@ -356,7 +371,6 @@ def jogo_catalogo(jogo_id):
 def add_jogo_catalogo():
     id_usuario = current_user.id
     id_jogo = request.get_json()['id_jogo']
-    print(id_jogo)
     try:
         adicionar = Usuarios_Jogos(jogo_id=id_jogo, usuario_id=id_usuario)
         db.session.add(adicionar)
@@ -386,7 +400,74 @@ def change_status(jogo_id):
     return jsonify({
         'mensagem': 'Status atualizado com sucesso!',
     }), 200
+
+# Excluir jogo da coleção
+@app.route('/api/catalog/<int:jogo_id>', methods=['DELETE'])
+@login_required
+def delete_game_collection(jogo_id):
+    try:
+        game_collection = db.session.query(Usuarios_Jogos).filter_by(
+            jogo_id=jogo_id, 
+            usuario_id=current_user.id
+        ).first()
+
+        avaliacao = db.session.execute(
+            db.select(Avaliacoes).filter_by(jogo_id=jogo_id, usuario_id=current_user.id)
+        ).scalar_one_or_none()
+
+        if not game_collection and not avaliacao:
+            return jsonify({'Jogo ou avaliação não encontrados na sua biblioteca.'}), 404
+        if game_collection:
+            db.session.delete(game_collection)
+        if avaliacao:
+            db.session.delete(avaliacao)
+
+        db.session.commit()
+        return jsonify({'Jogo e avaliação removidos com sucesso!'}), 200
+
+    except:
+        db.session.rollback()
+        return jsonify({'error': 'Erro ao remover do catálogo.'}), 500
+
+# Valida e retorna avaliacao do usuario para um jogo
+@app.route('/api/catalog/<jogo_id>/avaliacao', methods=['GET'])
+@login_required
+def get_avaliacao_user(jogo_id):
+    try:
+        avaliacao = db.session.execute(db.select(Avaliacoes)\
+            .filter(Avaliacoes.jogo_id == jogo_id, Avaliacoes.usuario_id == current_user.id))\
+            .scalar_one()
+    except:
+        return jsonify({'status': False}), 200
     
+    return jsonify(avaliacao.to_dict()), 200
+
+@app.route('/api/catalog/<jogo_id>/avaliacao', methods=['POST'])
+@login_required
+def post_avaliacao_user(jogo_id):
+    dados = request.get_json()['dados_avaliacao']
+    if dados['nota'] == '':
+        dados['nota'] = None 
+
+    avaliacao = Avaliacoes.query.filter_by(
+        usuario_id=current_user.id,
+        jogo_id=jogo_id
+    ).first()
+
+    if avaliacao:
+        avaliacao.nota = dados.get('nota')
+        avaliacao.resenha = dados.get('review')
+    else:
+        avaliacao = Avaliacoes(
+            usuario_id=current_user.id,
+            jogo_id=jogo_id,
+            nota=dados.get('nota'),
+            resenha=dados.get('review')
+        )
+        db.session.add(avaliacao)
+
+    db.session.commit()
+    return jsonify(avaliacao.to_dict()), 200
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0')
