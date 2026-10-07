@@ -54,12 +54,44 @@ export async function VerificarJogoCatalogo(idJogo) {
     return dados
 }
 
+export async function DeleteJogoCatalogo(idJogo) {
+    const response = await fetch(`http://localhost:5000/api/catalog/${idJogo}`, {
+        method: 'DELETE',
+        headers: {
+        'Content-Type': 'application/json'},
+        credentials: 'include'
+      })
+    return response
+}
+
 export async function AlterarStatusJogo(idJogo, new_status) {
     const response = await fetch(`http://localhost:5000/api/catalog/${idJogo}`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json'},
-        body: JSON.stringify({ id_jogo: idJogo, new_status: new_status }),
+        body: JSON.stringify({ new_status: new_status }),
+        credentials: 'include'
+      })
+    return response
+}
+
+export async function VerificarAvaliacaoJogo(idJogo) {
+  const response = await fetch(`http://localhost:5000/api/catalog/${idJogo}/avaliacao`, {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json'},
+        credentials: 'include'
+      })
+    const dados = await response.json();
+    return dados
+}
+
+export async function AdicionarAvaliacaoJogo(idJogo, dados_avaliacao) {
+  const response = await fetch(`http://localhost:5000/api/catalog/${idJogo}/avaliacao`, {
+        method: 'POST',
+        headers: {
+        'Content-Type': 'application/json'},
+        body: JSON.stringify({ dados_avaliacao: dados_avaliacao }),
         credentials: 'include'
       })
     return response
