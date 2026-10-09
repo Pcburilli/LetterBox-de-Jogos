@@ -77,28 +77,28 @@ export default function PerfilCard() {
   }
 
   return (
-    <div id="Perfil" className="flex flex-col p-3 mb-2 bg-primary-800 rounded-2xl gap-2 w-full h-fit">
-      <div className='flex relative w-full h-50 bg-primary-900 rounded-2xl justify-center items-center'>
+    <div id="Perfil" className="flex p-3 mb-2 bg-primary-800 rounded-2xl gap-2 w-full h-fit">
+      <div className='flex relative w-40 h-25 bg-primary-900 rounded-2xl justify-center items-center'>
         <img 
           className='h-15/16'
           src={icon}>
         </img>
-        <div className='flex absolute bg-primary-800 w-6 h-6 top-0 right-0 rounded-tr-2xl rounded-bl-2xl justify-center items-center -m-0.5'>
+        <div id='alternar_icone' className='z-10 flex absolute bg-primary-800 w-6 h-6 top-0 right-0 rounded-tr-2xl rounded-bl-2xl justify-center items-center -m-0.5'>
           <button className='mt-0.5 mr-0.2 hover:text-primary-200 cursor-pointer' onClick={() => setAba('visible')}>
             +
           </button>
-          <div className='absolute w-30 bg-primary-800 top-0.5 right-0.5 md:-right-24 rounded-bl-2xl md:rounded-b-2xl rounded-tr-2xl' style={{visibility: aba}}>
+          <div className='absolute w-30 bg-primary-800 top-0.5 right-0.5 rounded-bl-2xl rounded-tr-2xl' style={{visibility: aba}}>
             <div className='relative mt-1.5'>
-              <button className='absolute right-[5.5] md:left-[8] top-[-7] hover:text-primary-200 cursor-pointer w-fit' onClick={() => setAba('hidden')}>
+              <button className='absolute right-[5.5] top-[-7] hover:text-primary-200 cursor-pointer w-fit' onClick={() => setAba('hidden')}>
                 ×
               </button>
-              <div className='flex flex-wrap justify-start w-full pl-2.5 md:pl-5 pb-1 gap-1 '>
+              <div className='flex flex-wrap justify-start w-full pl-2.5 pb-1 gap-1 '>
                 {icons_user.map((icon) => (
                   <img key={icon} src={icon} className='h-7 w-7 cursor-pointer' onClick={() => setIcon(icon)}></img>
                 ))}
               </div>
               {dadosUsuario?.icone_url !== icon ? (
-                <button className='w-full bg-blue-600 hover:bg-blue-500 rounded-bl-2xl md:rounded-b-2xl transition cursor-pointer' onClick={alternarIcone}>Alterar icone</button>
+                <button className='w-full bg-primary-300 hover:bg-primary-200 text-primary-800 font-bold rounded-b-2xl transition cursor-pointer' onClick={alternarIcone}>Alterar icone</button>
               ) : (
                 <></>
               )}
@@ -107,32 +107,29 @@ export default function PerfilCard() {
         </div>
       </div>
 
-      <label htmlFor="nome" className="flex items-center">
-        Username:
-        <input
-          type="text"
-          id="nome"
-          name="nome"
-          placeholder=" máx. 12 caract."
-          maxLength={12}
-          onChange={(e) => setUsername(e.target.value)}
-          value={username}
-          className="capitalize ml-1 rounded bg-slate-800 text-white focus:outline-none max-w-32"
-        />
-      </label>
+      <div className="flex flex-col items-start gap-2">
+        <div className='flex flex-col gap-2'>
+          <input
+            type="text"
+            id="nome"
+            name="nome"
+            placeholder=" máx. 12 caract."
+            maxLength={12}
+            onChange={(e) => setUsername(e.target.value)}
+            value={username}
+            className="capitalize ml-1 pl-1.5 rounded bg-primary-900 text-white focus:outline-none max-w-32"
+          />
 
-      {podeAlterar && (
-        <button
-          onClick={alterarUsername}
-          className="bg-blue-600 hover:bg-blue-500 rounded transition cursor-pointer"
-        >
-          Alterar Username
-        </button>
-      )}
-
-      <p className=" text-slate-400">
-        Email: {dadosUsuario?.email || 'Carregando...'}
-      </p>
+          {podeAlterar && (
+            <button
+              onClick={alterarUsername}
+              className="bg-blue-600 hover:bg-blue-500 rounded transition cursor-pointer pl-1 pr-1"
+            >
+              Alterar Username
+            </button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
