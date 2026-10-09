@@ -76,7 +76,7 @@ export async function AlterarStatusJogo(idJogo, new_status) {
 }
 
 export async function VerificarAvaliacaoJogo(idJogo) {
-  const response = await fetch(`http://localhost:5000/api/catalog/${idJogo}/avaliacao`, {
+  const response = await fetch(`http://localhost:5000/api/catalog/avaliacao/${idJogo}`, {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json'},
@@ -87,7 +87,7 @@ export async function VerificarAvaliacaoJogo(idJogo) {
 }
 
 export async function AdicionarAvaliacaoJogo(idJogo, dados_avaliacao) {
-  const response = await fetch(`http://localhost:5000/api/catalog/${idJogo}/avaliacao`, {
+  const response = await fetch(`http://localhost:5000/api/catalog/avaliacao/${idJogo}`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'},

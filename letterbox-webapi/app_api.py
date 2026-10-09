@@ -137,7 +137,7 @@ class Usuarios_Jogos(db.Model):
             'usuario_id': self.usuario_id,
             'jogo_id': self.jogo_id,
             'data_adicionado': self.data_adicionado,
-            'status': self.status
+            'status': self.status,
         }
 
 # Criar tabelas SQL
@@ -217,7 +217,6 @@ def adicionar_jogo():
         db.session.flush() # Usando flush pq ele não finaliza a ação (como o commit)
 
         # Adicionando TAGS do jogo na tabela Tags_jogos
-        print(novo_jogo.id)
         for tag in tags:
             nova_tag = Tags_Jogos(jogo_id=novo_jogo.id, tag=tag)
             db.session.add(nova_tag)
@@ -344,12 +343,39 @@ def listar_usuarios():
 @app.route('/api/catalog', methods=['GET'])
 @login_required
 def meu_catalogo():
-    jogos_do_usuario = db.session.query(Jogos)\
-    .join(Usuarios_Jogos, Jogos.id == Usuarios_Jogos.jogo_id)\
-    .filter(Usuarios_Jogos.usuario_id == current_user.id)\
-    .all()
-    jogos_do_usuario_dict = [u.to_dict() for u in jogos_do_usuario]
-    return jsonify(jogos_do_usuario_dict), 200
+    pesquisa = (
+        db.select(
+            Jogos.id,
+            Jogos.name,
+            Jogos.name_slug,
+            Jogos.capa_url,
+            Jogos.ano,
+            Avaliacoes.nota,
+            Avaliacoes.resenha,
+            Usuarios_Jogos.status
+            )
+            .select_from(Usuarios_Jogos)
+            .join(Jogos, Usuarios_Jogos.jogo_id == Jogos.id)
+            .join(Avaliacoes, (Avaliacoes.jogo_id == Jogos.id) & (Avaliacoes.usuario_id == current_user.id), isouter=True)
+            .filter(Usuarios_Jogos.usuario_id == current_user.id)
+    )
+    jogos_user = db.session.execute(pesquisa).all()
+
+    catalogo = [
+        {
+            'id': row.id,
+            'name': row.name,
+            'name_slug': row.name_slug,
+            'capa_url': row.capa_url,
+            'ano': row.ano,
+            'nota': row.nota,
+            'review': row.resenha,
+            'status': row.status
+        }
+        for row in jogos_user
+    ]
+
+    return jsonify(catalogo), 200
 
 # Retorna False ou dados do jogo (Se há ou não jogo na biblioteca do usuário)
 @app.route('/api/catalog/<jogo_id>')
@@ -362,7 +388,6 @@ def jogo_catalogo(jogo_id):
     except:
         return jsonify({'status': False}), 200
     
-    print(jogo.to_dict())
     return jsonify(jogo.to_dict()), 200
 
 # Adicionar Jogo a biblioteca
@@ -384,7 +409,7 @@ def add_jogo_catalogo():
     }), 200
 
 # Alterar Status Jogo da biblioteca usuario
-@app.route('/api/catalog/<jogo_id>', methods=['PUT'])
+@app.route('/api/catalog/<int:jogo_id>', methods=['PUT'])
 @login_required
 def change_status(jogo_id):
     new_status = request.get_json()['new_status']
@@ -430,7 +455,7 @@ def delete_game_collection(jogo_id):
         return jsonify({'error': 'Erro ao remover do catálogo.'}), 500
 
 # Valida e retorna avaliacao do usuario para um jogo
-@app.route('/api/catalog/<jogo_id>/avaliacao', methods=['GET'])
+@app.route('/api/catalog/avaliacao/<int:jogo_id>', methods=['GET'])
 @login_required
 def get_avaliacao_user(jogo_id):
     try:
@@ -442,10 +467,12 @@ def get_avaliacao_user(jogo_id):
     
     return jsonify(avaliacao.to_dict()), 200
 
-@app.route('/api/catalog/<jogo_id>/avaliacao', methods=['POST'])
+# Adiciona ou altera avaliação do usuario em um jogo
+@app.route('/api/catalog/avaliacao/<int:jogo_id>', methods=['POST'])
 @login_required
 def post_avaliacao_user(jogo_id):
     dados = request.get_json()['dados_avaliacao']
+
     if dados['nota'] == '':
         dados['nota'] = None 
 
