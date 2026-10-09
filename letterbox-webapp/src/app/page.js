@@ -37,7 +37,7 @@ export default function Home() {
             Avalie seus jogos preferidos.<br/>Salve aqueles que deseja jogar.<br/>Se divirta!
           </h1>
         </div>
-        <div id="tabela_jogos" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-2 w-full justify-items-center p-2">
+        <div id="tabela_jogos" className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-2 w-full justify-items-center p-2">
           {carregando ? (
             <p className="col-span-full text-center">Carregando jogos...</p>
           ) : (

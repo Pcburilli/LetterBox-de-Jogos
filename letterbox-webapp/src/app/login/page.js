@@ -26,8 +26,9 @@ export default function LoginPage() {
         router.refresh(); 
         router.replace('/perfil')
       }
-      else if (response.status === 404) {
+      else if (response.status === 401) {
         console.warn('Dados incorretos:', resultado);
+        alert('Dados incorretos ou não cadastrado.');
       }
     } catch (error) {
       console.error('Falha na conexão:', error);

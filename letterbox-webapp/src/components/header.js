@@ -41,6 +41,9 @@ export default function Header({ isLoggedIn }) {
             {isLoggedIn ? (
               <>
                 <nav className='flex gap-8'>
+                  <Link href="/" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                    INÍCIO
+                  </Link>
                   <Link href="/perfil" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
                     PERFIL
                   </Link>
@@ -66,6 +69,9 @@ export default function Header({ isLoggedIn }) {
                   </Link>
                   <Link href="/register" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
                     CRIAR CONTA
+                  </Link>
+                  <Link href="/" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                    INÍCIO
                   </Link>
                   <Link href="/games" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
                     GAMES
