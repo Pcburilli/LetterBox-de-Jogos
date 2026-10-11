@@ -6,16 +6,17 @@ import Statistics from '@/components/perfil/Statistics';
 import { useState, useEffect } from 'react';
 
 export default function PerfilPage() {
+  const [lenCatalogo, setLenCatalogo] = useState(null)
   
   return (
     <div className='w-full mt-8 gap-2'>
       <div className='w-full'>
-        <PerfilCard />
+        <PerfilCard lenCatalogo={lenCatalogo}/>
       </div>
 
       <div className='flex mb-2'>
         <div className='w-full md:w-9/12'>
-          <PerfilCatalog />
+          <PerfilCatalog setLenCatalogo={setLenCatalogo}/>
         </div>
         <div>
           <Statistics />

@@ -10,7 +10,7 @@ const icons_user = [
   '/icons_user/icon5.png'
 ]
 
-export default function PerfilCard() {
+export default function PerfilCard({lenCatalogo}) {
   const [dadosUsuario, setDadosUsuario] = useState(null);
   const [username, setUsername] = useState('');
   const [aba, setAba] = useState('hidden');
@@ -107,27 +107,35 @@ export default function PerfilCard() {
         </div>
       </div>
 
-      <div className="flex flex-col items-start gap-2">
-        <div className='flex flex-col gap-2'>
-          <input
-            type="text"
-            id="nome"
-            name="nome"
-            placeholder=" máx. 12 caract."
-            maxLength={12}
-            onChange={(e) => setUsername(e.target.value)}
-            value={username}
-            className="capitalize ml-1 pl-1.5 rounded bg-primary-900 text-white focus:outline-none max-w-32"
-          />
+      <div className='flex flex-row w-full'>
+        <div id='username' className="flex flex-col items gap-2">
+          <div className='flex flex-col gap-2'>
+            <input
+              type="text"
+              id="nome"
+              name="nome"
+              placeholder=" máx. 12 caract."
+              maxLength={12}
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
+              className="capitalize ml-1 pl-1.5 rounded bg-primary-900 text-white focus:outline-none max-w-32"
+            />
 
-          {podeAlterar && (
-            <button
-              onClick={alterarUsername}
-              className="bg-blue-600 hover:bg-blue-500 rounded transition cursor-pointer pl-1 pr-1"
-            >
-              Alterar Username
-            </button>
-          )}
+            {podeAlterar && (
+              <button
+                onClick={alterarUsername}
+                className="bg-blue-600 hover:bg-blue-500 rounded transition cursor-pointer pl-1 pr-1 text-nowrap"
+              >
+                Alterar Username
+              </button>
+            )}
+          </div>
+        </div>
+        <div id='info' className='flex w-full items-center justify-end p-2'>
+          <div className='flex flex-col items-center justify-center'>
+            <p className='w-max text-xl font-bold'>{lenCatalogo}</p>
+            <p className='text-xs w-max'>Jogos</p>
+          </div>
         </div>
       </div>
     </div>

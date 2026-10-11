@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ObterCatalogo } from '@/services/api';
 
-export default function PerfilCatalog() {
+export default function PerfilCatalog({setLenCatalogo}) {
   const [catalogo, setCatalogo] = useState(null)
   const [carregando, setCarregando] = useState(true)
   const [conteudo, setConteudo] = useState('Jogos')
@@ -11,7 +11,7 @@ export default function PerfilCatalog() {
   console.log(catalogo)
   useEffect(() => {
     ObterCatalogo()
-    .then(setCatalogo)
+    .then((dados) => {setCatalogo(dados), setLenCatalogo(dados.length)})
     .catch((error) => console.warn('Error:', error))
     .finally(setCarregando(false));
   }, []);
@@ -27,7 +27,7 @@ export default function PerfilCatalog() {
             <button onClick={() => setConteudo('Reviews')} className={`font-bold cursor-pointer hover:text-primary-100 ${conteudo === 'Reviews' ? 'text-primary-100' : 'text-primary-300'}`}>Reviews</button>
           </div>
           {conteudo === 'Jogos' && 
-            <>
+            <div className='w-full transition-all animate-fadeIn duration-300'>
               <div id='na_fila' className='w-full'>
                 <h1 className='font-bold text-xl ml-4'>Na Fila</h1>
                 <div className='flex items-center gap-2 p-2 w-full overflow-x-auto overflow-y-visible scrollbar-none snap-x snap-mandatory'>
@@ -72,23 +72,23 @@ export default function PerfilCatalog() {
                   ))}
                 </div>
               </div>
-            </>
+            </div>
           }
           {conteudo === 'Reviews' && 
-            <>
+            <div className='w-full transition-all animate-fadeIn duration-300'>
               {catalogo?.filter((jogo) => jogo.review && jogo.review.trim() !== '').map((jogo) => (
                 <div key={jogo.id} className='flex w-full h-fit gap-2 p-1 rounded-2xl'>
                   <img key={jogo?.capa_url} src={jogo?.capa_url} className='object-cover h-25 w-15 rounded-xl'/>
                   <div className='flex flex-col p-3 wrap-anywhere gap-2'>
                     <h1 className='font-bold text-xl'>{jogo?.name}</h1>
-                    {jogo?.nota ? (<div key={jogo?.nota} className='flex w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.nota}</div>) : null}
+                    {jogo?.nota ? (<div key={jogo?.nota} className='flex w-fit font-bold justify-center items-center'>☆ {jogo.nota}</div>) : null}
                     <p className="rounded-xl">
                       {jogo?.review}
                     </p>
                   </div>
                 </div>
               ))}
-            </>
+            </div>
           }
         </>
       )}
