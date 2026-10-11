@@ -1,10 +1,10 @@
 const API_BASE = 'http://localhost:5000/api';
 
-export async function adicionarAoCatalogo(idJogo) {
+export async function adicionarAoCatalogo(game_id) {
   const response = await fetch(`${API_BASE}/catalog/add`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ id_jogo: idJogo }),
+    body: JSON.stringify({ game_id: game_id }),
     credentials: 'include',
   });
   return response;
@@ -21,25 +21,25 @@ export async function ObterPerfil() {
   };
 
 export async function ObterJogos() {
-    const response = await fetch('http://localhost:5000/api/jogos');
+    const response = await fetch('http://localhost:5000/api/games/');
     const dados = await response.json();
     return dados
 }
 
 export async function ObterJogosSearch(search, page) {
-    const response = await fetch(`http://localhost:5000/api/jogos/search?q=${encodeURIComponent(search)}&page=${page}`);
+    const response = await fetch(`http://localhost:5000/api/games/search?q=${encodeURIComponent(search)}&page=${page}`);
     const dados = await response.json();
     return dados
 }
 
 export async function ObterJogo(nome) {
-    const response = await fetch(`http://localhost:5000/api/jogos/${nome}`);
+    const response = await fetch(`http://localhost:5000/api/games/${nome}`);
     const dados = await response.json();
     return dados
   };
 
 export async function ObterCatalogo() {
-    const response = await fetch('http://localhost:5000/api/catalog', {
+    const response = await fetch('http://localhost:5000/api/catalog/', {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json'},
@@ -70,8 +70,8 @@ export async function DeleteJogoCatalogo(idJogo) {
     return response
 }
 
-export async function AlterarStatusJogo(idJogo, new_status) {
-    const response = await fetch(`http://localhost:5000/api/catalog/${idJogo}`, {
+export async function AlterarStatusJogo(game_id, new_status) {
+    const response = await fetch(`http://localhost:5000/api/catalog/${game_id}`, {
         method: 'PUT',
         headers: {
         'Content-Type': 'application/json'},
@@ -81,8 +81,8 @@ export async function AlterarStatusJogo(idJogo, new_status) {
     return response
 }
 
-export async function VerificarAvaliacaoJogo(idJogo) {
-  const response = await fetch(`http://localhost:5000/api/catalog/avaliacao/${idJogo}`, {
+export async function VerificarAvaliacaoJogo(game_id) {
+  const response = await fetch(`http://localhost:5000/api/catalog/review/${game_id}`, {
         method: 'GET',
         headers: {
         'Content-Type': 'application/json'},
@@ -92,12 +92,12 @@ export async function VerificarAvaliacaoJogo(idJogo) {
     return dados
 }
 
-export async function AdicionarAvaliacaoJogo(idJogo, dados_avaliacao) {
-  const response = await fetch(`http://localhost:5000/api/catalog/avaliacao/${idJogo}`, {
+export async function AdicionarAvaliacaoJogo(game_id, review_data) {
+  const response = await fetch(`http://localhost:5000/api/catalog/review/${game_id}`, {
         method: 'POST',
         headers: {
         'Content-Type': 'application/json'},
-        body: JSON.stringify({ dados_avaliacao: dados_avaliacao }),
+        body: JSON.stringify({ review_data: review_data }),
         credentials: 'include'
       })
     return response

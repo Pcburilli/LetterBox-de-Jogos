@@ -33,8 +33,8 @@ export default function PerfilCatalog({setLenCatalogo}) {
                 <div className='flex items-center gap-2 p-2 w-full overflow-x-auto overflow-y-visible scrollbar-none snap-x snap-mandatory'>
                   {catalogo?.filter((jogo) => jogo.status === 'Na Fila').map((jogo) => (
                       <a key={jogo?.id} href={`/games/${jogo?.name_slug}`} className='relative shrink-0 snap-start transition-transform hover:scale-105 focus:outline-none'>
-                        <img key={jogo?.capa_url} src={jogo?.capa_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
-                        {jogo?.nota ? (<div key={jogo?.nota} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.nota}</div>) : null}
+                        <img key={jogo?.cover_url} src={jogo?.cover_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
+                        {jogo?.rate ? (<div key={jogo?.rate} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.rate}</div>) : null}
                       </a>
                   ))}
                 </div>
@@ -44,8 +44,8 @@ export default function PerfilCatalog({setLenCatalogo}) {
                 <div className='flex items-center gap-2 overflow-x-auto overflow-y-visible scrollbar-none p-2 w-full snap-x snap-mandatory'>
                   {catalogo?.filter((jogo) => jogo.status === 'Jogando').map((jogo) => (
                       <a key={jogo?.id} href={`/games/${jogo?.name_slug}`} className='relative shrink-0 snap-start transition-transform hover:scale-105 focus:outline-none'>
-                        <img key={jogo?.capa_url} src={jogo?.capa_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
-                        {jogo?.nota ? (<div key={jogo?.nota} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.nota}</div>) : null}
+                        <img key={jogo?.cover_url} src={jogo?.cover_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
+                        {jogo?.rate ? (<div key={jogo?.rate} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.rate}</div>) : null}
                       </a>
                   ))}
                 </div>
@@ -55,8 +55,8 @@ export default function PerfilCatalog({setLenCatalogo}) {
                 <div className='flex items-center gap-2 overflow-x-auto overflow-y-visible scrollbar-none p-2 w-full snap-x snap-mandatory'>
                   {catalogo?.filter((jogo) => jogo.status === 'Zerado').map((jogo) => (
                       <a key={jogo?.id} href={`/games/${jogo?.name_slug}`} className='relative shrink-0 snap-start transition-transform hover:scale-105 focus:outline-none'>
-                        <img key={jogo?.capa_url} src={jogo?.capa_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
-                        {jogo?.nota ? (<div key={jogo?.nota} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.nota}</div>) : null}
+                        <img key={jogo?.cover_url} src={jogo?.cover_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
+                        {jogo?.rate ? (<div key={jogo?.rate} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.rate}</div>) : null}
                       </a>
                   ))}
                 </div>
@@ -66,8 +66,8 @@ export default function PerfilCatalog({setLenCatalogo}) {
                 <div className='flex items-center gap-2 overflow-x-auto overflow-y-visible scrollbar-none p-2 w-full snap-x snap-mandatory'>
                   {catalogo?.filter((jogo) => jogo.status === 'Abandonado').map((jogo) => (
                       <a key={jogo?.id} href={`/games/${jogo?.name_slug}`} className='relative shrink-0 snap-start transition-transform hover:scale-105 focus:outline-none'>
-                        <img key={jogo?.capa_url} src={jogo?.capa_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
-                        {jogo?.nota ? (<div key={jogo?.nota} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.nota}</div>) : null}
+                        <img key={jogo?.cover_url} src={jogo?.cover_url} className='object-cover h-45 w-30 md:h-50 md:w-35 rounded-xl'/>
+                        {jogo?.rate ? (<div key={jogo?.rate} className='flex absolute right-0 top-0 mr-2 mt-2 w-7 h-7 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{jogo.rate}</div>) : null}
                       </a>
                   ))}
                 </div>
@@ -78,10 +78,10 @@ export default function PerfilCatalog({setLenCatalogo}) {
             <div className='w-full transition-all animate-fadeIn duration-300'>
               {catalogo?.filter((jogo) => jogo.review && jogo.review.trim() !== '').map((jogo) => (
                 <div key={jogo.id} className='flex w-full h-fit gap-2 p-1 rounded-2xl'>
-                  <img key={jogo?.capa_url} src={jogo?.capa_url} className='object-cover h-25 w-15 rounded-xl'/>
+                  <img key={jogo?.cover_url} src={jogo?.cover_url} className='object-cover h-25 w-15 rounded-xl'/>
                   <div className='flex flex-col p-3 wrap-anywhere gap-2'>
                     <h1 className='font-bold text-xl'>{jogo?.name}</h1>
-                    {jogo?.nota ? (<div key={jogo?.nota} className='flex w-fit font-bold justify-center items-center'>☆ {jogo.nota}</div>) : null}
+                    {jogo?.rate ? (<div key={jogo?.rate} className='flex w-fit font-bold justify-center items-center'>☆ {jogo.rate}</div>) : null}
                     <p className="rounded-xl">
                       {jogo?.review}
                     </p>

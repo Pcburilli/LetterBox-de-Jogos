@@ -19,7 +19,7 @@ export async function middleware(request) {
 
     if (pathname.startsWith('/admin')) {
         if (!token) {
-            return NextResponse.redirect(new URL('/login', request.url))
+            return NextResponse.redirect(new URL('/', request.url))
         }
         try {
             const response = await fetch('http://localhost:5000/api/auth/admin', {
@@ -32,19 +32,19 @@ export async function middleware(request) {
 
             if (!response.ok) {
                 console.log('Acesso negado pelo Flask:', response.status);
-                return NextResponse.redirect(new URL('/perfil', request.url));
+                return NextResponse.redirect(new URL('/', request.url));
             }
 
         } catch (error) {
             console.error('Erro:', error);
-            return NextResponse.redirect(new URL('/perfil', request.url));
+            return NextResponse.redirect(new URL('/', request.url));
         }
-    } // Se acessar o camnho /admin sem Login redireicona para /login. Se acessar logado, mas não for admin, redireciona para /perfil
+    } // Se acessar o camnho /admin sem Login redireicona para /. Se acessar logado, mas não for admin, redireciona para /
     
     return NextResponse.next();
 }
 
 // Configuração para interceptar as rotas
 export const config = {
-    matcher: ['/menu/:path*', '/login', '/register', '/perfil', '/admin/:path*'],
+    matcher: ['/menu/:path*', '/login', '/register', '/perfil', '/search', '/admin/:path*'],
 };
