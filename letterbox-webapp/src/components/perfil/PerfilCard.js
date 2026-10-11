@@ -21,7 +21,7 @@ export default function PerfilCard({lenCatalogo}) {
     .then((dados) => {
       setDadosUsuario(dados);
       setUsername(dados.username || '');
-      setIcon(dados.icone_url || null);
+      setIcon(dados.icon_url || null);
     })
     .catch((error) => console.error('Deu ruim ao carregar perfil:', error));
   }, []);
@@ -32,7 +32,7 @@ export default function PerfilCard({lenCatalogo}) {
     if (!username.trim() || username === dadosUsuario?.username) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/register/username', {
+      const response = await fetch('http://localhost:5000/api/auth/register/username', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: username.trim() }),
@@ -57,10 +57,10 @@ export default function PerfilCard({lenCatalogo}) {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/register/icon', {
+      const response = await fetch('http://localhost:5000/api/auth/register/icon', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ icone_url: icon }),
+        body: JSON.stringify({ icon_url: icon }),
         credentials: 'include'
       });
 

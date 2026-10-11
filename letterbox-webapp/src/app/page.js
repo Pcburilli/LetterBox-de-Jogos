@@ -7,6 +7,7 @@ export default function Home() {
   const [jogosTotal, setJogosTotal] = useState([]);
   const [jogosLimite, setJogosLimite] = useState(0);
   const [carregando, setCarregando] = useState(true);
+  console.log(jogosTotal)
 
   useEffect(() => {
     ObterJogos()
@@ -29,7 +30,7 @@ export default function Home() {
   return (
     <main className="home-page">
       <div className="flex flex-col items-center">
-        <div className="w-full h-80 md:h-128 bg-cover bg-center bg-no-repeat rounded-4xl flex flex-col justify-end pb-8 relative" style={{ backgroundImage: `url(${jogosTotal?.[jogosTotal?.length -1]?.['img_url']})`}}>
+        <div className="w-full h-80 md:h-128 bg-cover bg-center bg-no-repeat rounded-4xl flex flex-col justify-end pb-8 relative" style={{ backgroundImage: `url(${jogosTotal?.[jogosTotal?.length -1]?.['cover_url']})`}}>
           <div className="absolute inset-0 bg-linear-to-t from-primary-900 via-slate-950/1 justify-end pb-8 px-4"></div>
           <div className="absolute inset-0 bg-linear-to-r from-primary-900 via-slate-950/1 justify-end pb-8 px-4"></div>
           <div className="absolute inset-0 bg-linear-to-l from-primary-900 via-slate-950/1 justify-end pb-8 px-4"></div>
@@ -43,9 +44,14 @@ export default function Home() {
           ) : (
             jogosTotal.slice(0,jogosLimite)?.map((jogo) => (
               <div key={jogo?.id || jogo?.name} className="w-full flex flex-col items-center bg-primary-900 rounded-3xl">
-                <a href={`/games/${jogo?.name_slug}`}>
+                <a href={`/games/${jogo?.name_slug}`} className='relative'>
+                  <div className='absolute opacity-0 hover:opacity-100 flex items-end justify-center bg-primary-900/50 border-2 border-primary-300 left-0 top-0 w-full h-full object-cover rounded-3xl text-center transition-opacity'>
+                    <div>
+                      <p className='p-2 font-semibold text-xl'>{jogo.name}</p>
+                    </div>
+                  </div>
                   <img
-                    src={jogo?.img_url} 
+                    src={jogo?.cover_url} 
                     alt={jogo?.name}
                     className="w-60 md:w-100 h-48 object-cover rounded-3xl"
                   />

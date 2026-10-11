@@ -70,7 +70,7 @@ export default function SearchGame() {
                         </div>
                       </div>
                       <img
-                        src={jogo?.img_url} 
+                        src={jogo?.cover_url} 
                         alt={jogo?.name} 
                         className="w-full h-48 object-cover rounded-3xl"
                       />

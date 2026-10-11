@@ -56,7 +56,7 @@ export default function AdminPage() {
       const jogo_response = await PesquisarJogoID(jogo.id)
       console.log('Dados do Jogo obtidos do RAWG:', jogo_response);
 
-      const response = await fetch('http://localhost:5000/api/jogos', {
+      const response = await fetch('http://localhost:5000/api/games/', {
         method:'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -98,7 +98,7 @@ export default function AdminPage() {
     }
 
     try {
-    const response = await fetch(`http://localhost:5000/api/jogos/${jogo_deletado.id}`, {
+    const response = await fetch(`http://localhost:5000/api/games/${jogo_deletado.id}`, {
       method:'DELETE',
       credentials: 'include'
     });
@@ -126,7 +126,7 @@ export default function AdminPage() {
 
   const BuscarJogos = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/jogos');
+    const response = await fetch('http://localhost:5000/api/games/');
 
     if (response.ok) {
       const dados = await response.json();

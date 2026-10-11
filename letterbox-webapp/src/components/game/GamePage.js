@@ -37,7 +37,7 @@ export default function GamePage({ isLoggedIn }) {
 
         VerificarAvaliacaoJogo(dadosJogo.id)
         .then((dados_avaliacao) => {
-            setNota(dados_avaliacao['nota'])
+            setNota(dados_avaliacao['rate'])
         })
         .catch((error) => console.error('Erro na busca nota:', error));
       }
@@ -134,7 +134,7 @@ export default function GamePage({ isLoggedIn }) {
     <div>
       <div className='flex flex-col mt-8 mb-2 gap-8 md:flex-row'>
         <div id='lateral' className='grow-2 flex flex-col items-center md:min-w-90 md:max-w-90 h-fit gap-2'>
-          <div className='relative h-130 w-full center bg-cover bg-center bg-no-repeat md:w-full rounded-2xl' style={{ backgroundImage: `url(${jogo?.img_url})`}}>
+          <div className='relative h-130 w-full center bg-cover bg-center bg-no-repeat md:w-full rounded-2xl' style={{ backgroundImage: `url(${jogo?.cover_url})`}}>
             {nota ? (<div className='flex absolute right-0 top-0 mr-5 mt-5 w-10 h-10 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{nota}</div>) : null}
           </div>
           {isLoggedIn ? (
@@ -166,7 +166,7 @@ export default function GamePage({ isLoggedIn }) {
           <h1 className='text-4xl font-bold'>{jogo?.name}</h1>
           <p className='text-2xl text-primary-200'>{jogo?.ano}</p>
           <div className='w-full h-fit rounded-2xl grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2'>
-            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 '>Nota</div>
+            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200'>Nota</div>
             {status_names.map((st) => (
               <div key={st} className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 ' onClick={() => setStatusJogo(st)}>{st}</div>
             ))}
@@ -175,7 +175,7 @@ export default function GamePage({ isLoggedIn }) {
           <div className='bg-primary-600 h-fit p-3 rounded-2xl'>
             <h2 className='text-primary-200 font-bold text-2xl mt-2'>Desenvolvedores</h2>
             <div className='grid grid-cols-2'>
-              {jogo?.desenvolvedores?.map((dev) => (
+              {jogo?.developers?.map((dev) => (
                 <p key={dev}>{dev}</p>
               ))}
             </div>

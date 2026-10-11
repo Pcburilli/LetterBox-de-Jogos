@@ -16,9 +16,9 @@ export default function CustomInfoWindow({ jogo, windowEdit, setWindowEdit, setN
     useEffect(() => {
         VerificarAvaliacaoJogo(jogo.id)
         .then((dados_avaliacao) => {
-            setAvaliacaoOriginal({nota: dados_avaliacao['nota'] || '', review: dados_avaliacao['resenha']})
-            setNotaSelecionada(String(dados_avaliacao['nota'] || ''));
-            setReview(dados_avaliacao['resenha'] || '')
+            setAvaliacaoOriginal({nota: dados_avaliacao['rate'] || '', review: dados_avaliacao['resenha']})
+            setNotaSelecionada(String(dados_avaliacao['rate'] || ''));
+            setReview(dados_avaliacao['review'] || '')
         })
       }, []);
 
