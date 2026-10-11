@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash, jsonify, make_response
+from flask import Flask, request, jsonify, make_response
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_cors import CORS
@@ -179,6 +179,30 @@ def listar_jogos():
     jogos = db.session.scalars(db.select(Jogos)).all()
     jogos_dict = [u.to_dict() for u in jogos]
     return jsonify(jogos_dict), 200
+
+# Obter jogos via search (query string)
+@app.route('/api/jogos/search')
+def listar_jogos_search():
+    termo = request.args.get('q', '').strip()
+    page = request.args.get('page', default=1, type=int)
+
+    jogos = db.select(Jogos)
+
+    if termo:
+        jogos = jogos.where(Jogos.name.ilike(f'%{termo}%'))
+
+    paginacao = db.paginate(
+            select=jogos,
+            page=page,
+            per_page=8,
+            error_out=False
+        )
+    jogos_dict = [j.to_dict() for j in paginacao.items]
+
+    return jsonify({
+        'games': jogos_dict,
+        'total_paginas': paginacao.pages
+    }), 200
 
 # Obter jogo via slug
 @app.route('/api/jogos/<name_slug>')

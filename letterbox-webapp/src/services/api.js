@@ -26,6 +26,12 @@ export async function ObterJogos() {
     return dados
 }
 
+export async function ObterJogosSearch(search, page) {
+    const response = await fetch(`http://localhost:5000/api/jogos/search?q=${encodeURIComponent(search)}&page=${page}`);
+    const dados = await response.json();
+    return dados
+}
+
 export async function ObterJogo(nome) {
     const response = await fetch(`http://localhost:5000/api/jogos/${nome}`);
     const dados = await response.json();
