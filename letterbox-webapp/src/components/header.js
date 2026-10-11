@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 export default function Header({ isLoggedIn }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
+  const [search, setSearch] = useState('')
+  console.log(search)
 
   const Logout = async (e) => {
     e?.preventDefault();
@@ -26,6 +28,12 @@ export default function Header({ isLoggedIn }) {
     }
   };
 
+  const SearchGame = (e) => {
+    e.preventDefault();
+    
+    router.replace(`/search?q=${encodeURIComponent(search.trim())}&page=1`);
+  }
+
   return (
     <header className="w-full bg-primary-900 sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,57 +45,67 @@ export default function Header({ isLoggedIn }) {
               </div>
             </a>
           </div>
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex md:ml-auto md:mr-8 items-center gap-8">
             {isLoggedIn ? (
               <>
                 <nav className='flex gap-8'>
-                  <Link href="/" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                  <Link href="/" className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
                     INÍCIO
                   </Link>
-                  <Link href="/perfil" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                  <Link href="/perfil" className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
                     PERFIL
                   </Link>
-                  <Link href="/games" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                  <Link href="/games" className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
                     GAMES
                   </Link>
                 </nav>
-                <div className="w-35 h-7 bg-amber-200 rounded-4xl grid place-items-end">
-                  <div className='bg-green-300 h-7 w-7 rounded-r-2xl'></div>
-                </div>
-                <button
-                  onClick={Logout}
-                  className="px-5 py-2 text-sm font-semibold text-primary-900 bg-primary-500 hover:bg-primary-700 rounded-lg shadow-sm transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-700 focus:ring-offset-2 focus:ring-offset-primary-900 cursor-pointer"
-                >
-                  SAIR
-                </button>
               </>
             ) : (
               <>
                 <nav className='flex gap-8'>
-                  <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                  <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-primary-100 transition-colors">
                     LOGIN
                   </Link>
-                  <Link href="/register" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                  <Link href="/register" className="text-sm font-medium text-slate-300 hover:text-primary-100 transition-colors">
                     CRIAR CONTA
                   </Link>
-                  <Link href="/" className="text-sm font-medium text-primary-200 hover:text-white transition-colors">
+                  <Link href="/" className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
                     INÍCIO
                   </Link>
-                  <Link href="/games" className="text-sm font-medium text-slate-300 hover:text-white transition-colors">
+                  <Link href="/games" className="text-sm font-medium text-slate-300 hover:text-primary-100 transition-colors">
                     GAMES
                   </Link>
                 </nav>
-                <div className="w-35 h-7 bg-amber-200 rounded-4xl grid place-items-end">
-                  <div className='bg-green-300 h-7 w-7 rounded-r-2xl'></div>
-                </div>
               </>
             )}
           </div>
 
+          <form id='search' onSubmit={SearchGame} className='flex mr-4 md:mr-0 ml-auto md:ml-0 items-center w-35 h-8 bg-primary-700 rounded-2xl focus-within:ring-2 focus-within:ring-primary-500 transition-all'>
+            <input 
+              type="text"
+              onChange={(e) => setSearch(e.target.value)}
+              className='w-full pl-3 pr-1 text-xs text-primary-100 placeholder:text-primary-300 bg-transparent focus:outline-none'
+            />
+            <button 
+              type="submit" 
+              className='flex items-center justify-center w-8 h-full text-primary-300 hover:text-white rounded-r-2xl cursor-pointer transition-colors shrink-0'
+            >
+              🔍︎
+            </button>
+          </form>
+          {isLoggedIn && (
+            <button
+              onClick={Logout}
+              className="hidden md:flex px-5 py-2 ml-8 text-sm font-semibold text-primary-900 bg-primary-700 hover:bg-red-900 rounded-lg transition-all focus:ring-2 cursor-pointer"
+            >
+              SAIR
+            </button>
+          )}
+
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-slate-400 hover:text-white focus:outline-none p-2 rounded-md"
+              className="text-slate-400 hover:text-primary-100 focus:outline-none p-2 rounded-md cursor-pointer"
               aria-label="Abrir menu"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,14 +127,14 @@ export default function Header({ isLoggedIn }) {
               <Link
                 href="/perfil"
                 onClick={() => setIsMenuOpen(false)}
-                className="block text-slate-300 hover:text-white py-1 text-base font-medium"
+                className="block text-slate-300 hover:text-primary-100 py-1 text-base font-medium"
                 >
                 PERFIL
               </Link>
               <Link
                 href="/games"
                 onClick={() => setIsMenuOpen(false)}
-                className="block text-slate-300 hover:text-white py-1 text-base font-medium"
+                className="block text-slate-300 hover:text-primary-100 py-1 text-base font-medium"
                 >
                 GAMES
               </Link>
@@ -126,21 +144,21 @@ export default function Header({ isLoggedIn }) {
               <Link
                 href="/login"
                 onClick={() => setIsMenuOpen(false)}
-                className="block text-slate-300 hover:text-white py-1 text-base font-medium"
+                className="block text-slate-300 hover:text-primary-100 py-1 text-base font-medium"
                 >
                 LOGIN
               </Link>
               <Link
                 href="/register"
                 onClick={() => setIsMenuOpen(false)}
-                className="block text-slate-300 hover:text-white py-1 text-base font-medium"
+                className="block text-slate-300 hover:text-primary-100 py-1 text-base font-medium"
                 >
                 CRIAR CONTA
               </Link>
               <Link
                 href="/games"
                 onClick={() => setIsMenuOpen(false)}
-                className="block text-slate-300 hover:text-white py-1 text-base font-medium"
+                className="block text-slate-300 hover:text-primary-100 py-1 text-base font-medium"
                 >
                 GAMES
               </Link>
@@ -153,7 +171,7 @@ export default function Header({ isLoggedIn }) {
                   setIsMenuOpen(false);
                   Logout(e);
                 }}
-                className="block w-full text-center px-4 py-2 text-sm font-semibold text-primary-900 bg-primary-500 hover:bg-primary-700 rounded-lg transition-colors cursor-pointer"
+                className="block w-full text-center px-4 py-2 text-sm font-semibold text-primary-900 bg-primary-700 hover:bg-red-900 transition-all rounded-lg cursor-pointer"
                 >
                 Sair
               </button>
