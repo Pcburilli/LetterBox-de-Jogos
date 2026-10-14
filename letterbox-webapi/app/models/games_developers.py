@@ -1,7 +1,7 @@
 from app import db
 
-class Developers(db.Model):
-    __tablename__ = 'developers'
+class Games_Developers(db.Model):
+    __tablename__ = 'games_developers'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text, nullable=False)
