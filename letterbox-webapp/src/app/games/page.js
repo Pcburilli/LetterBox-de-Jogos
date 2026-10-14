@@ -1,24 +1,63 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { ObterJogos } from '@/services/api';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+import { FiltersGames } from '@/services/api';
+import GamesFilter from '@/components/game/GamesFilter';
 
 export default function GamesPage() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const page = parseInt(searchParams.get('page') || '1', 10);
+  const genres = searchParams.get('genres') || '';
+  const tags = searchParams.get('tags') || '';
+  const developer = searchParams.get('developer') || '';
+
+  const filters = `genres=${genres}&tags=${tags}&developer=${developer}`
+
   const [jogos, setJogos] = useState([]);
+  const [totalPage, setTotalPage] = useState([])
   const [carregando, setCarregando] = useState(true);
   
   useEffect(() => {
-    ObterJogos()
-    .then(setJogos)
+    FiltersGames(filters, page)
+    .then((dados) => {setJogos(dados.games), setTotalPage(PagList(dados['total_page']))})
     .catch((error) => console.error('Erro ao buscar jogos:', error))
-    .finally(setCarregando(false));
-  }, []);
+    .finally(() => setCarregando(false));
+  }, [filters, page]);
+
+  const TrocarPag = (NewPage) => {
+    const params = new URLSearchParams(searchParams.toString());
+
+    params.set('page', NewPage.toString());
+
+    router.replace(`/games?${params.toString()}`);
+
+  }
+
+  const PagList = (total) => {
+    let resultado = []
+    for (let p = 1; p <= total; p++) {
+      resultado.push(p)
+    }
+    return resultado
+  }
+
+  const [filterVisibility, setFilterVisibility] = useState(false)
 
   return (
-    <div id="div_principal" className="w-full max-w-6xl mx-auto">
-      <div className="flex flex-col items-center">
-        <div id="tabela_jogos" className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 gap-4 w-full justify-items-center p-2">
+    <div id="div_principal" className="flex flex-col md:flex-row w-full max-w-6xl mx-auto mt-2 md:mt-8 gap-2">
+      <div id='filter' className='w-full h-fit md:max-w-60 bg-primary-800 rounded-2xl p-3'>
+        <button className='w-full h-8 bg-primary-700 hover:bg-primary-500 rounded-2xl md:hidden cursor-pointer' onClick={() => setFilterVisibility(prev => !prev)}>Filtros</button>
+        <div className={`${filterVisibility ? 'block' : 'hidden'} md:grid`}>
+          <GamesFilter/>
+        </div>
+      </div>
+
+      <div id="tabela_jogos" className="flex flex-col items-center">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-3 gap-4 w-full justify-items-center">
           {carregando ? (
             <p className="col-span-full text-center">Carregando jogos...</p>
           ) : (
@@ -40,7 +79,14 @@ export default function GamesPage() {
             ))
           )}
         </div>
+
+        <div className='flex justify-center gap-3'>
+          {totalPage?.map((pag) => (
+            <button key={pag} onClick={() => TrocarPag(pag)} className='text-2xl cursor-pointer text-primary-300 hover:text-primary-200'>●</button>
+          ))}
+        </div>
       </div>
+
     </div>
   );
 };
