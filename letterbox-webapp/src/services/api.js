@@ -38,6 +38,12 @@ export async function ObterJogo(nome) {
     return dados
   };
 
+export async function ObterJogoInfo(nome) {
+    const response = await fetch(`http://localhost:5000/api/games/${nome}/statistics`);
+    const dados = await response.json();
+    return dados
+  };
+
 export async function ObterCatalogo() {
     const response = await fetch('http://localhost:5000/api/catalog/', {
         method: 'GET',
@@ -101,4 +107,47 @@ export async function AdicionarAvaliacaoJogo(game_id, review_data) {
         credentials: 'include'
       })
     return response
+}
+
+export async function ObterGenres() {
+  const response = await fetch('http://localhost:5000/api/games/genres', {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json'},
+      })
+
+    const dados = await response.json();
+    return dados
+}
+
+export async function ObterTags() {
+  const response = await fetch('http://localhost:5000/api/games/tags', {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json'},
+      })
+
+    const dados = await response.json();
+    return dados
+}
+
+export async function ObterDevs() {
+  const response = await fetch('http://localhost:5000/api/games/developers', {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json'},
+      })
+
+    const dados = await response.json();
+    return dados
+}
+export async function FiltersGames(filters, page) {
+  const response = await fetch(`http://localhost:5000/api/games/filters?${filters}&page=${page}`, {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json'},
+      })
+
+    const dados = await response.json();
+    return dados
 }
