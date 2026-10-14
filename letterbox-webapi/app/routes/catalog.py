@@ -107,18 +107,28 @@ def delete_game_catalog(game_id):
         ).scalar_one_or_none()
 
         if not catalog_game and not rating:
-            return jsonify({'Jogo ou avaliação não encontrados na sua biblioteca.'}), 404
+            return jsonify({
+                "status": "error",
+                "message": "Jogo ou avaliação não encontrados na sua biblioteca."
+            }), 404
         if catalog_game:
             db.session.delete(catalog_game)
         if rating:
             db.session.delete(rating)
 
         db.session.commit()
-        return jsonify({'Jogo e avaliação removidos com sucesso!'}), 200
+        return jsonify({
+            "status": "success",
+            "message": "Jogo e avaliação removidos com sucesso!"
+        }), 200
 
-    except:
+    except Exception as e:
         db.session.rollback()
-        return jsonify({'error': 'Erro ao remover do catálogo.'}), 500
+        return jsonify({
+            "status": "error",
+            "message": "Erro ao remover o item do catálogo.",
+            "details": str(e)
+        }), 500
 
 # Valida e retorna avaliacao do usuario para um jogo
 @catalog_bp.route('/review/<int:game_id>', methods=['GET'])
