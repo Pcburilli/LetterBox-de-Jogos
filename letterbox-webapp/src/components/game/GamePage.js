@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation'
-import { ObterJogo, adicionarAoCatalogo, VerificarJogoCatalogo, AlterarStatusJogo, DeleteJogoCatalogo, VerificarAvaliacaoJogo } from '@/services/api';
+import { ObterJogo, ObterJogoInfo, adicionarAoCatalogo, VerificarJogoCatalogo, AlterarStatusJogo, DeleteJogoCatalogo, VerificarAvaliacaoJogo } from '@/services/api';
 import CustomInfoWindow from '@/components/game/CustomInfoWindow';
 
 const status_names = ['Na Fila', 'Jogando', 'Zerado', 'Abandonado']
@@ -10,6 +10,17 @@ const status_names = ['Na Fila', 'Jogando', 'Zerado', 'Abandonado']
 export default function GamePage({ isLoggedIn }) {
   const pathname = usePathname().slice(7)
   const [jogo, setJogo] = useState(null)
+
+  // estatisticas sobre o jogo
+  const [infoGame, setInfoGame] = useState(null)
+
+  const infoNota = infoGame?.media_rate ?? 0;
+  const infoReviews = infoGame?.quantity_review ?? 0;
+  const infoFila = infoGame?.na_fila ?? 0;
+  const infoJogando = infoGame?.jogando ?? 0;
+  const infoZerado = infoGame?.zerado ?? 0;
+  const infoAbandonado = infoGame?.abandonado ?? 0;
+
   // STATUS
   const [statusJogo, setStatusJogo] = useState(null)
   const [statusJogoOriginal, setStatusJogoOriginal] = useState(null)
@@ -17,7 +28,7 @@ export default function GamePage({ isLoggedIn }) {
   // Three Points
   const [windowThreePoints, setWindowThreePoints] = useState('hidden')
   // TAGS
-  const [lenTags, setLenTags] = useState(5)
+  const [lenTags, setLenTags] = useState(3)
   const [buttonTags, setButtonTags] = useState('+')
   // Edit
   const [windowEdit, setWindowEdit] = useState('hidden')
@@ -43,6 +54,10 @@ export default function GamePage({ isLoggedIn }) {
       }
     })
     .catch((error) => console.error('Erro ao buscar jogo:', error));
+
+    ObterJogoInfo(pathname).then((dados) => {
+      setInfoGame(dados);
+    }).catch((error) => console.error('Erro ao buscar info jogo:', error))
   }, [pathname]);
 
   const AdicionarJogo = async (e) => {
@@ -60,7 +75,7 @@ export default function GamePage({ isLoggedIn }) {
     } catch (error) {
       console.error('Falha na conexão:', error);
     } finally {
-      VerificarJogoCatalogo(jogo.id).then((dados) => setStatusJogo(dados.status))
+      VerificarJogoCatalogo(jogo.id).then((dados) => setStatusJogo(dados.status));
     }
   };
 
@@ -97,7 +112,7 @@ export default function GamePage({ isLoggedIn }) {
     } catch (error) {
       console.error('Falha na conexão:', error);
     } finally {
-      VerificarJogoCatalogo(jogo.id).then((dados) => setStatusJogo(dados.status))
+      VerificarJogoCatalogo(jogo.id).then((dados) => setStatusJogo(dados.status));
     }
   }
 
@@ -106,7 +121,7 @@ export default function GamePage({ isLoggedIn }) {
       setLenTags(jogo.tags.length)
       setButtonTags('-')
     } else {
-      setLenTags(5)
+      setLenTags(3)
       setButtonTags('+')
     }
   }
@@ -164,13 +179,32 @@ export default function GamePage({ isLoggedIn }) {
         </div>
         <div id='principal' className='flex flex-col grow-2 h-fit gap-2'>
           <h1 className='text-4xl font-bold'>{jogo?.name}</h1>
-          <p className='text-2xl text-primary-200'>{jogo?.ano}</p>
+          <p className='text-2xl text-primary-200'>{jogo?.year}</p>
           <div className='w-full h-fit rounded-2xl grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2'>
-            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200'>Nota</div>
-            {status_names.map((st) => (
-              <div key={st} className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 ' onClick={() => setStatusJogo(st)}>{st}</div>
-            ))}
-            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200'>Reviews</div>
+            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
+              <p>{infoNota}</p>
+              <p>Nota</p>
+            </div>
+            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
+              <p>{infoFila}</p>
+              <p>Na Fila</p>
+            </div>
+            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
+              <p>{infoJogando}</p>
+              <p>Jogando</p>
+            </div>
+            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
+              <p>{infoZerado}</p>
+              <p>Zerado</p>
+            </div>
+            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
+              <p>{infoAbandonado}</p>
+              <p>Abandonado</p>
+            </div>
+            <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
+              <p>{infoReviews}</p>
+              <p>Reviews</p>
+            </div>
           </div>
           <div className='bg-primary-600 h-fit p-3 rounded-2xl'>
             <h2 className='text-primary-200 font-bold text-2xl mt-2'>Desenvolvedores</h2>
@@ -182,6 +216,9 @@ export default function GamePage({ isLoggedIn }) {
           </div>
           <h2 className='font-bold text-2xl'>Tags</h2>
           <div className='flex flex-wrap gap-2 justify-normal'>
+            {jogo?.genres?.map((genre) => (
+              <p key={genre} className='border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200'>{genre}</p>
+            ))}
             {jogo?.tags?.slice(0,lenTags).map((tag) => (
               <p key={tag} className='border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200'>{tag}</p>
             ))}
