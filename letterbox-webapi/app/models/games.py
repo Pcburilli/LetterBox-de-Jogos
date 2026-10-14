@@ -10,10 +10,11 @@ class Games(db.Model):
     description = db.Column(db.Text, nullable=True)
 
     users_game = db.relationship('Games_Users', backref='games', lazy=True, cascade="all, delete-orphan")
-    developers = db.relationship('Games_Developers', backref='games', lazy=True, cascade="all, delete-orphan")
-    tags = db.relationship('Games_Tags', backref='games', lazy=True, cascade="all, delete-orphan")
-    genres = db.relationship('Games_Genres', backref='games', lazy=True, cascade="all, delete-orphan")
     reviews = db.relationship('Reviews', backref='games', lazy=True, cascade="all, delete-orphan")
+    
+    developers = db.relationship('Developers', secondary='games_developers', lazy='subquery', backref=db.backref('games', lazy=True))
+    tags = db.relationship('Tags', secondary='games_tags', lazy='subquery', backref=db.backref('games', lazy=True))
+    genres = db.relationship('Genres', secondary='games_genres', lazy='subquery', backref=db.backref('games', lazy=True))
 
     def to_dict(self):
         return {
@@ -23,7 +24,7 @@ class Games(db.Model):
             'year': self.year,
             'cover_url': self.cover_url,
             'description': self.description,
-            'tags': [t.tag for t in self.tags],
-            'genres': [t.genre for t in self.genres],
+            'tags': [t.name for t in self.tags],
+            'genres': [g.name for g in self.genres],
             'developers': [d.name for d in self.developers]
         }

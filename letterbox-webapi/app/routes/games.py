@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models import Games, Games_Tags, Games_Developers, Games_Genres, Reviews, Games_Users
+from app.models import Games, Reviews, Games_Users, Tags, Developers, Genres
 from flask_login import login_required
 from app.utils.decorators import admin_required
 from sqlalchemy import func, case
@@ -52,14 +52,14 @@ def get_games_filters():
         for genre_param in genres_param:
             genre_clean = genre_param.strip()
             if genre_clean:
-                games = games.where(Games.genres.any(Games_Genres.genre.ilike(f'%{genre_clean}%')))
+                games = games.join(Games.genres).where(Genres.name.ilike(f'%{genre_clean}%'))
     if tags_param:
         for tag_param in tags_param:
             tag_clean = tag_param.strip()
             if tag_clean:
-                games = games.where(Games.tags.any(Games_Tags.tag.ilike(f'%{tag_clean}%')))
+                games = games.join(Games.tags).where(Tags.name.ilike(f'%{tag_clean}%'))
     if dev_param:
-        games = games.where(Games.developers.any(Games_Developers.name.ilike(f'%{dev_param}%')))
+        games = games.where(Games.developers).where(Developers.name.ilike(f'%{dev_param}%'))
 
     pagination = db.paginate(
             select=games,
@@ -121,19 +121,19 @@ def get_game_info(name_slug):
 # Obter genres 
 @games_bp.route('genres', methods=['GET'])
 def get_genres():
-    genres = db.session.scalars(db.select(Games_Genres.genre).distinct()).all()
+    genres = db.session.scalars(db.select(Genres.name)).all()
     return jsonify(genres), 200
 
 # Obter tags
 @games_bp.route('tags', methods=['GET'])
 def get_tags():
-    tags = db.session.scalars(db.select(Games_Tags.tag).distinct()).all()
+    tags = db.session.scalars(db.select(Tags.name)).all()
     return jsonify(tags), 200
 
 # Obter devs
 @games_bp.route('developers', methods=['GET'])
 def get_devs():
-    devs = db.session.scalars(db.select(Games_Developers.name).distinct()).all()
+    devs = db.session.scalars(db.select(Developers.name)).all()
     return jsonify(devs), 200
 
 # Adicionar game
@@ -141,7 +141,7 @@ def get_devs():
 @login_required
 @admin_required
 def add_game():
-    game_date = request.get_json()
+    game_date = request.get_json() or {}
     name = game_date['name'].strip()
     name_slug = name.lower().replace(' ', '-')
     year = game_date['released']
@@ -161,22 +161,29 @@ def add_game():
     try:
         # Adicionando informações na tabela games
         new_game = Games(name=name, name_slug=name_slug, year=year, cover_url=cover_url, description=description)
-        db.session.add(new_game)
-        db.session.flush() # Usando flush pq ele não finaliza a ação (como o commit)
 
-        # Adicionando TAGS do jogo na tabela Tags_jogos
+        # Adicionando TAGS do jogo na tabela Tags
         for tag in tags:
-            new_tag = Games_Tags(game_id=new_game.id, tag=tag)
-            db.session.add(new_tag)
+            tag_obj = Tags.query.filter_by(name=tag).first()
+            if not tag_obj:
+                tag_obj = Tags(name=tag)
+            new_game.tags.append(tag_obj)
 
         # Adicionando Desenvolvedor na tabela Developers
         for dev in devs:
-            new_dev = Games_Developers(game_id=new_game.id, name=dev)
-            db.session.add(new_dev)
+            dev_obj = Developers.query.filter_by(name=dev).first()
+            if not dev_obj:
+                dev_obj = Developers(name=dev)
+            new_game.developers.append(dev_obj)
 
+        # Adicionando Gêneros na tabela Genres
         for genre in genres:
-            new_genre = Games_Genres(game_id=new_game.id, genre=genre)
-            db.session.add(new_genre)
+            genre_obj = Genres.query.filter_by(name=genre).first()
+            if not genre_obj:
+                genre_obj = Genres(name=genre)
+            new_game.genres.append(genre_obj)
+
+        db.session.add(new_game)
         db.session.commit()
     except Exception as e:
         db.session.rollback()
