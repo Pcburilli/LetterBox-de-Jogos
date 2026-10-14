@@ -9,7 +9,7 @@ export default function PerfilPage() {
   const [lenCatalogo, setLenCatalogo] = useState(null)
   
   return (
-    <div className='w-full mt-8 gap-2'>
+    <div className='w-full mt-2 md:mt-8 gap-2'>
       <div className='w-full'>
         <PerfilCard lenCatalogo={lenCatalogo}/>
       </div>

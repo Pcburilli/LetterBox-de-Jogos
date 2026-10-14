@@ -14,7 +14,6 @@ export default function SearchGame() {
   const [carregando, setCarregando] = useState(true);
 
   const [totalPag, setTotalPag] = useState([])
-  console.log(totalPag)
 
   useEffect(() => {
       if (!search.trim()) {

@@ -97,7 +97,7 @@ export default function PerfilCard({lenCatalogo}) {
                   <img key={icon} src={icon} className='h-7 w-7 cursor-pointer' onClick={() => setIcon(icon)}></img>
                 ))}
               </div>
-              {dadosUsuario?.icone_url !== icon ? (
+              {dadosUsuario?.icon_url !== icon ? (
                 <button className='w-full bg-primary-300 hover:bg-primary-200 text-primary-800 font-bold rounded-b-2xl transition cursor-pointer' onClick={alternarIcone}>Alterar icone</button>
               ) : (
                 <></>

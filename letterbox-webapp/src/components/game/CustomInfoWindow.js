@@ -47,7 +47,7 @@ export default function CustomInfoWindow({ jogo, windowEdit, setWindowEdit, setN
     return (
         <div id='custom_informations' className='z-10 bg-primary-900 sm:bg-primary-800/50 fixed left-0 top-0 w-full h-screen flex flex-col justify-center items-end sm:items-center' style={{ visibility: `${windowEdit}`}}>
             <div className='flex h-1/2 w-full md:w-full rounded-2xl justify-center items-center sm:hidden'>
-            <div className='h-3/4 w-2/4 bg-cover bg-center bg-no-repeat mt-10 rounded-2xl' style={{ backgroundImage: `url(${jogo?.img_url})`}}></div>
+            <div className='h-3/4 w-2/4 bg-cover bg-center bg-no-repeat mt-10 rounded-2xl' style={{ backgroundImage: `url(${jogo?.cover_url})`}}></div>
             </div>
             <div className='relative flex flex-col w-full p-3 gap-3 h-1/2 rounded-t-2xl bg-primary-700 sm:w-160 sm:h-110 sm:rounded-2xl sm:border-6 sm:border-primary-800'>
             <button className='z-1 absolute text-3xl right-0 top-0 mr-3 mt-1 text-primary-800 hover:text-primary-300 cursor-pointer' onClick={() => setWindowEdit('hidden')}>×</button>
