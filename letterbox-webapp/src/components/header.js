@@ -8,7 +8,6 @@ export default function Header({ isLoggedIn }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const [search, setSearch] = useState('')
-  console.log(search)
 
   const Logout = async (e) => {
     e?.preventDefault();

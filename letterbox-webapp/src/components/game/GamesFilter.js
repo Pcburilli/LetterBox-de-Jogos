@@ -26,15 +26,26 @@ export default function GamesFilter() {
         e.preventDefault();
         const params = new URLSearchParams();
 
-        if (inputs['Gêneros']?.trim()) {
-            params.append('genres', inputs['Gêneros'].trim());
+        if ((inputs['Gêneros']?.trim() + inputs['Tags'].trim() + inputs['Desenvolvedor'].trim()) === '') {
+            return;
         }
-        if (inputs['Tags']?.trim()) {
-            params.append('tags', inputs['Tags'].trim());
+        
+        let genre_find = genres.find((g) => g === inputs['Gêneros']?.trim())
+        let tag_find = tags.find((t) => t === inputs['Tags'].trim())
+        let dev_find = devs.find((d) => d === inputs['Desenvolvedor'].trim())
+        
+        let isGenreInvalid = inputs['Gêneros']?.trim() !== '' && !genre_find;
+        let isTagInvalid = inputs['Tags'].trim() !== '' && !tag_find;
+        let isDevInvalid = inputs['Desenvolvedor'].trim() !== '' && !dev_find;
+
+        if (isGenreInvalid || isTagInvalid || isDevInvalid) {
+            alert('Escolha opções válidas.');
+            return;
         }
-        if (inputs['Desenvolvedor']?.trim()) {
-            params.append('developer', inputs['Desenvolvedor'].trim());
-        }
+
+        params.append('genres', inputs['Gêneros'].trim());
+        params.append('tags', inputs['Tags'].trim());
+        params.append('developer', inputs['Desenvolvedor'].trim());
         
         const queryString = params.toString();
         const rota = queryString ? `/games?${queryString}` : '/games';
