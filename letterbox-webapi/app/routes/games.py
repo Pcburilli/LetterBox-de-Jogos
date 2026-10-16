@@ -10,7 +10,7 @@ games_bp = Blueprint('games', __name__, url_prefix='/api/games')
 # Obter games
 @games_bp.route('/', methods=['GET'])
 def get_games():
-    games = db.session.scalars(db.select(Games)).all()
+    games = Games.query.all()
     games_dict = [u.to_dict() for u in games]
     return jsonify(games_dict), 200
 
@@ -188,15 +188,52 @@ def add_game():
     except Exception as e:
         db.session.rollback()
         return jsonify({'erro': f'Erro ao adicionar jogo: {str(e)}'}), 500
-    return jsonify('Cadastro do jogo realizado.'), 200
+    return jsonify({'message': 'Jogo registrado com sucesso!'}), 200
 
 # Excluir game
 @games_bp.route('/<id>', methods=['DELETE'])
 @login_required
 @admin_required
 def delete_game(id):
-    game = db.get_or_404(Games, id)
+    game = Games.query.filter_by(id=id).first_or_404()
     game_data = game.to_dict()
     db.session.delete(game)
     db.session.commit()
     return jsonify(game_data), 200
+
+# Alterar infos game
+@games_bp.route('/<id>', methods=['PATCH'])
+@login_required
+@admin_required
+def patch_game(id):
+    data = request.get_json() or {}
+    game = Games.query.filter_by(id=id).first_or_404()
+
+    if 'name' in data:
+        game.name = data['name'].strip()
+        game.name_slug = data['name'].strip().lower().replace(' ', '-')
+    if 'year' in data:
+        game.year = data['year']
+    if 'description' in data:
+        game.description = data['description'].strip()
+    if 'genres' in data:
+        new_genres = []
+        for genre in data['genres']:
+            genre_obj = Genres.query.filter_by(name=genre).first()
+            if genre_obj:
+                new_genres.append(genre_obj)       
+        game.genres = new_genres
+    if 'tags' in data:
+        new_tags = []
+        for tag in data['tags']:
+            tag_obj = Tags.query.filter_by(name=tag).first()
+            if tag_obj:
+                new_tags.append(tag_obj)    
+        game.tags = new_tags
+
+    try:
+        db.session.commit()
+        return jsonify({'message': 'Jogo atualizado com sucesso!', 'game': game.to_dict()}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'erro': f'Erro ao atualizar: {str(e)}'}), 500
