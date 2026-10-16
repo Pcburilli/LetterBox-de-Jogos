@@ -35,11 +35,11 @@ export default function EditGenresWindow({ setEditGenresWindow, genres, setGenre
             <button className='z-1 absolute text-3xl right-0 top-0 mr-3 mt-1 text-primary-800 hover:text-primary-300 cursor-pointer' onClick={() => setEditGenresWindow(false)}>×</button>
 
             <div className='t-2 flex flex-col gap-2'>
-                <label htmlFor="tag" className="text-xs font-semibold text-primary-200 tracking-wide uppercase">
+                <label htmlFor="genre" className="text-xs font-semibold text-primary-200 tracking-wide uppercase">
                     Adicionar Gêneros
                 </label>
 
-                <input placeholder='Procure a tag (clique para adicionar)...' type="text" id='tag' name='tag' className="w-full bg-primary-800 text-white placeholder-primary-400 px-3.5 py-2.5 text-sm rounded-lg border border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all" onChange={(e) => setGenreSelect(e.target.value)}/>
+                <input placeholder='Procure o gênero (clique para adicionar)...' type="text" id='genre' name='genre' className="w-full bg-primary-800 text-white placeholder-primary-400 px-3.5 py-2.5 text-sm rounded-lg border border-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-400 transition-all" onChange={(e) => setGenreSelect(e.target.value)}/>
 
                 <ul className="group-focus-within:block max-h-36 w-full overflow-y-auto overflow-x-hidden rounded-lg bg-primary-800 border border-primary-600 shadow-lg divide-y divide-primary-700">
                     {filteredGenres.map((genre) => (

@@ -14,13 +14,6 @@ export default function GamePage({ isLoggedIn }) {
   // estatisticas sobre o jogo
   const [infoGame, setInfoGame] = useState(null)
 
-  const infoNota = infoGame?.media_rate ?? 0;
-  const infoReviews = infoGame?.quantity_review ?? 0;
-  const infoFila = infoGame?.na_fila ?? 0;
-  const infoJogando = infoGame?.jogando ?? 0;
-  const infoZerado = infoGame?.zerado ?? 0;
-  const infoAbandonado = infoGame?.abandonado ?? 0;
-
   // STATUS
   const [statusJogo, setStatusJogo] = useState(null)
   const [statusJogoOriginal, setStatusJogoOriginal] = useState(null)
@@ -182,27 +175,27 @@ export default function GamePage({ isLoggedIn }) {
           <p className='text-2xl text-primary-200'>{jogo?.year}</p>
           <div className='w-full h-fit rounded-2xl grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2'>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
-              <p>{infoNota}</p>
+              <p>{infoGame?.media_rate ?? 0}</p>
               <p>Nota</p>
             </div>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
-              <p>{infoFila}</p>
+              <p>{infoGame?.na_fila ?? 0}</p>
               <p>Na Fila</p>
             </div>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
-              <p>{infoJogando}</p>
+              <p>{infoGame?.jogando ?? 0}</p>
               <p>Jogando</p>
             </div>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
-              <p>{infoZerado}</p>
+              <p>{infoGame?.zerado ?? 0}</p>
               <p>Zerado</p>
             </div>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
-              <p>{infoAbandonado}</p>
+              <p>{infoGame?.abandonado ?? 0}</p>
               <p>Abandonado</p>
             </div>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
-              <p>{infoReviews}</p>
+              <p>{infoGame?.quantity_review ?? 0}</p>
               <p>Reviews</p>
             </div>
           </div>
@@ -214,11 +207,14 @@ export default function GamePage({ isLoggedIn }) {
               ))}
             </div>
           </div>
-          <h2 className='font-bold text-2xl'>Tags</h2>
+          <h2 className='font-bold text-2xl'>Gêneros</h2>
           <div className='flex flex-wrap gap-2 justify-normal'>
             {jogo?.genres?.map((genre) => (
               <p key={genre} className='border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200'>{genre}</p>
             ))}
+          </div>
+          <h2 className='font-bold text-2xl'>Tags</h2>
+          <div className='flex flex-wrap gap-2 justify-normal'>
             {jogo?.tags?.slice(0,lenTags).map((tag) => (
               <p key={tag} className='border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200'>{tag}</p>
             ))}

@@ -68,6 +68,7 @@ export default function GamesPage() {
             <input 
               type="text"
               onChange={(e) => setSearch(e.target.value)}
+              placeholder='Procure o jogo desejado...'
               className='w-full pl-3 pr-1 text-xs text-primary-100 placeholder:text-primary-300 bg-transparent focus:outline-none'
             />
             <button 
