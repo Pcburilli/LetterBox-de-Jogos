@@ -151,3 +151,24 @@ export async function FiltersGames(filters, page) {
     const dados = await response.json();
     return dados
 }
+
+export async function AlterarDadosJogo(game_id, data) {
+  const response = await fetch(`${API_BASE}/games/${game_id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+    credentials: 'include',
+  });
+
+  return response;
+}
+
+export async function DeletarJogo(game_id) {
+  const response = await fetch(`${API_BASE}/games/${game_id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    credentials: 'include',
+  });
+
+  return response;
+}
