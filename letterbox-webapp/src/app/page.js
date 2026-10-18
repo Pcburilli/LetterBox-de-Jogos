@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { ObterJogos } from '@/services/api';
+import Link from 'next/link';
 
 export default function Home() {
   const [jogosTotal, setJogosTotal] = useState([]);
@@ -44,7 +45,7 @@ export default function Home() {
           ) : (
             jogosTotal.slice(0,jogosLimite)?.map((jogo) => (
               <div key={jogo?.id || jogo?.name} className="w-full flex flex-col items-center bg-primary-900 rounded-3xl">
-                <a href={`/games/${jogo?.name_slug}`} className='relative'>
+                <Link href={`/games/${jogo?.name_slug}`} className='relative'>
                   <div className='absolute opacity-0 hover:opacity-100 flex items-end justify-center bg-primary-900/50 border-2 border-primary-300 left-0 top-0 w-full h-full object-cover rounded-3xl text-center transition-opacity'>
                     <div>
                       <p className='p-2 font-semibold text-xl'>{jogo.name}</p>
@@ -55,7 +56,7 @@ export default function Home() {
                     alt={jogo?.name}
                     className="w-60 md:w-100 h-48 object-cover rounded-3xl"
                   />
-                </a>
+                </Link>
               </div>
             ))
           )}

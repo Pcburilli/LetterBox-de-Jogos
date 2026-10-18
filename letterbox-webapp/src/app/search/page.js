@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ObterJogosSearch } from '@/services/api';
@@ -62,7 +63,7 @@ export default function SearchGame() {
               ) : (
                 jogos?.map((jogo) => (
                   <div key={jogo?.id || jogo?.name} className="relative w-full flex flex-col items-center rounded-3xl">
-                    <a href={`/games/${jogo?.name_slug}`}>
+                    <Link href={`/games/${jogo?.name_slug}`}>
                       <div className='absolute opacity-0 hover:opacity-100 flex items-end justify-center bg-primary-900/50 border-2 border-primary-300 left-0 top-0 w-full h-full object-cover rounded-3xl text-center transition-opacity'>
                         <div>
                           <p className='p-2 font-semibold text-xl'>{jogo.name}</p>
@@ -73,7 +74,7 @@ export default function SearchGame() {
                         alt={jogo?.name} 
                         className="w-full h-48 object-cover rounded-3xl"
                       />
-                    </a>
+                    </Link>
                   </div>
                 ))
               )}

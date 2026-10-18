@@ -18,7 +18,6 @@ export default function Header({ isLoggedIn }) {
       });
 
       if (response.ok) {
-        const dados = await response.json();
         router.replace('/');
         router.refresh(); 
       }
@@ -38,11 +37,11 @@ export default function Header({ isLoggedIn }) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <div className="shrink-0">
-            <a href='/'>
+            <Link href='/'>
               <div className="bg-[url('/icone_site.png')] hover:bg-[url('/icone_site_hover.png')] bg-contain bg-center bg-no-repeat h-12 w-fit text-[18px] content-center text-center">
               <h1 className='font-bold text-primary-200'>StockG</h1>
               </div>
-            </a>
+            </Link>
           </div>
           <div className="hidden md:flex md:ml-auto md:mr-8 items-center gap-8">
             {isLoggedIn ? (
