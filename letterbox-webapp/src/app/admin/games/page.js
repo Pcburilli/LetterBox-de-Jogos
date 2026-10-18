@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-import { ObterJogosSearch } from '@/services/api';
+import { ObterJogosSearch, DeletarJogo } from '@/services/api';
+import NavBarAdmin from '@/components/admin/NavBarAdmin';
 
 export default function GamesPage() {
   const searchParams = useSearchParams();
@@ -18,25 +19,9 @@ export default function GamesPage() {
   const [totalPage, setTotalPage] = useState([])
   const [carregando, setCarregando] = useState(true);
   
-  useEffect(() => {
-    if (!search.trim()) {
-      ObterJogosSearch('', page)
-      .then((dados) => {setJogos(dados['games']), setTotalPage(PagList(dados['total_paginas']))})
-      .catch((error) => console.error('Erro ao buscar jogos:', error))
-      .finally(() => setCarregando(false));
-      return;
-    }
-
-    setCarregando(true);
-
-    ObterJogosSearch(pathname, page)
-    .then((dados) => {setJogos(dados['games']), setTotalPage(PagList(dados['total_paginas']))})
-    .catch((error) => console.error('Erro ao buscar jogos:', error))
-    .finally(() => setCarregando(false));
-
-  }, [pathname, page]);
-
-  const TrocarPag = (NewPage) => {
+  const [atualizarInfo, setAtualizarInfo] = useState(true);
+  
+    const TrocarPag = (NewPage) => {
     const params = new URLSearchParams(searchParams.toString());
 
     params.set('page', NewPage.toString());
@@ -59,9 +44,50 @@ export default function GamesPage() {
     router.replace(`/admin/games?q=${encodeURIComponent(search.trim())}&page=1`);
   }
 
+  const DeletarGame = async (e, game_id) => {
+    e.preventDefault()
+    console.log(game_id)
+
+    const confirmar = window.confirm("Prosseguir com a EXCLUSÃO do jogo? *Será excluido todos os relacionamentos (notas, reviews...)");
+
+    if (confirmar) {
+      try {
+        const response = await DeletarJogo(game_id)
+        
+        if(response.ok) {
+          alert('Jogo deletado com sucesso.')
+          setAtualizarInfo(!atualizarInfo)
+        }
+      } catch (error) {
+        console.error("Erro ao excluir jogo:", error);
+      }
+    } else {
+      console.log('Ação cancelada.')
+      return
+    }
+  };
+
+  useEffect(() => {
+    if (!search.trim()) {
+      ObterJogosSearch('', page)
+      .then((dados) => {setJogos(dados['games']), setTotalPage(PagList(dados['total_paginas']))})
+      .catch((error) => console.error('Erro ao buscar jogos:', error))
+      .finally(() => setCarregando(false));
+      return;
+    }
+
+    setCarregando(true);
+
+    ObterJogosSearch(pathname, page)
+    .then((dados) => {setJogos(dados['games']), setTotalPage(PagList(dados['total_paginas']))})
+    .catch((error) => console.error('Erro ao buscar jogos:', error))
+    .finally(() => setCarregando(false));
+
+  }, [pathname, page, atualizarInfo]);
 
   return (
-    <div id="div_principal" className="flex flex-col w-full max-w-6xl mx-auto mt-2 md:mt-8 gap-2">
+    <div id="div_principal" className="flex flex-col w-full max-w-6xl mx-auto mt-2 gap-2">
+      <NavBarAdmin />
       <div id='filter' className='w-full h-fit bg-primary-800 rounded-2xl p-3'>
         <div className=''>
           <form id='search' onSubmit={SearchGame} className='flex mr-4 md:mr-0 ml-auto md:ml-0 items-center w-full h-8 bg-primary-700 rounded-2xl focus-within:ring-2 focus-within:ring-primary-500 transition-all'>
@@ -88,6 +114,7 @@ export default function GamesPage() {
           ) : (
             jogos?.map((jogo) => (
               <div key={jogo?.id || jogo?.name} className="relative w-full flex flex-col items-center rounded-3xl">
+                <button className='absolute z-1 right-2 top-2 bg-red-700 rounded-2xl border-2 border-primary-900 pr-2 pl-2 font-bold hover:bg-red-800 cursor-pointer' onClick={(e) => DeletarGame(e, jogo.id)}>x</button>
                 <a href={`/admin/games/${jogo?.name_slug}`}>
                   <div className='absolute opacity-0 hover:opacity-100 flex items-end justify-center bg-primary-900/50 border-2 border-primary-300 left-0 top-0 w-full h-full object-cover rounded-3xl text-center transition-opacity'>
                     <div>
