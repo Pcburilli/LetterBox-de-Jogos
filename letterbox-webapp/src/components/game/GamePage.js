@@ -1,19 +1,13 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation'
-import { ObterJogo, ObterJogoInfo, adicionarAoCatalogo, VerificarJogoCatalogo, AlterarStatusJogo, DeleteJogoCatalogo, VerificarAvaliacaoJogo } from '@/services/api';
+import { VerificarJogoCatalogo, VerificarAvaliacaoJogo } from '@/services/api';
+import { alterarStatusGameAction, addGameAction , deleteGameAction } from '@/actions/game_slug';
 import CustomInfoWindow from '@/components/game/CustomInfoWindow';
 
 const status_names = ['Na Fila', 'Jogando', 'Zerado', 'Abandonado']
 
-export default function GamePage({ isLoggedIn }) {
-  const pathname = usePathname().slice(7)
-  const [jogo, setJogo] = useState(null)
-
-  // estatisticas sobre o jogo
-  const [infoGame, setInfoGame] = useState(null)
-
+export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
   // STATUS
   const [statusJogo, setStatusJogo] = useState(null)
   const [statusJogoOriginal, setStatusJogoOriginal] = useState(null)
@@ -28,86 +22,78 @@ export default function GamePage({ isLoggedIn }) {
   const [nota, setNota] = useState(null)
 
   useEffect(() => {
-    ObterJogo(pathname)
-    .then((dadosJogo) => {
-      setJogo(dadosJogo);
-      if (isLoggedIn && dadosJogo?.id) {
-        VerificarJogoCatalogo(dadosJogo.id)
+    if (isLoggedIn && jogo?.id) {
+      VerificarJogoCatalogo(jogo.id)
         .then((dados) => {
-          setStatusJogo(dados.status)
-          setStatusJogoOriginal(dados.status)
+          setStatusJogo(dados.status);
+          setStatusJogoOriginal(dados.status);
         })
-        .catch((error) => console.error('Erro na verificação:', error))
+        .catch((error) => console.error('Erro na verificação:', error));
 
-        VerificarAvaliacaoJogo(dadosJogo.id)
+      VerificarAvaliacaoJogo(jogo.id)
         .then((dados_avaliacao) => {
-            setNota(dados_avaliacao['rate'])
+          setNota(dados_avaliacao['rate']);
         })
         .catch((error) => console.error('Erro na busca nota:', error));
-      }
-    })
-    .catch((error) => console.error('Erro ao buscar jogo:', error));
+    }
+  }, [isLoggedIn, jogo?.id]);
 
-    ObterJogoInfo(pathname).then((dados) => {
-      setInfoGame(dados);
-    }).catch((error) => console.error('Erro ao buscar info jogo:', error))
-  }, [pathname]);
-
-  const AdicionarJogo = async (e) => {
+ const AdicionarJogo = async (e) => {
     e.preventDefault();
-    try {
-      const response = await adicionarAoCatalogo(jogo.id);
 
-      if (response.ok) {
-        alert('Registro realizado.');
-      } else if (response.status === 401) {
-        alert('Precisa estar logado.');
-      } else if (response.status === 409) {
-        alert('Jogo já cadastrado.');
-      }
-    } catch (error) {
-      console.error('Falha na conexão:', error);
-    } finally {
-      VerificarJogoCatalogo(jogo.id).then((dados) => setStatusJogo(dados.status));
+    const result = await addGameAction(jogo.id, slug)
+
+    if (result.success) {
+      alert('Adicionado com sucesso!');
+      setStatusJogo(statusJogoOriginal);
+    } else if (result.status === 401) {
+      alert('Precisa estar logado.');
+    } else if (result.status === 409) {
+      alert('Jogo já cadastrado.');
+    } else {
+      alert('Erro ao adicionar o jogo.')
     }
   };
 
   const AlterarStatus = async (e) => {
     e.preventDefault();
-    if (statusJogoOriginal === statusJogo) {
-       alert('Status Igual ao atual.')
-       return;
-    }
-    try {
-      const response = await AlterarStatusJogo(jogo.id, statusJogo);
 
-      if (response.ok) {
-        alert('Alterado com sucesso!');
-        setStatusJogoOriginal(statusJogo)
-        setWindowStatus('hidden')
-      } else if (response.status === 409) {
-        alert('Status Igual ao atual.')
-      }
-    } catch (error) {
-      console.error('Falha na conexão:', error);
-      alert('Erro de conexão com o servidor.');
+    if (statusJogoOriginal === statusJogo) {
+      alert('Status Igual ao atual.');
+      return;
     }
-  }
+
+    const result = await alterarStatusGameAction(jogo.id, statusJogo, slug);
+
+    if (result.success) {
+      alert('Alterado com sucesso!');
+      setStatusJogoOriginal(statusJogo);
+      setWindowStatus('hidden');
+    } else if (result.status === 409) {
+      alert('Status Igual ao atual.');
+    } else {
+      alert(result.error || 'Erro ao alterar status.');
+    }
+  };
 
   const DeleteGame = async (e) => {
     e.preventDefault();
-    try {
-      const response = await DeleteJogoCatalogo(jogo.id);
 
-      if (response.ok) {
-        alert('Retirado com sucesso!');
-      }
-    } catch (error) {
-      console.error('Falha na conexão:', error);
-    } finally {
-      VerificarJogoCatalogo(jogo.id).then((dados) => setStatusJogo(dados.status));
+    const result = await deleteGameAction(jogo.id, slug);
+
+    if (result.success) {
+      alert('Retirado com sucesso!');
+    } else {
+      alert(result.error || 'Erro ao remover jogo.');
     }
-  }
+
+    try {
+      const dados = await VerificarJogoCatalogo(jogo.id);
+      setStatusJogo(dados?.status || null);
+    } catch (error) {
+      console.error('Erro ao recarregar status:', error);
+    }
+  };
 
   const LimitTags = async () => {
     if (buttonTags === '+') {
@@ -223,7 +209,7 @@ export default function GamePage({ isLoggedIn }) {
         </div>
       </div>
       <div className='h-fit mb-2'>
-        <h2 className='font-bold text-2xl'>Resumo</h2>
+        <h2 className='font-bold text-2xl'>Descrição</h2>
         <p className='text-justify text-primary-200'>
           {jogo?.description}
         </p>

@@ -1,15 +1,5 @@
 const API_BASE = 'http://localhost:5000/api';
 
-export async function adicionarAoCatalogo(game_id) {
-  const response = await fetch(`${API_BASE}/catalog/add`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ game_id: game_id }),
-    credentials: 'include',
-  });
-  return response;
-}
-
 export async function ObterPerfil() {
     const response = await fetch(`${API_BASE}/auth/me`, {
     method: 'GET',
@@ -66,25 +56,40 @@ export async function VerificarJogoCatalogo(idJogo) {
     return dados
 }
 
-export async function DeleteJogoCatalogo(idJogo) {
-    const response = await fetch(`${API_BASE}/catalog/${idJogo}`, {
-        method: 'DELETE',
-        headers: {
-        'Content-Type': 'application/json'},
-        credentials: 'include'
-      })
-    return response
+export async function adicionarAoCatalogo(game_id, cookieHeader) {
+  const response = await fetch(`${API_BASE}/catalog/add`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''
+    },
+    body: JSON.stringify({ game_id: game_id }),
+  });
+
+  return response;
 }
 
-export async function AlterarStatusJogo(game_id, new_status) {
-    const response = await fetch(`${API_BASE}/catalog/${game_id}`, {
-        method: 'PUT',
-        headers: {
-        'Content-Type': 'application/json'},
-        body: JSON.stringify({ new_status: new_status }),
-        credentials: 'include'
-      })
-    return response
+export async function DeleteJogoCatalogo(game_id, cookieHeader) {
+  const response = await fetch(`${API_BASE}/catalog/${game_id}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''
+    },
+  });
+  return response;
+}
+
+export async function AlterarStatusJogo(game_id, new_status, cookieHeader) {
+  const response = await fetch(`${API_BASE}/catalog/${game_id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''
+    },
+    body: JSON.stringify({ new_status: new_status }),
+  });
+  return response;
 }
 
 export async function VerificarAvaliacaoJogo(game_id) {
