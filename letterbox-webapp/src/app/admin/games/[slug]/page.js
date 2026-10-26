@@ -5,8 +5,10 @@ import { usePathname, useRouter } from 'next/navigation'
 import { ObterJogo, ObterJogoInfo, AlterarDadosJogo, DeletarJogo } from '@/services/api';
 import EditTagsWindow from '@/components/admin/EditTagsWindow';
 import EditGenresWindow from '@/components/admin/EditGenresWindow';
+import EditDevsWindow from '@/components/admin/EditDevsWindow';
+import NavBarAdmin from '@/components/admin/NavBarAdmin';
 
-export default function GamePage() {
+export default function Page() {
   const router = useRouter();
   const pathname = usePathname().slice(13)
   const [jogo, setJogo] = useState(null)
@@ -19,11 +21,13 @@ export default function GamePage() {
   const [year, setYear] = useState(null)
   const [description, setDescription] = useState(null)
   const [genres, setGenres] = useState([])
+  const [devs, setDevs] = useState([])
   const [tags, setTags] = useState([])
 
   // Janelas EditGenres e EditTags
   const [editGenresWindow, setEditGenresWindow] = useState(false)
   const [editTagsWindow, setEditTagsWindow] = useState(false)
+  const [editDevsWindow, setEditDevsWindow] = useState(false)
 
   // comparar se dois arrays são iguais para verificar se há alterações
   const areArraysEqual = (arr1 = [], arr2 = []) => {
@@ -36,6 +40,7 @@ export default function GamePage() {
     year === jogo?.year &&
     description === jogo?.description &&
     areArraysEqual(genres, jogo?.genres) &&
+    areArraysEqual(devs, jogo?.developers) &&
     areArraysEqual(tags, jogo?.tags);
 
   const hasChanges = !isPristine; 
@@ -119,7 +124,8 @@ export default function GamePage() {
       setYear(dadosJogo.year);
       setDescription(dadosJogo.description);
       setTags(dadosJogo.tags);
-      setGenres(dadosJogo.genres)
+      setGenres(dadosJogo.genres);
+      setDevs(dadosJogo.developers)
     })
     .catch((error) => console.error('Erro ao buscar jogo:', error));
 
@@ -133,7 +139,8 @@ export default function GamePage() {
   }
   return (
     <div className='relative mt-2'>
-      <div className="flex items-center justify-end gap-3 z-20 mb-2">
+      <NavBarAdmin/>
+      <div className="flex items-center justify-end gap-3 z-20 mb-2 mt-2">
         {hasChanges && (
           <button
             className="bg-green-600 hover:bg-green-500 text-white shadow-lg shadow-green-900/20 transition-all duration-200 rounded-xl px-5 py-2.5 w-fit cursor-pointer font-semibold text-sm focus:ring-2 focus:ring-green-400 focus:outline-none"
@@ -183,9 +190,13 @@ export default function GamePage() {
             </div>
           </div>
           <div className="bg-primary-800/30 border border-primary-700/50 h-fit p-5 rounded-2xl">
+
+          <div className='flex gap-2'>
             <h2 className="text-primary-200 font-semibold text-lg uppercase tracking-wide mb-3">Desenvolvedores</h2>
+            <button className='text-center align-middle rounded-2xl h-fit pl-1 pr-1 bg-primary-600 hover:bg-primary-400 cursor-pointer' onClick={() => setEditDevsWindow(true)}>+</button>
+          </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {jogo?.developers?.map((dev) => (
+              {devs?.map((dev) => (
                 <p key={dev} className="text-white font-medium flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-primary-400"></span>
                   {dev}
@@ -193,6 +204,7 @@ export default function GamePage() {
               ))}
             </div>
           </div>
+
           <div className='flex gap-2'>
             <h2 className='text-primary-200 font-semibold text-lg uppercase tracking-wide'>Gêneros</h2>
             <button className='text-center align-middle rounded-2xl h-fit pl-1 pr-1 bg-primary-600 hover:bg-primary-400 cursor-pointer' onClick={() => setEditGenresWindow(true)}>+</button>
@@ -204,6 +216,7 @@ export default function GamePage() {
               </div>
             ))}
           </div>
+
           <div className='flex gap-2'>
             <h2 className='text-primary-200 font-semibold text-lg uppercase tracking-wide'>Tags</h2>
             <button className='text-center align-middle rounded-2xl h-fit pl-1 pr-1 bg-primary-600 hover:bg-primary-400 cursor-pointer' onClick={() => setEditTagsWindow(true)}>+</button>
@@ -222,7 +235,7 @@ export default function GamePage() {
         <textarea
           id="description"
           name="description"
-          defaultValue={jogo?.description}
+          defaultValue={description}
           placeholder="Escreva um resumo sobre o jogo..."
           className="w-full min-h-50 p-5 rounded-2xl bg-primary-800/40 border border-primary-700/50 text-white placeholder:text-primary-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all resize-y leading-relaxed"
           onChange={(e) => setDescription(e.target.value)}
@@ -236,6 +249,11 @@ export default function GamePage() {
       {editGenresWindow && (
         <div className='fixed flex z-10 p-2 left-0 top-0 w-full h-screen bg-primary-800/50 justify-center items-center backdrop-blur-sm'>
           <EditGenresWindow setEditGenresWindow={setEditGenresWindow} genres={genres} setGenres={setGenres}/>
+        </div>
+      )}
+      {editDevsWindow && (
+        <div className='fixed flex z-10 p-2 left-0 top-0 w-full h-screen bg-primary-800/50 justify-center items-center backdrop-blur-sm'>
+          <EditDevsWindow setEditDevsWindow={setEditDevsWindow} devs={devs} setDevs={setDevs}/>
         </div>
       )}
     </div>

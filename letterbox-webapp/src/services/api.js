@@ -103,13 +103,13 @@ export async function VerificarAvaliacaoJogo(game_id) {
     return dados
 }
 
-export async function AdicionarAvaliacaoJogo(game_id, review_data) {
+export async function AdicionarAvaliacaoJogo(game_id, review_data, cookieHeader) {
   const response = await fetch(`${API_BASE}/catalog/review/${game_id}`, {
         method: 'POST',
         headers: {
-        'Content-Type': 'application/json'},
+        'Content-Type': 'application/json',
+        Cookie: cookieHeader || ''},
         body: JSON.stringify({ review_data: review_data }),
-        credentials: 'include'
       })
     return response
 }
@@ -168,11 +168,11 @@ export async function AlterarDadosJogo(game_id, data) {
   return response;
 }
 
-export async function DeletarJogo(game_id) {
+export async function DeletarJogo(game_id, cookieHeader) {
   const response = await fetch(`${API_BASE}/games/${game_id}`, {
     method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include',
+    headers: { 'Content-Type': 'application/json',
+    Cookie: cookieHeader || ''},
   });
 
   return response;
