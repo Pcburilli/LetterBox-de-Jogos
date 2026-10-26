@@ -10,7 +10,6 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data_user = request.get_json()
-    print('DADOS:', data_user)
     email = data_user['email'].lower().strip()
     password = data_user['password']
 
@@ -93,5 +92,4 @@ def update_icon():
 def get_users():
     users = db.session.scalars(db.select(Users)).all()
     users_dict = [u.to_dict() for u in users]
-    print(users_dict)
     return jsonify(users_dict), 200

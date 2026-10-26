@@ -22,7 +22,8 @@ def catalog_user():
             )
             .select_from(Games_Users)
             .join(Games, Games_Users.game_id == Games.id)
-            .join(Reviews, (Reviews.game_id == Games.id) & (Reviews.user_id == current_user.id), isouter=True)
+            .join(Reviews, (Reviews.game_id == Games.id) & 
+            (Reviews.user_id == current_user.id), isouter=True)
             .filter(Games_Users.user_id == current_user.id)
     )
     user_games = db.session.execute(search).all()
@@ -126,8 +127,7 @@ def delete_game_catalog(game_id):
         db.session.rollback()
         return jsonify({
             "status": "error",
-            "message": "Erro ao remover o item do catálogo.",
-            "details": str(e)
+            "message": "Erro ao remover o item do catálogo."
         }), 500
 
 # Valida e retorna avaliacao do usuario para um jogo

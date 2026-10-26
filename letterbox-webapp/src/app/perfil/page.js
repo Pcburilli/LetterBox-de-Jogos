@@ -3,7 +3,7 @@
 import PerfilCard from '@/components/perfil/PerfilCard';
 import PerfilCatalog from '@/components/perfil/PerfilCatalog';
 import Statistics from '@/components/perfil/Statistics';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 export default function PerfilPage() {
   const [lenCatalogo, setLenCatalogo] = useState(null)

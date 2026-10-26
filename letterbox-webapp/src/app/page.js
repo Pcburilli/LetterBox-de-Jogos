@@ -8,7 +8,6 @@ export default function Home() {
   const [jogosTotal, setJogosTotal] = useState([]);
   const [jogosLimite, setJogosLimite] = useState(0);
   const [carregando, setCarregando] = useState(true);
-  console.log(jogosTotal)
 
   useEffect(() => {
     ObterJogos()

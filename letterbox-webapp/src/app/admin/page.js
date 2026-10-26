@@ -1,6 +1,4 @@
-'use client'
 
-import { useState, useEffect } from 'react';
 import NavBarAdmin from '@/components/admin/NavBarAdmin';
 
 export default function AdminPage() {
