@@ -1,7 +1,7 @@
 'use state'
 
 import { useState, useEffect } from 'react';
-import { ObterGenres, ObterTags } from '@/services/api';
+import { ObterGenres } from '@/services/api';
 
 export default function EditGenresWindow({ setEditGenresWindow, genres, setGenres }) {
     
@@ -47,9 +47,14 @@ export default function EditGenresWindow({ setEditGenresWindow, genres, setGenre
                     ))}
 
                     {filteredGenres.length === 0 && (
-                        <li className="px-3.5 py-2 text-xs text-primary-400">
-                            Nenhum gênero encontrado
-                        </li>
+                        <>
+                            <li className="px-3.5 py-2 text-xs text-primary-400">
+                                Nenhum gênero encontrado
+                            </li>
+                            <button className="w-full py-2 text-xs text-primary-100 font-bold hover:bg-primary-600 cursor-pointer" onClick={() => AddGenre(genreSelect)}>
+                                <p>Adicionar novo Gênero</p>
+                            </button>
+                        </>
                     )}
                 </ul>
             </div>

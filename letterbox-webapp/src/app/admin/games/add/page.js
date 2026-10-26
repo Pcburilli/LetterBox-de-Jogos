@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import NavBarAdmin from '@/components/admin/NavBarAdmin';
 import EditTagsWindow from '@/components/admin/EditTagsWindow';
 import EditGenresWindow from '@/components/admin/EditGenresWindow';
+import EditDevsWindow from '@/components/admin/EditDevsWindow';
 
 export default function AddGamePage() {
   // Busca API
@@ -13,14 +14,17 @@ export default function AddGamePage() {
 
   // Adicionar Manualmente
   const [name, setName] = useState(null)
+  const [url, setUrl] = useState(null)
   const [year, setYear] = useState(null)
   const [description, setDescription] = useState(null)
   const [genres, setGenres] = useState([])
   const [tags, setTags] = useState([])
+  const [devs, setDevs] = useState([])
 
   // Janelas EditGenres e EditTags
   const [editGenresWindow, setEditGenresWindow] = useState(false)
   const [editTagsWindow, setEditTagsWindow] = useState(false)
+  const [editDevsWindow, setEditDevsWindow] = useState(false)
 
   const PesquisarJogo = async (e) => {
     e.preventDefault()
@@ -59,48 +63,54 @@ export default function AddGamePage() {
     }
   }
 
-  const AdicionarJogo = async (e, jogo) => {
-    e.preventDefault();
-
+  const AdicionarJogo = async (e, jogo, source) => {
+    e.preventDefault()
+    
+    let dados_jogo;
     try {
-      const jogo_response = await PesquisarJogoID(jogo.id)
-      console.log('Dados do Jogo obtidos do RAWG:', jogo_response);
 
-      const response = await fetch('http://localhost:5000/api/games/', {
-        method:'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
+      if (source === 'rawg') {
+      dados_jogo = await PesquisarJogoID(jogo.id);
+      dados_jogo.source = 'rawg';
+    } else if (source === 'api') {
+      dados_jogo = AddBody();
+    }
 
-        body: JSON.stringify(jogo_response),
-        credentials: 'include'
-      });
-      const resultado = await response.json();
+    const response = await fetch('http://localhost:5000/api/games/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dados_jogo),
+      credentials: 'include'
+    });
+
+    const resultado = await response.json();
 
       if (response.ok) {
         alert('Registro realizado.')
         console.log('Registro realizado:', resultado);
       }
-      else if (response.status === 409) {
+      else if (response.status === 500) {
         alert('Jogo já cadastrado.')
         console.warn('Erro:', resultado);
       }
-      else if (response.status === 403 || 401) {
-        alert('Somente Admins.')
-        console.warn('Erro:', resultado);
-      }
+
     } catch (error) {
       console.error('Falha na conexão:', error);
     }
   }
 
   const AddBody = () => {
-    let body = {}
-      body.name = name
-      body.year = year
-      body.description = description
-      body.genres = genres
-      body.tags = tags
+    const body = {}
+    body.name = name
+    body.released = year
+    body.cover_url = url
+    body.description = description
+    body.developers = devs
+    body.genres = genres
+    body.tags = tags
+    body.source = 'api'
 
     return body
   };
@@ -112,8 +122,8 @@ export default function AddGamePage() {
 
         <div className='flex flex-col sm:flex-row gap-2'>
           <div id='lateral' className='flex flex-col items-center min-w-60 h-fit gap-2'>
-            <div className='h-100 w-full center bg-cover bg-center bg-no-repeat md:w-full rounded-2xl bg-primary-800/50 hover:bg-primary-800/70'>
-          </div>
+            <img className='h-100 min-w-60 max-w-60 center bg-cover bg-center object-cover object-center bg-no-repeat md:w-full rounded-2xl bg-primary-800/50 hover:bg-primary-800/70' src={url || null}></img>
+          <input placeholder='URL da imagem' className='w-full h-8 pl-2 rounded-2xl bg-primary-800' onChange={(e) => setUrl(e.target.value)}></input>
         </div>
 
           <div id='principal' className='flex flex-col grow-2 h-fit gap-2'>
@@ -121,6 +131,18 @@ export default function AddGamePage() {
             <input className='text-2xl font-semibold w-full hover:bg-primary-800/70 focus:bg-primary-800/70 rounded-xl pl-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary-500'
             placeholder='Data de Lançamento (Ex: 2000-01-31)' onChange={(e) => setYear(e.target.value)}/>
             
+            <div className='flex gap-2'>
+              <h2 className='text-primary-200 font-semibold text-lg uppercase tracking-wide'>Desenvolvedores</h2>
+              <button className='text-center align-middle rounded-2xl h-fit pl-1 pr-1 bg-primary-800 hover:bg-primary-800/70 cursor-pointer' onClick={() => setEditDevsWindow(true)}>+</button>
+            </div>
+            <div className='flex flex-wrap gap-2 justify-normal'>
+              {devs?.map((dev) => (
+                <div key={dev} className='flex border rounded-2xl text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200 gap-2 align-middle justify-center p-1 pl-2 pr-2'>
+                  <p>{dev}</p>
+                </div>
+              ))}
+            </div>
+
             <div className='flex gap-2'>
               <h2 className='text-primary-200 font-semibold text-lg uppercase tracking-wide'>Gêneros</h2>
               <button className='text-center align-middle rounded-2xl h-fit pl-1 pr-1 bg-primary-800 hover:bg-primary-800/70 cursor-pointer' onClick={() => setEditGenresWindow(true)}>+</button>
@@ -145,19 +167,20 @@ export default function AddGamePage() {
               ))}
             </div>
 
-            <div className="h-fit mt-4 mb-2">
+            <div className="h-fit mb-2">
               <h2 className="text-primary-200 font-bold text-lg mb-3 uppercase tracking-wide">DESCRIÇÃO</h2>
               <textarea
                 id="description"
                 name="description"
                 placeholder="Escreva um resumo sobre o jogo..."
-                className="w-full min-h-42 p-5 rounded-2xl bg-primary-800/40 border border-primary-700/50 text-white placeholder:text-primary-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all resize-none leading-relaxed"
+                className="w-full min-h-45 p-5 rounded-2xl bg-primary-800/40 border border-primary-700/50 text-white placeholder:text-primary-400 focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 transition-all resize-none leading-relaxed"
                 onChange={(e) => setDescription(e.target.value)}
               />
             </div>
 
           </div>
         </div>
+        <button className='w-full bg-primary-500 hover:bg-primary-300 h-10 rounded-2xl font-bold cursor-pointer' onClick={(e) => AdicionarJogo(e, '', 'api')}>Adicionar</button>
       </div>
 
       <h1 className='flex justify-center w-full bg-primary-700 rounded-2xl p-2 font-bold gap-1'>Adicionar via<p className='bg-black pl-1 pr-1 rounded-xl'>API RAWG</p></h1>
@@ -181,7 +204,7 @@ export default function AddGamePage() {
         </form>
         {carregando && (
           dados?.results?.map((jogo) => (
-            <form key={jogo?.id} className="flex w-full gap-2 p-1 rounded-xl border-2 border-primary-600" onSubmit={(e) => AdicionarJogo(e, jogo)}>
+            <form key={jogo?.id} className="flex w-full gap-2 p-1 rounded-xl border-2 border-primary-600" onSubmit={(e) => AdicionarJogo(e, jogo, 'rawg')}>
               <img loading="lazy" src={jogo?.background_image} className="w-15 h-20 object-cover rounded-md"></img>
               <div className='flex flex-col w-full justify-between'>
                 <h3 className='text-center text-sm'>{jogo?.name}</h3>
@@ -204,6 +227,11 @@ export default function AddGamePage() {
       {editGenresWindow && (
         <div className='fixed flex z-10 p-2 left-0 top-0 w-full h-screen bg-primary-800/50 justify-center items-center backdrop-blur-sm'>
           <EditGenresWindow setEditGenresWindow={setEditGenresWindow} genres={genres} setGenres={setGenres}/>
+        </div>
+      )}
+      {editDevsWindow && (
+        <div className='fixed flex z-10 p-2 left-0 top-0 w-full h-screen bg-primary-800/50 justify-center items-center backdrop-blur-sm'>
+          <EditDevsWindow setEditDevsWindow={setEditDevsWindow} devs={devs} setDevs={setDevs}/>
         </div>
       )}
     </div>

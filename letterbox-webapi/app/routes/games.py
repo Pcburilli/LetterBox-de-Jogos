@@ -10,7 +10,7 @@ games_bp = Blueprint('games', __name__, url_prefix='/api/games')
 # Obter games
 @games_bp.route('/', methods=['GET'])
 def get_games():
-    games = Games.query.all()
+    games = Games.query.order_by(Games.id).all()
     games_dict = [u.to_dict() for u in games]
     return jsonify(games_dict), 200
 
@@ -20,7 +20,7 @@ def get_games_search():
     term = request.args.get('q', '').strip()
     page = request.args.get('page', default=1, type=int)
 
-    games = db.select(Games)
+    games = db.select(Games).order_by(Games.id)
 
     if term:
         games = games.where(Games.name.ilike(f'%{term}%'))
@@ -47,7 +47,7 @@ def get_games_filters():
     tags_param = request.args.getlist('tags')
     dev_param = request.args.get('developer', default='').strip()
 
-    games = db.select(Games)
+    games = db.select(Games).order_by(Games.id)
     if genres_param:
         for genre_param in genres_param:
             genre_clean = genre_param.strip()
@@ -141,54 +141,72 @@ def get_devs():
 @login_required
 @admin_required
 def add_game():
-    game_date = request.get_json() or {}
-    name = game_date['name'].strip()
+    game_data = request.get_json() or {}
+    
+    if game_data.get('source') not in ['rawg', 'api']:
+        return jsonify({'error': 'Source inválido ou ausente.'}), 422
+
+    name = game_data.get('name', '').strip()
+    if not name:
+        return jsonify({'error': 'O nome do jogo é obrigatório.'}), 400
+
     name_slug = name.lower().replace(' ', '-')
-    year = game_date['released']
-    cover_url = game_date['background_image']
-    description = game_date['description']
-    tags = []
-    genres = []
-    devs = []
-    for tag in game_date['tags']:
-        if tag['language'] == 'eng':
-            tags.append(tag['slug'])
-    for genre in game_date['genres']:
-        genres.append(genre['slug'])
-    for developer in game_date['developers']:
-        devs.append(developer['slug'])
+    year = game_data.get('released')
+    description = game_data.get('description', '')
+    cover_url = None
+
+    tags, genres, devs = [], [], []
+
+    if game_data['source'] == 'rawg':
+        cover_url = game_data.get('background_image')
+        
+        tags = [
+            tag['slug'] 
+            for tag in game_data.get('tags', []) 
+            if tag.get('language') == 'eng' and 'slug' in tag
+        ]
+        genres = [genre['slug'] for genre in game_data.get('genres', []) if 'slug' in genre]
+        devs = [dev['slug'] for dev in game_data.get('developers', []) if 'slug' in dev]
+    else:
+        cover_url = game_data.get('cover_url')
+        tags = game_data.get('tags', [])
+        genres = game_data.get('genres', [])
+        devs = game_data.get('developers', [])
 
     try:
-        # Adicionando informações na tabela games
-        new_game = Games(name=name, name_slug=name_slug, year=year, cover_url=cover_url, description=description)
+        new_game = Games(
+            name=name, 
+            name_slug=name_slug, 
+            year=year, 
+            cover_url=cover_url, 
+            description=description
+        )
+        db.session.add(new_game)
 
-        # Adicionando TAGS do jogo na tabela Tags
-        for tag in tags:
-            tag_obj = Tags.query.filter_by(name=tag).first()
+        for tag_name in tags:
+            tag_obj = Tags.query.filter_by(name=tag_name).first()
             if not tag_obj:
-                tag_obj = Tags(name=tag)
+                tag_obj = Tags(name=tag_name)
             new_game.tags.append(tag_obj)
 
-        # Adicionando Desenvolvedor na tabela Developers
-        for dev in devs:
-            dev_obj = Developers.query.filter_by(name=dev).first()
+        for dev_name in devs:
+            dev_obj = Developers.query.filter_by(name=dev_name).first()
             if not dev_obj:
-                dev_obj = Developers(name=dev)
+                dev_obj = Developers(name=dev_name)
             new_game.developers.append(dev_obj)
 
-        # Adicionando Gêneros na tabela Genres
-        for genre in genres:
-            genre_obj = Genres.query.filter_by(name=genre).first()
+        for genre_name in genres:
+            genre_obj = Genres.query.filter_by(name=genre_name).first()
             if not genre_obj:
-                genre_obj = Genres(name=genre)
+                genre_obj = Genres(name=genre_name)
             new_game.genres.append(genre_obj)
 
-        db.session.add(new_game)
         db.session.commit()
     except Exception as e:
         db.session.rollback()
-        return jsonify({'erro': f'Erro ao adicionar jogo: {str(e)}'}), 500
-    return jsonify({'message': 'Jogo registrado com sucesso!'}), 200
+        return jsonify({'error': f'Erro ao adicionar jogo: {str(e)}'}), 500
+
+    return jsonify({'message': 'Jogo registrado com sucesso!'}), 201
 
 # Excluir game
 @games_bp.route('/<id>', methods=['DELETE'])
@@ -220,15 +238,17 @@ def patch_game(id):
         new_genres = []
         for genre in data['genres']:
             genre_obj = Genres.query.filter_by(name=genre).first()
-            if genre_obj:
-                new_genres.append(genre_obj)       
+            if not genre_obj:
+                genre_obj = Genres(name=genre)
+            new_genres.append(genre_obj)       
         game.genres = new_genres
     if 'tags' in data:
         new_tags = []
         for tag in data['tags']:
             tag_obj = Tags.query.filter_by(name=tag).first()
-            if tag_obj:
-                new_tags.append(tag_obj)    
+            if not tag_obj:
+                tag_obj = Tags(name=tag)
+            new_tags.append(tag_obj)    
         game.tags = new_tags
 
     try:

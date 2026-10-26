@@ -47,9 +47,14 @@ export default function EditTagsWindow({ setEditTagsWindow, tags, setTags }) {
                     ))}
 
                     {filteredTags.length === 0 && (
-                        <li className="px-3.5 py-2 text-xs text-primary-400">
-                            Nenhuma tag encontrada
-                        </li>
+                        <>
+                            <li className="px-3.5 py-2 text-xs text-primary-400">
+                                Nenhuma tag encontrada
+                            </li>
+                            <button className="w-full py-2 text-xs text-primary-100 font-bold hover:bg-primary-600 cursor-pointer" onClick={() => AddTag(tagSelect)}>
+                                <p>Adicionar nova Tag</p>
+                            </button>
+                        </>
                     )}
                 </ul>
             </div>
