@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { VerificarJogoCatalogo, VerificarAvaliacaoJogo } from '@/services/api';
-import { alterarStatusGameAction, addGameAction , deleteGameAction } from '@/actions/game_slug';
+import { alterarStatusGameAction, addGameAction , deleteGameAction } from '@/actions/gameCatalog';
 import CustomInfoWindow from '@/components/game/CustomInfoWindow';
 
 const status_names = ['Na Fila', 'Jogando', 'Zerado', 'Abandonado']
@@ -45,7 +45,7 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
 
     if (result.success) {
       alert('Adicionado com sucesso!');
-      setStatusJogo(statusJogoOriginal);
+      setStatusJogo('Na Fila');
     } else if (result.status === 401) {
       alert('Precisa estar logado.');
     } else if (result.status === 409) {
@@ -217,7 +217,7 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
       {isLoggedIn ? (
         statusJogo ? (
           // Componente custom_informations
-          <CustomInfoWindow jogo={jogo} windowEdit={windowEdit} setWindowEdit={setWindowEdit} setNota={setNota}/>
+          <CustomInfoWindow slug jogo={jogo} windowEdit={windowEdit} setWindowEdit={setWindowEdit} setNota={setNota}/>
         ) : null
       ) : null}
     </div>

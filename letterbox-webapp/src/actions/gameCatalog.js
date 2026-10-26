@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { AlterarStatusJogo, DeleteJogoCatalogo, adicionarAoCatalogo } from '@/services/api';
+import { AlterarStatusJogo, DeleteJogoCatalogo, adicionarAoCatalogo, AdicionarAvaliacaoJogo } from '@/services/api';
 
 export async function alterarStatusGameAction(gameId, newStatus, slug) {
   const cookieStore = await cookies();
@@ -80,6 +80,32 @@ export async function addGameAction(gameId, slug) {
     }
 
     return { success: false, error: 'Erro ao adicionar o jogo do catálogo.' };
+  } catch (error) {
+    console.error('Falha na conexão:', error);
+    return { success: false, error: 'Erro de conexão com o servidor.' };
+  }
+}
+
+export async function addAvaliationAction(gameId, avaliation, slug) {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+  const isLoggedIn = cookieStore.has('session');
+
+  if (!isLoggedIn) {
+    return { success: false, error: 'Usuário não autenticado.' };
+  }
+  
+  try {
+    const response = await AdicionarAvaliacaoJogo(gameId, avaliation, cookieHeader);
+
+    if (response.ok) {
+      revalidatePath('/perfil');
+      if (slug) revalidatePath(`/games/${slug}`);
+
+      return { success: true };
+    }
+
+    return { success: false, error: 'Erro ao adicionar avaliação.' };
   } catch (error) {
     console.error('Falha na conexão:', error);
     return { success: false, error: 'Erro de conexão com o servidor.' };

@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { VerificarAvaliacaoJogo, AdicionarAvaliacaoJogo } from '@/services/api';
+import { VerificarAvaliacaoJogo } from '@/services/api';
+import { addAvaliationAction } from '@/actions/gameCatalog';
 
 const notas = ['', '10', '9', '8', '7', '6', '5', '4', '3', '2', '1', '0']
 
-export default function CustomInfoWindow({ jogo, windowEdit, setWindowEdit, setNota }) {
+export default function CustomInfoWindow({ slug, jogo, windowEdit, setWindowEdit, setNota }) {
     const [notaSelecionada, setNotaSelecionada] = useState('')
     const [review, setReview] = useState('')
 
@@ -30,18 +31,14 @@ export default function CustomInfoWindow({ jogo, windowEdit, setWindowEdit, setN
             review: review
         };
 
-        try {
-            const response = await AdicionarAvaliacaoJogo(jogo.id, avaliacao_final);
+        const result = await addAvaliationAction(jogo.id, avaliacao_final, slug);
 
-            if (response.ok) {
-                alert('Alterado com sucesso!');
-                setNota(notaSelecionada)
-            }
-        } catch (error) {
-            console.error('Falha na conexão:', error);
-            alert('Erro de conexão com o servidor.');
+        if (result.success) {
+            alert('Alterado com sucesso!');
+            setNota(notaSelecionada)
+        } else {
+            alert(result.error || 'Erro ao adicionar/alterar review.');
         }
-
     }
     
     return (
