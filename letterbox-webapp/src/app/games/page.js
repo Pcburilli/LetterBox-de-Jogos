@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { FiltersGames } from '@/services/api';
-import GamesFilter from '@/components/game/GamesFilter';
+import GamesFilter from '@/components/games/GamesFilter';
 
 export default function GamesPage() {
   const searchParams = useSearchParams();
