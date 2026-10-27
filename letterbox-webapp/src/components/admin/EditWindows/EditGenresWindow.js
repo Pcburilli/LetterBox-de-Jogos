@@ -1,4 +1,4 @@
-'use state'
+'use client'
 
 import { useState, useEffect } from 'react';
 import { ObterGenres } from '@/services/api';
