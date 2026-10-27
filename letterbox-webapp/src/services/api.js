@@ -94,32 +94,32 @@ export async function AlterarStatusJogo(game_id, new_status, cookieHeader) {
 
 export async function VerificarAvaliacaoJogo(game_id) {
   const response = await fetch(`${API_BASE}/catalog/review/${game_id}`, {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json'},
-        credentials: 'include'
-      })
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json'},
+      credentials: 'include'
+    })
     const dados = await response.json();
     return dados
 }
 
 export async function AdicionarAvaliacaoJogo(game_id, review_data, cookieHeader) {
   const response = await fetch(`${API_BASE}/catalog/review/${game_id}`, {
-        method: 'POST',
-        headers: {
-        'Content-Type': 'application/json',
-        Cookie: cookieHeader || ''},
-        body: JSON.stringify({ review_data: review_data }),
-      })
+      method: 'POST',
+      headers: {
+      'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
+      body: JSON.stringify({ review_data: review_data }),
+    })
     return response
 }
 
 export async function ObterGenres() {
   const response = await fetch(`${API_BASE}/games/genres`, {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json'},
-      })
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json'},
+    })
 
     const dados = await response.json();
     return dados
@@ -127,10 +127,10 @@ export async function ObterGenres() {
 
 export async function ObterTags() {
   const response = await fetch(`${API_BASE}/games/tags`, {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json'},
-      })
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json'},
+    })
 
     const dados = await response.json();
     return dados
@@ -138,31 +138,31 @@ export async function ObterTags() {
 
 export async function ObterDevs() {
   const response = await fetch(`${API_BASE}/games/developers`, {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json'},
-      })
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json'},
+    })
 
     const dados = await response.json();
     return dados
 }
 export async function FiltersGames(filters, page) {
   const response = await fetch(`${API_BASE}/games/filters?${filters}&page=${page}`, {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json'},
-      })
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json'},
+    })
 
     const dados = await response.json();
     return dados
 }
 
-export async function AlterarDadosJogo(game_id, data) {
+export async function AlterarDadosJogo(game_id, data, cookieHeader) {
   const response = await fetch(`${API_BASE}/games/${game_id}`, {
     method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-    credentials: 'include',
+    headers: { 'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
+    body: JSON.stringify(data)
   });
 
   return response;
@@ -172,7 +172,18 @@ export async function DeletarJogo(game_id, cookieHeader) {
   const response = await fetch(`${API_BASE}/games/${game_id}`, {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json',
-    Cookie: cookieHeader || ''},
+      Cookie: cookieHeader || ''},
+  });
+
+  return response;
+}
+
+export async function AddJogo(dados_jogo, cookieHeader) {
+  const response = await fetch('http://localhost:5000/api/games/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
+    body: JSON.stringify(dados_jogo),
   });
 
   return response;
