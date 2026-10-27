@@ -1,6 +1,7 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { ObterPerfil } from '@/services/api';
+
+import { useState } from 'react';
+import { alterarUsernameAction, alterarIconAction } from '@/actions/user';
 
 const icons_user = [
   '/icons_user/icon1.png',
@@ -10,21 +11,10 @@ const icons_user = [
   '/icons_user/icon5.png'
 ]
 
-export default function PerfilCard({lenCatalogo}) {
-  const [dadosUsuario, setDadosUsuario] = useState(null);
-  const [username, setUsername] = useState('');
+export default function PerfilCard({dadosUsuario, lengthCatalog}) {
+  const [username, setUsername] = useState(dadosUsuario.username || '');
+  const [icon, setIcon] = useState(dadosUsuario.icon_url || null)
   const [aba, setAba] = useState('hidden');
-  const [icon, setIcon] = useState(null)
-
-  useEffect(() => {
-    ObterPerfil()
-    .then((dados) => {
-      setDadosUsuario(dados);
-      setUsername(dados.username || '');
-      setIcon(dados.icon_url || null);
-    })
-    .catch((error) => console.error('Deu ruim ao carregar perfil:', error));
-  }, []);
 
   const alterarUsername = async (e) => {
     e.preventDefault();
@@ -32,20 +22,11 @@ export default function PerfilCard({lenCatalogo}) {
     if (!username.trim() || username === dadosUsuario?.username) return;
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register/username', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: username.trim() }),
-        credentials: 'include'
-      });
-
-      if (response.ok) {
-        await ObterPerfil();
+      const result = await alterarUsernameAction(username.trim())
+      if (result.success) {
         alert(`Username alterado para: ${username}`);
-      } else {
-        const erroData = await response.json();
-        alert(erroData.mensagem || 'Erro ao alterar username.');
-      }
+      } 
+
     } catch (error) {
       console.warn('Error:', error);
     }
@@ -57,19 +38,10 @@ export default function PerfilCard({lenCatalogo}) {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/auth/register/icon', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ icon_url: icon }),
-        credentials: 'include'
-      });
+      const result = await alterarIconAction(icon)
 
-      if (response.ok) {
-        await ObterPerfil();
+      if (result.success) {
         alert(`Icone alterado com sucesso`);
-      } else {
-        const erroData = await response.json();
-        alert(erroData.mensagem || 'Erro ao alterar icone.');
       }
     } catch (error) {
       console.warn('Error:', error);
@@ -133,7 +105,7 @@ export default function PerfilCard({lenCatalogo}) {
         </div>
         <div id='info' className='flex w-full items-center justify-end p-2'>
           <div className='flex flex-col items-center justify-center'>
-            <p className='w-max text-xl font-bold'>{lenCatalogo}</p>
+            <p className='w-max text-xl font-bold'>{lengthCatalog}</p>
             <p className='text-xs w-max'>Jogos</p>
           </div>
         </div>

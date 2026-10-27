@@ -1,14 +1,38 @@
 const API_BASE = 'http://localhost:5000/api';
 
-export async function ObterPerfil() {
-    const response = await fetch(`${API_BASE}/auth/me`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include'
-    });
-    const dados = await response.json();
-    return dados;
-  };
+export async function ObterPerfil(cookieHeader) {
+  const response = await fetch(`${API_BASE}/auth/me`, {
+  method: 'GET',
+  headers: { 'Content-Type': 'application/json', 
+    Cookie: cookieHeader || ''}
+  });
+
+  const dados = await response.json();
+  return dados;
+};
+
+export async function AlterarUsernamePerfil(username, cookieHeader) {
+  const response = await fetch(`${API_BASE}/auth/register/username`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json', 
+    Cookie: cookieHeader || ''},
+  body: JSON.stringify({ username: username }),
+  });
+
+  return response;
+};
+
+export async function AlterarIconPerfil(icon, cookieHeader) {
+  const response = await fetch(`${API_BASE}/auth/register/icon`, {
+  method: 'PUT',
+  headers: { 'Content-Type': 'application/json', 
+    Cookie: cookieHeader || ''},
+  body: JSON.stringify({ icon_url: icon }),
+  });
+
+  return response;
+};
+
 
 export async function ObterJogos() {
     const response = await fetch(`${API_BASE}/games/`);
@@ -34,13 +58,13 @@ export async function ObterJogoInfo(nome) {
     return dados
   };
 
-export async function ObterCatalogo() {
+export async function ObterCatalogo(cookieHeader) {
     const response = await fetch(`${API_BASE}/catalog/`, {
-        method: 'GET',
-        headers: {
-        'Content-Type': 'application/json'},
-        credentials: 'include'
-      })
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json',
+        Cookie: cookieHeader || ''},
+    })
     const dados = await response.json();
     return dados
 }
@@ -179,7 +203,7 @@ export async function DeletarJogo(game_id, cookieHeader) {
 }
 
 export async function AddJogo(dados_jogo, cookieHeader) {
-  const response = await fetch('http://localhost:5000/api/games/', {
+  const response = await fetch(`${API_BASE}/games/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json',
       Cookie: cookieHeader || ''},
