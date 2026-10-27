@@ -181,7 +181,12 @@ def add_game():
             cover_url=cover_url, 
             description=description
         )
-        db.session.add(new_game)
+        try:
+            db.session.add(new_game)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': 'Jogo já cadastrado.'}), 409
 
         for tag_name in tags:
             tag_obj = Tags.query.filter_by(name=tag_name).first()
@@ -242,6 +247,14 @@ def patch_game(id):
                 genre_obj = Genres(name=genre)
             new_genres.append(genre_obj)       
         game.genres = new_genres
+    if 'developers' in data:
+        new_devs = []
+        for dev in data['developers']:
+            dev_obj = Developers.query.filter_by(name=dev).first()
+            if not dev_obj:
+                dev_obj = Developers(name=dev)
+            new_devs.append(dev_obj)       
+        game.developers = new_devs
     if 'tags' in data:
         new_tags = []
         for tag in data['tags']:
