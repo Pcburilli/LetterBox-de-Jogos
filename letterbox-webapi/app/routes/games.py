@@ -35,7 +35,7 @@ def get_games_search():
 
     return jsonify({
         'games': games_dict,
-        'total_paginas': pagination.pages
+        'total_page': pagination.pages
     }), 200
 
 # Obter via filters (genres, tags, developers...)
