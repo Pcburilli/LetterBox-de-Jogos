@@ -122,7 +122,7 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
   }
 
   if (!jogo) {
-    return <p className='w-full text-center'>Carregando...</p>;
+    return <p className='w-full text-center mt-2'>Jogo inexistente.</p>;
   }
   return (
     <div>
@@ -156,9 +156,10 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
             )
           ) : null}
         </div>
+
         <div id='principal' className='flex flex-col grow-2 h-fit gap-2'>
           <h1 className='text-4xl font-bold'>{jogo?.name}</h1>
-          <p className='text-2xl text-primary-200'>{jogo?.year}</p>
+          <input type="date" value={jogo?.year} disabled className='text-2xl text-primary-200'></input>
           <div className='w-full h-fit rounded-2xl grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2'>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
               <p>{infoGame?.media_rate ?? 0}</p>

@@ -26,7 +26,6 @@ export default function TableGames({jogos, totalPage}) {
 
     const DeletarGame = async (e, game_id) => {
     e.preventDefault()
-    console.log(game_id)
 
     const confirmar = window.confirm("Prosseguir com a EXCLUSÃO do jogo? *Será excluido todos os relacionamentos (notas, reviews...)");
 
