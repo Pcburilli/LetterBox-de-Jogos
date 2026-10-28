@@ -1,33 +1,25 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation'; // Usado para direcionamento
+
+import { useRouter } from 'next/navigation';
+import { FazerLogin } from '@/services/api';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const router = useRouter();
-  const [urlimage, setUrlImage] = useState(null)
 
   const HandleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/login', {
-        method:'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include', // necessário para salvar cookies
-        body: JSON.stringify({email, password}),
-      });
-      const resultado = await response.json();
 
-      if (response.ok) {
-        console.log('Login realizado:', resultado);
+    const formData = new FormData(e.target)
+    const dados = Object.fromEntries(formData)
+
+    try {
+      const result = await FazerLogin(dados)
+
+      if (result.ok) {
         router.refresh(); 
         router.replace('/perfil')
       }
-      else if (response.status === 401) {
-        console.warn('Dados incorretos:', resultado);
+      else if (result.status === 401) {
         alert('Dados incorretos ou não cadastrado.');
       }
     } catch (error) {
@@ -48,19 +40,18 @@ export default function LoginPage() {
         </div>
 
         <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form onSubmit={HandleLogin} action="#" method="POST" className="space-y-6">
+
+          <form onSubmit={HandleLogin} className="space-y-6">
             <div>
               <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
                 E-mail
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
+                  name='email'
                   type='email'
                   required
                   autoComplete="email"
-                  value= {email}
-                  onChange= {(e) => setEmail(e.target.value)}
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
                 />
               </div>
@@ -74,10 +65,9 @@ export default function LoginPage() {
               </div>
               <div className="mt-2">
                 <input
+                  name='password'
                   id="password"
                   type="password"
-                  value= {password}
-                  onChange= {(e) => setPassword(e.target.value)}
                   required
                   autoComplete="current-password"
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"

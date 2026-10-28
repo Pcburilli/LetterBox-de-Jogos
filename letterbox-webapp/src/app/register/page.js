@@ -1,30 +1,26 @@
 'use client';
-import { useState } from 'react';
+
 import { useRouter } from 'next/navigation';
+import { FazerRegistro } from '@/services/api';
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const router = useRouter();
 
   const HandleRegister = async (e) => {
     e.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/register', {
-        method:'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({email, password}),
-      });
-      const resultado = await response.json();
 
-      if (response.ok) {
-        console.log('Cadastro realizado:', resultado);
+    const formData = new FormData(e.target)
+    const dados = Object.fromEntries(formData)
+
+    try {
+      const result = await FazerRegistro(dados)
+
+      if (result.ok) {
+        alert('Cadastro realizado com sucesso!');
         router.replace('/login')
       }
-      else if (response.status === 404) {
-        console.warn('Dados inválidos:', resultado);
+      else if (result.status === 409) {
+        alert('Dados inválidos.')
       }
     } catch (error) {
       console.error('Falha na conexão:', error);
@@ -44,7 +40,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form onSubmit={HandleRegister} action="#" method="POST" className="space-y-6">
+            <form onSubmit={HandleRegister} className="space-y-6">
               <div>
                 <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
                   E-mail
@@ -52,11 +48,10 @@ export default function RegisterPage() {
                 <div className="mt-2">
                   <input
                     id="email"
+                    name='email'
                     type='email'
                     required
                     autoComplete="email"
-                    value= {email}
-                    onChange= {(e) => setEmail(e.target.value)}
                     className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
                   />
                 </div>
@@ -70,10 +65,8 @@ export default function RegisterPage() {
                 </div>
                 <div className="mt-2">
                   <input
-                    id="password"
+                    name='password'
                     type="password"
-                    value= {password}
-                    onChange= {(e) => setPassword(e.target.value)}
                     required
                     autoComplete="current-password"
                     className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"

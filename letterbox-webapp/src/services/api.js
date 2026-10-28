@@ -1,5 +1,31 @@
 const API_BASE = 'http://localhost:5000/api';
 
+export async function FazerRegistro(dados) {
+  const response = await fetch(`${API_BASE}/auth/register`, {
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify(dados),
+  });
+
+  return response;
+};
+
+export async function FazerLogin(dados) {
+  const response = await fetch(`${API_BASE}/auth/login`, {
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
+    body: JSON.stringify(dados),
+  });
+
+  return response;
+};
+
 export async function ObterPerfil(cookieHeader) {
   const response = await fetch(`${API_BASE}/auth/me`, {
   method: 'GET',
@@ -33,9 +59,8 @@ export async function AlterarIconPerfil(icon, cookieHeader) {
   return response;
 };
 
-
-export async function ObterJogos() {
-    const response = await fetch(`${API_BASE}/games/`);
+export async function ObterInfoIndex() {
+    const response = await fetch(`${API_BASE}/index/`);
     const dados = await response.json();
     return dados
 }
