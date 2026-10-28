@@ -9,6 +9,8 @@ games_bp = Blueprint('games', __name__, url_prefix='/api/games')
 
 # Obter games
 @games_bp.route('/', methods=['GET'])
+@login_required
+@admin_required
 def get_games():
     games = Games.query.order_by(Games.id).all()
     games_dict = [u.to_dict() for u in games]

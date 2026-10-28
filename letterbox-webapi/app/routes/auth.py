@@ -62,7 +62,7 @@ def registrar_usuario():
         db.session.commit()
     except:
         db.session.rollback()
-        return jsonify('Email ou username já cadastrado.'), 409
+        return jsonify('Email já cadastrado.'), 409
     return jsonify('Cadastro realizado.'), 200
 
 # Alterar Username
