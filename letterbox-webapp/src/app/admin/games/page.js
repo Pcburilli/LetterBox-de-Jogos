@@ -12,7 +12,7 @@ export default async function GamesPage({ searchParams }) {
   const dados_jogos = await ObterJogosSearch(name, page)
 
   const listaJogos = dados_jogos?.games || [];
-  const totalPaginas = dados_jogos?.total_paginas || 1;
+  const totalPaginas = dados_jogos?.total_page || 1;
 
   return (
     <div id="div_principal" className="flex flex-col w-full max-w-6xl mx-auto mt-2 gap-2">
