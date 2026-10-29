@@ -6,16 +6,33 @@ export async function middleware(request) {
     const { pathname } = request.nextUrl; // rota do usuario
 
     if (pathname === '/login' && token) {
-        return NextResponse.redirect(new URL('/perfil', request.url));
-    } // Se acessar /login com token redireciona para /perfil
+        return NextResponse.redirect(new URL('/users', request.url));
+    } // Se acessar /login com token redireciona para /users
 
     if (pathname === '/register' && token) {
-        return NextResponse.redirect(new URL('/perfil', request.url));
-    } // Se acessar /register com token redireciona para /perfil
+        return NextResponse.redirect(new URL('/users', request.url));
+    } // Se acessar /register com token redireciona para /users
 
-    if (pathname === '/perfil' && token === undefined) {
+    if (pathname === '/users' && token === undefined) {
         return NextResponse.redirect(new URL('/login', request.url));
-    } // Se acessar /perfil sem token redireciona para /login
+    } else if (pathname === '/users' && token) {
+        try {
+            const response = await fetch('http://localhost:5000/api/auth/me', {
+                method: 'GET',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Cookie': `session=${token}`},
+                cache: 'no-store' 
+            });
+
+            const dados = await response.json();
+            return NextResponse.redirect(new URL(`/users/${dados.username}`, request.url));
+
+        } catch (error) {
+            console.error('Erro de autenticação no middleware:', error);
+            return NextResponse.redirect(new URL('/', request.url));
+        }
+    }
 
     if (pathname.startsWith('/admin')) {
         if (!token) {
@@ -46,5 +63,5 @@ export async function middleware(request) {
 
 // Configuração para interceptar as rotas
 export const config = {
-    matcher: ['/menu/:path*', '/login', '/register', '/perfil', '/search', '/admin/:path*'],
+    matcher: ['/menu/:path*', '/login', '/register', '/users', '/search', '/admin/:path*'],
 };
