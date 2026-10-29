@@ -42,16 +42,15 @@ export default function RegisterPage() {
           <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
             <form onSubmit={HandleRegister} className="space-y-6">
               <div>
-                <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
-                  E-mail
+                <label htmlFor="username" className="block text-sm/6 font-medium text-gray-100">
+                  Username
                 </label>
                 <div className="mt-2">
                   <input
-                    id="email"
-                    name='email'
-                    type='email'
+                    name='username'
+                    type='text'
                     required
-                    autoComplete="email"
+                    autoComplete="username"
                     className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
                   />
                 </div>

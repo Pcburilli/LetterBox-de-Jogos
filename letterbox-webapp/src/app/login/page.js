@@ -17,7 +17,7 @@ export default function LoginPage() {
 
       if (result.ok) {
         router.refresh(); 
-        router.replace('/perfil')
+        router.replace('/users')
       }
       else if (result.status === 401) {
         alert('Dados incorretos ou não cadastrado.');
@@ -43,15 +43,15 @@ export default function LoginPage() {
 
           <form onSubmit={HandleLogin} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm/6 font-medium text-gray-100">
-                E-mail
+              <label htmlFor="username" className="block text-sm/6 font-medium text-gray-100">
+                Username
               </label>
               <div className="mt-2">
                 <input
-                  name='email'
-                  type='email'
+                  name='username'
+                  type='text'
                   required
-                  autoComplete="email"
+                  autoComplete="username"
                   className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
                 />
               </div>
