@@ -26,7 +26,16 @@ export async function FazerLogin(dados) {
   return response;
 };
 
-export async function ObterPerfil(cookieHeader) {
+export async function ObterInfoUser(username) {
+    const response = await fetch(`${API_BASE}/users/${username}`, {
+      method: 'GET',
+      headers: {
+      'Content-Type': 'application/json'}
+    })
+    return response
+}
+
+export async function AuthPerfil(cookieHeader) {
   const response = await fetch(`${API_BASE}/auth/me`, {
   method: 'GET',
   headers: { 'Content-Type': 'application/json', 
@@ -82,17 +91,6 @@ export async function ObterJogoInfo(nome) {
     const dados = await response.json();
     return dados
   };
-
-export async function ObterCatalogo(cookieHeader) {
-    const response = await fetch(`${API_BASE}/catalog/`, {
-      method: 'GET',
-      headers: {
-      'Content-Type': 'application/json',
-        Cookie: cookieHeader || ''},
-    })
-    const dados = await response.json();
-    return dados
-}
 
 export async function VerificarJogoCatalogo(idJogo) {
     const response = await fetch(`${API_BASE}/catalog/${idJogo}`, {
