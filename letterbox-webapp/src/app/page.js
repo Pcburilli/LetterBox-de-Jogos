@@ -73,7 +73,9 @@ export default async function Home() {
                 </div>
 
                 <div id='inferior' className='flex gap-2 items-center shrink-0'>
-                  <img src={review?.icon_url} alt={review?.username} className='w-8 h-8 object-cover rounded-full' />
+                  <Link href={`/users/${review?.username}`} prefetch={false}>
+                    <img src={review?.icon_url} alt={review?.username} className='w-8 h-8 object-cover rounded-full hover:bg-primary-700' />
+                  </Link>
                   <h1 className='text-lx font-medium truncate capitalize'>{review?.username}</h1>
                 </div>
               </div>

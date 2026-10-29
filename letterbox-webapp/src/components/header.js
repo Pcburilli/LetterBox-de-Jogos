@@ -50,7 +50,7 @@ export default function Header({ isLoggedIn }) {
                   <Link href="/" className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
                     INÍCIO
                   </Link>
-                  <Link href="/perfil" className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
+                  <Link href="/users" prefetch={false} className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
                     PERFIL
                   </Link>
                   <Link href="/games" className="text-sm font-medium text-primary-200 hover:text-primary-100 transition-colors">
@@ -123,7 +123,8 @@ export default function Header({ isLoggedIn }) {
           {isLoggedIn ? (
             <>
               <Link
-                href="/perfil"
+                href="/users"
+                prefetch={false}
                 onClick={() => setIsMenuOpen(false)}
                 className="block text-slate-300 hover:text-primary-100 py-1 text-base font-medium"
                 >

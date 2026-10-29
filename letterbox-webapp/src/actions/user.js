@@ -17,11 +17,8 @@ export async function alterarUsernameAction(username) {
     const response = await AlterarUsernamePerfil(username, cookieHeader);
 
     if (response.ok) {
-      revalidatePath('/perfil');
-
       return { success: true, status: 200 };
     }
-    console.log('teste')
 
     return { success: false, status: response.status, error: 'Erro ao atualizar username.' };
   } catch (error) {
