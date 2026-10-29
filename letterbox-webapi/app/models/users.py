@@ -4,9 +4,8 @@ from flask_login import UserMixin
 class Users(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    username = db.Column(db.String(80), unique=True)
+    username = db.Column(db.String(80), unique=True, nullable=False)
     icon_url = db.Column(db.String(255), nullable=True, default='/icons_user/icon1.png')
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
@@ -17,7 +16,6 @@ class Users(db.Model, UserMixin):
         return {
             'id': self.id,
             'username': self.username,
-            'email': self.email,
             'icon_url': self.icon_url
         }
 

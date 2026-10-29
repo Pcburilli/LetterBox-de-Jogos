@@ -10,10 +10,10 @@ auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 @auth_bp.route('/login', methods=['POST'])
 def login():
     data_user = request.get_json()
-    email = data_user['email'].lower().strip()
+    username = data_user['username'].lower().strip()
     password = data_user['password']
 
-    user = db.session.scalars(db.select(Users).filter_by(email=email)).first()
+    user = db.session.scalars(db.select(Users).filter_by(username=username)).first()
     if user and check_password_hash(user.password, password):
         login_user(user)
         return jsonify({
@@ -21,7 +21,7 @@ def login():
             'usuario': user.to_dict()
         }), 200
         
-    return jsonify('Email ou Senha incorretas'), 401
+    return jsonify('Username ou Senha incorretas'), 401
 
 # Logout
 @auth_bp.route('/logout', methods=['POST'])
@@ -35,10 +35,7 @@ def logout():
 @login_required
 def get_current_user():
     return jsonify({
-        'user_id': current_user.id,
-        'email': current_user.email,
         'username': current_user.username,
-        'icon_url': current_user.icon_url,
     }), 200
 
 # Validar token_admin
@@ -52,17 +49,17 @@ def check_admin_access():
 @auth_bp.route('/register', methods=['POST'])
 def registrar_usuario():
     data_user = request.get_json()
-    email = data_user['email'].lower().strip()
-    password = data_user['password']
+    username = data_user['username'].lower().strip()
+    password = data_user['password'].strip()
     password_hash = generate_password_hash(password)
 
     try:
-        new_user = Users(email=email, password=password_hash)
+        new_user = Users(username=username, password=password_hash)
         db.session.add(new_user)
         db.session.commit()
     except:
         db.session.rollback()
-        return jsonify('Email já cadastrado.'), 409
+        return jsonify('Username já cadastrado.'), 409
     return jsonify('Cadastro realizado.'), 200
 
 # Alterar Username
@@ -71,7 +68,11 @@ def registrar_usuario():
 def update_username():
     username = request.get_json()['username'].lower().strip()
     current_user.username = username
-    db.session.commit()
+    try:
+        db.session.commit()
+    except:
+        db.session.rollback()
+        return jsonify('Username já cadastrado.'), 409
 
     return jsonify({'mensagem': 'Perfil atualizado com sucesso!'}), 200
 

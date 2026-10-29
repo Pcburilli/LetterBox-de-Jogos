@@ -5,45 +5,6 @@ from flask_login import login_required, current_user
 
 catalog_bp = Blueprint('catalog', __name__, url_prefix='/api/catalog')
 
-# Retornar biblioteca (Jogos) do usuário
-@catalog_bp.route('/', methods=['GET'])
-@login_required
-def catalog_user():
-    search = (
-        db.select(
-            Games.id,
-            Games.name,
-            Games.name_slug,
-            Games.cover_url,
-            Games.year,
-            Reviews.rate,
-            Reviews.review,
-            Games_Users.status
-            )
-            .select_from(Games_Users)
-            .join(Games, Games_Users.game_id == Games.id)
-            .join(Reviews, (Reviews.game_id == Games.id) & 
-            (Reviews.user_id == current_user.id), isouter=True)
-            .filter(Games_Users.user_id == current_user.id)
-    )
-    user_games = db.session.execute(search).all()
-
-    catalog = [
-        {
-            'id': row.id,
-            'name': row.name,
-            'name_slug': row.name_slug,
-            'cover_url': row.cover_url,
-            'year': row.year,
-            'rate': row.rate,
-            'review': row.review,
-            'status': row.status
-        }
-        for row in user_games
-    ]
-
-    return jsonify(catalog), 200
-
 # Retorna False ou dados do jogo (Se há ou não jogo na biblioteca do usuário)
 @catalog_bp.route('/<game_id>')
 @login_required

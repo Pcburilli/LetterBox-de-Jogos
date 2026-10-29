@@ -33,11 +33,13 @@ def create_app():
     from app.routes.auth import auth_bp
     from app.routes.catalog import catalog_bp 
     from app.routes.index import index_bp
+    from app.routes.user import users_bp
 
     app.register_blueprint(games_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(catalog_bp)
     app.register_blueprint(index_bp)
+    app.register_blueprint(users_bp)
 
     return app
 
