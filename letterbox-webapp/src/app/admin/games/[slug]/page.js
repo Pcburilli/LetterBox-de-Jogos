@@ -7,16 +7,17 @@ export default async function Page({ params }) {
   const { slug } = await params
   const slugDecodificado = decodeURIComponent(slug);
 
-  const [dadosJogo, dadosInfoGame] = await Promise.all([
-  ObterJogo(slug).catch((error) => {
-    console.error('Erro ao buscar jogo:', error);
-    return null;
-  }),
-  ObterJogoInfo(slug).catch((error) => {
-    console.error('Erro ao buscar info do jogo:', error);
-    return null;
-  }),
-]);
+  const [dadosGeraisJogo, dadosInfoGame] = await Promise.all([
+    ObterJogo(slug).catch((error) => {
+      console.error('Erro ao buscar jogo:', error);
+      return null;
+    }),
+    ObterJogoInfo(slug).catch((error) => {
+      console.error('Erro ao buscar info do jogo:', error);
+      return null;
+    }),
+  ]);
+  const dadosJogo = dadosGeraisJogo?.game
 
   return (
     <div className='mt-2'>

@@ -1,4 +1,6 @@
 import GamePage from '@/components/game/GamePage';
+import GameReviews from '@/components/game/GameReviews';
+
 import { ObterJogo, ObterJogoInfo } from '@/services/api';
 import { cookies } from 'next/headers';
 
@@ -8,7 +10,7 @@ export default async function Page({ params }) {
   const cookieStore = await cookies();
   const isLoggedIn = cookieStore.has('session');
 
-  const [dadosJogo, dadosInfoGame] = await Promise.all([
+  const [dadosGeraisJogo, dadosInfoGame] = await Promise.all([
     ObterJogo(slug).catch((error) => {
       console.error('Erro ao buscar jogo:', error);
       return null;
@@ -19,12 +21,18 @@ export default async function Page({ params }) {
     }),
   ]);
 
+  const dadosJogo = dadosGeraisJogo?.game
+  const reviews = dadosGeraisJogo?.reviews || null
+
   return (
-    <GamePage
-      jogo={dadosJogo || null} 
-      infoGame={dadosInfoGame || null} 
-      isLoggedIn={isLoggedIn}
-      slug={slug}
-    />
+    <div className='w-full mt-2 md:mt-8 gap-2'>
+      <GamePage
+        jogo={dadosJogo || null} 
+        infoGame={dadosInfoGame || null} 
+        isLoggedIn={isLoggedIn}
+        slug={slug}
+      />
+      <GameReviews reviews={reviews}/>
+    </div>
   );
 }
