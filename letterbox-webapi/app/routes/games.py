@@ -1,9 +1,10 @@
 from flask import Blueprint, request, jsonify
 from app import db
-from app.models import Games, Reviews, Games_Users, Tags, Developers, Genres
+from app.models import Games, Reviews, Games_Users, Tags, Developers, Genres, Users
 from flask_login import login_required
 from app.utils.decorators import admin_required
 from sqlalchemy import func, case
+from app.utils.sanitizers import clean_html_text
 
 games_bp = Blueprint('games', __name__, url_prefix='/api/games')
 
@@ -76,13 +77,22 @@ def get_games_filters():
         'total_page': pagination.pages
     }), 200
 
-# Obter game via slug
+# Obter game + reviews (do respectivo game) via slug
 @games_bp.route('/<name_slug>', methods=['GET'])
 def get_game(name_slug):
+    name_slug = name_slug.lower().strip()
     game = db.one_or_404(db.select(Games).filter_by(name_slug=name_slug))
-    game_data = game.to_dict()
 
-    return jsonify(game_data), 200
+    stmt_reviews = db.select(Reviews.id, Reviews.rate, Reviews.review, Users.icon_url, Users.username)\
+        .join(Users, Reviews.user_id == Users.id)\
+        .where(Reviews.review.is_not(None), Reviews.review != '', Reviews.game_id == game.id)\
+        .order_by(Reviews.id.desc()).limit(5)
+    result_reviews = db.session.execute(stmt_reviews).mappings().all()
+
+    game_data = game.to_dict()
+    reviews_dict = [dict(r) for r in result_reviews]
+
+    return jsonify({'game': game_data, 'reviews': reviews_dict}), 200
 
 # Obter statistic game via slug
 @games_bp.route('/<name_slug>/statistics', methods=['GET'])
@@ -154,7 +164,7 @@ def add_game():
 
     name_slug = name.lower().replace(' ', '-')
     year = game_data.get('released')
-    description = game_data.get('description', '')
+    description = clean_html_text(game_data.get('description', ''))
     cover_url = None
 
     tags, genres, devs = [], [], []
