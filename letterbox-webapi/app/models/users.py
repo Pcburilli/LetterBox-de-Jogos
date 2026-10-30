@@ -1,16 +1,28 @@
 from app import db, login_manager
+import re
+from sqlalchemy.orm import validates
 from flask_login import UserMixin
 
 class Users(db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     password = db.Column(db.String(255), nullable=False)
-    username = db.Column(db.String(80), unique=True, nullable=False)
+    username = db.Column(db.String(15), unique=True, nullable=False)
     icon_url = db.Column(db.String(255), nullable=True, default='/icons_user/icon1.png')
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
     reviews = db.relationship('Reviews', backref='users', cascade="all, delete-orphan")
     library = db.relationship('Games_Users', backref='users', lazy=True)
+
+    @validates('username')
+    def validate_username(self, key, username):
+        if not username:
+            raise ValueError("O username não pode estar vazio.")
+        
+        if not re.match(r'^[a-zA-Z0-9_-]+$', username):
+            raise ValueError("O username deve conter apenas letras e números, sem caracteres especiais.")
+        
+        return username.lower()
 
     def to_dict(self):
         return {

@@ -47,7 +47,7 @@ def check_admin_access():
 
 # Registrar usuário
 @auth_bp.route('/register', methods=['POST'])
-def registrar_usuario():
+def register_user():
     data_user = request.get_json()
     username = data_user['username'].lower().strip()
     password = data_user['password'].strip()
@@ -57,6 +57,9 @@ def registrar_usuario():
         new_user = Users(username=username, password=password_hash)
         db.session.add(new_user)
         db.session.commit()
+    except ValueError as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
     except:
         db.session.rollback()
         return jsonify('Username já cadastrado.'), 409
@@ -67,9 +70,12 @@ def registrar_usuario():
 @login_required
 def update_username():
     username = request.get_json()['username'].lower().strip()
-    current_user.username = username
     try:
+        current_user.username = username
         db.session.commit()
+    except ValueError as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 400
     except:
         db.session.rollback()
         return jsonify('Username já cadastrado.'), 409
