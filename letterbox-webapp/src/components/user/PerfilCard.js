@@ -31,8 +31,11 @@ export default function PerfilCard({dadosUsuario, lengthCatalog, isUser}) {
         
         router.refresh();
         router.replace(`/users/${username}`);
+      } else if (result.status === 400) {
+        alert('Username não pode conter caracteres especiais.')
+        setUsername(dadosUsuario.username)
       } else {
-        alert('Username já cadastrado.')
+        alert('Username já existente.')
         setUsername(dadosUsuario.username)
       }
     } catch (error) {
@@ -100,7 +103,7 @@ export default function PerfilCard({dadosUsuario, lengthCatalog, isUser}) {
                   name="nome"
                   placeholder=" máx. 12 caract."
                   maxLength={12}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
                   value={username}
                   className="capitalize ml-1 pl-1.5 rounded bg-primary-900 text-white focus:outline-none max-w-32"
                 />

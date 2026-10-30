@@ -8,9 +8,15 @@ export default function RegisterPage() {
 
   const HandleRegister = async (e) => {
     e.preventDefault();
+    const regexPermitida = /^[a-zA-Z0-9_-]+$/;
 
     const formData = new FormData(e.target)
     const dados = Object.fromEntries(formData)
+  
+    if (!regexPermitida.test(dados.username)) {
+      alert("O username contém caracteres inválidos!");
+      return;
+    }
 
     try {
       const result = await FazerRegistro(dados)

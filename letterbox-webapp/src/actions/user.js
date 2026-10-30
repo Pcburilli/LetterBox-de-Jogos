@@ -18,6 +18,8 @@ export async function alterarUsernameAction(username) {
 
     if (response.ok) {
       return { success: true, status: 200 };
+    } else if(response.status === 400) {
+      return { success: false, status: response.status, error: 'Erro ao atualizar username. Não deve conter caracteres especiais.' };
     }
 
     return { success: false, status: response.status, error: 'Erro ao atualizar username.' };
