@@ -19,7 +19,7 @@ def create_app():
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     db.init_app(app)
-    CORS(app, supports_credentials=True, origins=["http://localhost:3000", "http://127.0.0.1:3000"]) # Suporte a comunicação em um unico PC e adicionado suporte ao envio de cookies para o front-end
+    CORS(app, supports_credentials=True, origins=["http://localhost:3000"]) # Suporte a comunicação em um unico PC e adicionado suporte ao envio de cookies para o front-end
 
     login_manager.init_app(app)
 

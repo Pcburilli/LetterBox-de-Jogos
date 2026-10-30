@@ -84,7 +84,7 @@ def delete_game_catalog(game_id):
             "message": "Jogo e avaliação removidos com sucesso!"
         }), 200
 
-    except Exception as e:
+    except:
         db.session.rollback()
         return jsonify({
             "status": "error",
