@@ -15,7 +15,7 @@ export default async function Home() {
   return (
     <main className="home-page">
       <div className="flex flex-col items-center">
-        <div className="w-full h-80 md:h-128 bg-cover bg-center bg-no-repeat rounded-4xl flex flex-col justify-end pb-8 relative" style={{ backgroundImage: `url(${game_random['cover_url']})`}}>
+        <div className="w-full h-80 md:h-128 bg-cover bg-center bg-no-repeat rounded-4xl flex flex-col justify-end pb-8 relative" style={{backgroundImage: game_random?.cover_url ? `url(${game_random.cover_url})` : undefined}}>
           <div className="absolute inset-0 bg-linear-to-t from-primary-900 via-slate-950/1 justify-end pb-8 px-4"></div>
           <div className="absolute inset-0 bg-linear-to-r from-primary-900 via-slate-950/1 justify-end pb-8 px-4"></div>
           <div className="absolute inset-0 bg-linear-to-l from-primary-900 via-slate-950/1 justify-end pb-8 px-4"></div>

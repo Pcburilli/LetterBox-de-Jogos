@@ -7,7 +7,7 @@ export default function TableGames({ gamesData }) {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const jogos = gamesData.games || [];
+    const jogos = gamesData?.games || [];
 
     const TrocarPag = (NewPage) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -24,7 +24,7 @@ export default function TableGames({ gamesData }) {
         return resultado
     }
 
-    const totalPage = PagList(gamesData['total_page']) || [];
+    const totalPage = PagList(gamesData?.total_page) || [];
     
     return (
         <div id="tabela_jogos" className="flex flex-col items-center">

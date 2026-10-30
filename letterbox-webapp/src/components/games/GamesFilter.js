@@ -27,22 +27,22 @@ export default function GamesFilter({genres, tags, devs}) {
             return;
         };
         
-        const genre_find = genres.find((g) => g === inputs['Gêneros']?.trim())
-        const tag_find = tags.find((t) => t === inputs['Tags'].trim())
-        const dev_find = devs.find((d) => d === inputs['Desenvolvedor'].trim())
+        const genre_find = genres?.find((g) => g === inputs['Gêneros']?.trim())
+        const tag_find = tags?.find((t) => t === inputs['Tags'].trim())
+        const dev_find = devs?.find((d) => d === inputs['Desenvolvedor'].trim())
         
         const isGenreInvalid = inputs['Gêneros']?.trim() !== '' && !genre_find;
-        const isTagInvalid = inputs['Tags'].trim() !== '' && !tag_find;
-        const isDevInvalid = inputs['Desenvolvedor'].trim() !== '' && !dev_find;
+        const isTagInvalid = inputs['Tags']?.trim() !== '' && !tag_find;
+        const isDevInvalid = inputs['Desenvolvedor']?.trim() !== '' && !dev_find;
 
         if (isGenreInvalid || isTagInvalid || isDevInvalid) {
             alert('Escolha opções válidas.');
             return;
         }
 
-        params.append('genres', inputs['Gêneros'].trim());
-        params.append('tags', inputs['Tags'].trim());
-        params.append('developer', inputs['Desenvolvedor'].trim());
+        params.append('genres', inputs['Gêneros']?.trim());
+        params.append('tags', inputs['Tags']?.trim());
+        params.append('developer', inputs['Desenvolvedor']?.trim());
         
         const queryString = params.toString();
         const rota = queryString ? `/games?${queryString}` : '/games';
@@ -50,15 +50,15 @@ export default function GamesFilter({genres, tags, devs}) {
         router.replace(rota);
     };
 
-    const filteredGenres = genres.filter(genre =>
+    const filteredGenres = genres?.filter(genre =>
         genre.toLowerCase().includes((inputs['Gêneros'] || '').toLowerCase())
     );
 
-    const filteredTags = tags.filter(tag =>
+    const filteredTags = tags?.filter(tag =>
         tag.toLowerCase().includes((inputs['Tags'] || '').toLowerCase())
     );
 
-    const filteredDevs = devs.filter(dev =>
+    const filteredDevs = devs?.filter(dev =>
         dev.toLowerCase().includes((inputs['Desenvolvedor'] || '').toLowerCase())
     );
 
@@ -71,7 +71,7 @@ export default function GamesFilter({genres, tags, devs}) {
             <button className='w-full h-8 bg-primary-700 hover:bg-primary-500 rounded-2xl md:hidden cursor-pointer' onClick={() => setFilterVisibility(prev => !prev)}>Filtros</button>
             <div className={`${filterVisibility ? 'block' : 'hidden'} md:grid`}>
                 <div className='flex flex-col gap-2'>
-                    {filtersList.map((filter) => (
+                    {filtersList?.map((filter) => (
                         <div key={filter['label']}>
                             <label htmlFor={filter['label']}>{filter['label']}</label>
                             <div className="relative group flex bg-primary-700 h-10">
@@ -79,8 +79,8 @@ export default function GamesFilter({genres, tags, devs}) {
                                 <ul className="hidden group-focus-within:block z-10 absolute left-0 top-10 h-fit max-h-40 bg-primary-400 w-full overflow-y-auto overflow-x-hidden scrollbar snap-y snap-mandatory">
                                     {filter['label'] === filtersList[0]['label'] && (
                                         <>
-                                            {filteredGenres.length > 0 ? (
-                                                filteredGenres.map((genre) => (
+                                            {filteredGenres?.length > 0 ? (
+                                                filteredGenres?.map((genre) => (
                                                     <li key={genre} className="p-2 hover:bg-primary-500 cursor-pointer" onMouseDown={(e) => e.preventDefault()} onClick={(e) => InputChange(filter['label'], genre)}>{genre}</li>
                                                 ))
                                             ) : (
@@ -90,8 +90,8 @@ export default function GamesFilter({genres, tags, devs}) {
                                     )}
                                     {filter['label'] === filtersList[1]['label'] && (
                                         <>
-                                            {filteredTags.length > 0 ? (
-                                                filteredTags.map((tag) => (
+                                            {filteredTags?.length > 0 ? (
+                                                filteredTags?.map((tag) => (
                                                     <li key={tag} className="p-2 hover:bg-primary-500 cursor-pointer" onMouseDown={(e) => e.preventDefault()} onClick={(e) => InputChange(filter['label'], tag)}>{tag}</li>
                                                 ))
                                             ) : (
@@ -101,8 +101,8 @@ export default function GamesFilter({genres, tags, devs}) {
                                     )}
                                     {filter['label'] === filtersList[2]['label'] && (
                                         <>
-                                            {filteredDevs.length > 0 ? (
-                                                filteredDevs.map((dev) => (
+                                            {filteredDevs?.length > 0 ? (
+                                                filteredDevs?.map((dev) => (
                                                     <li key={dev} className="p-2 hover:bg-primary-500 cursor-pointer" onMouseDown={(e) => e.preventDefault()} onClick={(e) => InputChange(filter['label'], dev)}>{dev}</li>
                                                 ))
                                             ) : (
