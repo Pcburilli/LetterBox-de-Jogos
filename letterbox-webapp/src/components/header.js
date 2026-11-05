@@ -3,21 +3,20 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Logout } from '@/services/api';
 
 export default function Header({ isLoggedIn }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const [search, setSearch] = useState('')
 
-  const Logout = async (e) => {
-    e?.preventDefault();
-    try {
-      const response = await fetch('http://localhost:5000/api/auth/logout', {
-        method: 'POST',
-        credentials: 'include',
-      });
+  const LogoutAction = async (e) => {
+    e.preventDefault();
 
-      if (response.ok) {
+    try {
+      const result = await Logout()
+
+      if (result.ok) {
         router.replace('/');
         router.refresh(); 
       }
@@ -93,7 +92,7 @@ export default function Header({ isLoggedIn }) {
           </form>
           {isLoggedIn && (
             <button
-              onClick={Logout}
+              onClick={LogoutAction}
               className="hidden md:flex px-5 py-2 ml-8 text-sm font-semibold text-primary-900 bg-primary-700 hover:bg-red-900 rounded-lg transition-all focus:ring-2 cursor-pointer"
             >
               SAIR
@@ -168,7 +167,7 @@ export default function Header({ isLoggedIn }) {
               <button
                 onClick={(e) => {
                   setIsMenuOpen(false);
-                  Logout(e);
+                  LogoutAction(e);
                 }}
                 className="block w-full text-center px-4 py-2 text-sm font-semibold text-primary-900 bg-primary-700 hover:bg-red-900 transition-all rounded-lg cursor-pointer"
                 >

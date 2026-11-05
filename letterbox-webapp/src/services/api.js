@@ -1,4 +1,8 @@
-const API_BASE = 'http://localhost:5000/api';
+const isServer = typeof window === 'undefined';
+
+const API_BASE = isServer
+  ? (process.env.INTERNAL_API_URL || 'http://localhost:5000/api')
+  : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api');
 
 export async function FazerRegistro(dados) {
   const response = await fetch(`${API_BASE}/auth/register`, {
@@ -21,6 +25,18 @@ export async function FazerLogin(dados) {
     },
     credentials: 'include',
     body: JSON.stringify(dados),
+  });
+
+  return response;
+};
+
+export async function Logout() {
+  const response = await fetch(`${API_BASE}/auth/logout`, {
+    method:'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    credentials: 'include',
   });
 
   return response;
@@ -231,6 +247,36 @@ export async function AddJogo(dados_jogo, cookieHeader) {
     headers: { 'Content-Type': 'application/json',
       Cookie: cookieHeader || ''},
     body: JSON.stringify(dados_jogo),
+  });
+
+  return response;
+}
+
+export async function ObterUsers(cookieHeader) {
+  const response = await fetch(`${API_BASE}/users/`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
+  });
+
+  return response;
+}
+
+export async function DeleteUser(id, cookieHeader) {
+  const response = await fetch(`${API_BASE}/users/${id}`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
+  });
+
+  return response;
+}
+
+export async function ObterReviews(cookieHeader) {
+  const response = await fetch(`${API_BASE}/users/reviews`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
   });
 
   return response;

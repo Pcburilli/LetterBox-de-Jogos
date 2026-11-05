@@ -5,6 +5,8 @@ export async function middleware(request) {
     const token = request.cookies.get('session')?.value; // obter token
     const { pathname } = request.nextUrl; // rota do usuario
 
+    const API_URL = process.env.INTERNAL_API_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+
     if (pathname === '/login' && token) {
         return NextResponse.redirect(new URL('/users', request.url));
     } // Se acessar /login com token redireciona para /users
@@ -17,7 +19,7 @@ export async function middleware(request) {
         return NextResponse.redirect(new URL('/login', request.url));
     } else if (pathname === '/users' && token) {
         try {
-            const response = await fetch('http://localhost:5000/api/auth/me', {
+            const response = await fetch(`${API_URL}/auth/me`, {
                 method: 'GET',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -39,7 +41,7 @@ export async function middleware(request) {
             return NextResponse.redirect(new URL('/', request.url))
         }
         try {
-            const response = await fetch('http://localhost:5000/api/auth/admin', {
+            const response = await fetch(`${API_URL}/auth/admin`, {
                 method: 'GET',
                 headers: { 
                     'Content-Type': 'application/json',
