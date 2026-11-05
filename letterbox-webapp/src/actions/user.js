@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { AlterarUsernamePerfil, AlterarIconPerfil } from '@/services/api';
+import { AlterarUsernamePerfil, AlterarIconPerfil, DeleteUser } from '@/services/api';
 
 export async function alterarUsernameAction(username) {
   const cookieStore = await cookies();
@@ -46,9 +46,37 @@ export async function alterarIconAction(icon) {
 
       return { success: true, status: 200 };
     }
-    console.log('teste')
 
     return { success: false, status: response.status, error: 'Erro ao atualizar username.' };
+  } catch (error) {
+    console.error('Falha na conexão:', error);
+    return { success: false, error: 'Erro de conexão com o servidor.' };
+  }
+}
+
+/* users em admin */
+
+export async function deleteUserAction(id) {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+  const isLoggedIn = cookieStore.has('session');
+
+  if (!isLoggedIn) {
+    return { success: false, error: 'Usuário não autenticado.' };
+  }
+
+  try {
+    const response = await DeleteUser(id, cookieHeader);
+
+    if (response.ok) {
+      revalidatePath('/admin/users');
+
+      return { success: true, status: 200 };
+    } else if (response.status === 403) {
+      return { success: false, status: 403, error: 'Usuário é admin.'};
+    }
+
+    return { success: false, status: response.status, error: 'Erro ao excluir usuário.' };
   } catch (error) {
     console.error('Falha na conexão:', error);
     return { success: false, error: 'Erro de conexão com o servidor.' };

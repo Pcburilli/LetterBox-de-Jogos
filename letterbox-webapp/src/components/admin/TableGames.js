@@ -16,31 +16,30 @@ export default function TableGames({jogos, totalPage}) {
     }
     
     const TrocarPage = (NewPage) => {
-    const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(searchParams.toString());
 
-    params.set('page', NewPage.toString());
+        params.set('page', NewPage.toString());
 
-    router.replace(`/admin/games?${params.toString()}`);
-
+        router.replace(`/admin/games?${params.toString()}`);
     }
 
     const DeletarGame = async (e, game_id) => {
-    e.preventDefault()
+        e.preventDefault()
 
-    const confirmar = window.confirm("Prosseguir com a EXCLUSÃO do jogo? *Será excluido todos os relacionamentos (notas, reviews...)");
+        const confirmar = window.confirm("Prosseguir com a EXCLUSÃO do jogo? *Será excluido todos os relacionamentos (notas, reviews...)");
 
-    if (confirmar) {
-        const result = await deletarGameAction(game_id)
-        
-        if(result.success) {
-            alert('Jogo deletado com sucesso.')
+        if (confirmar) {
+            const result = await deletarGameAction(game_id)
+            
+            if(result.success) {
+                alert('Jogo deletado com sucesso.')
+            } else {
+                alert(result.error || 'Erro ao excluir jogo.')
+            }
         } else {
-            alert(result.error || 'Erro ao excluir jogo.')
+            console.log('Ação cancelada.')
+            return
         }
-    } else {
-        console.log('Ação cancelada.')
-        return
-    }
     };
     
     return (
