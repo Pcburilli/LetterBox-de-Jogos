@@ -12,7 +12,7 @@ class Users(db.Model, UserMixin):
     is_admin = db.Column(db.Boolean, default=False, nullable=False)
 
     reviews = db.relationship('Reviews', backref='users', cascade="all, delete-orphan")
-    library = db.relationship('Games_Users', backref='users', lazy=True)
+    library = db.relationship('Games_Users', backref='users', lazy=True, cascade="all, delete-orphan")
 
     @validates('username')
     def validate_username(self, key, username):
@@ -28,7 +28,8 @@ class Users(db.Model, UserMixin):
         return {
             'id': self.id,
             'username': self.username,
-            'icon_url': self.icon_url
+            'icon_url': self.icon_url,
+            'is_admin': self.is_admin
         }
 
 @login_manager.user_loader
