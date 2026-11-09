@@ -252,8 +252,8 @@ export async function AddJogo(dados_jogo, cookieHeader) {
   return response;
 }
 
-export async function ObterUsers(cookieHeader) {
-  const response = await fetch(`${API_BASE}/users/`, {
+export async function ObterUsers(cookieHeader, page) {
+  const response = await fetch(`${API_BASE}/users?page=${page}`, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json',
       Cookie: cookieHeader || ''},
@@ -272,9 +272,19 @@ export async function DeleteUser(id, cookieHeader) {
   return response;
 }
 
-export async function ObterReviews(cookieHeader) {
-  const response = await fetch(`${API_BASE}/users/reviews`, {
+export async function ObterReviews(cookieHeader, page) {
+  const response = await fetch(`${API_BASE}/users/reviews?page=${page}`, {
     method: 'GET',
+    headers: { 'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
+  });
+
+  return response;
+}
+
+export async function DeleteReview(id, cookieHeader) {
+  const response = await fetch(`${API_BASE}/users/reviews/${id}`, {
+    method: 'DELETE',
     headers: { 'Content-Type': 'application/json',
       Cookie: cookieHeader || ''},
   });

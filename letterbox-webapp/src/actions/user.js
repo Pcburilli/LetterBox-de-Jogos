@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { revalidatePath } from 'next/cache';
-import { AlterarUsernamePerfil, AlterarIconPerfil, DeleteUser } from '@/services/api';
+import { AlterarUsernamePerfil, AlterarIconPerfil, DeleteUser, DeleteReview } from '@/services/api';
 
 export async function alterarUsernameAction(username) {
   const cookieStore = await cookies();
@@ -77,6 +77,31 @@ export async function deleteUserAction(id) {
     }
 
     return { success: false, status: response.status, error: 'Erro ao excluir usuário.' };
+  } catch (error) {
+    console.error('Falha na conexão:', error);
+    return { success: false, error: 'Erro de conexão com o servidor.' };
+  }
+}
+
+export async function deleteReviewAction(id) {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.toString();
+  const isLoggedIn = cookieStore.has('session');
+
+  if (!isLoggedIn) {
+    return { success: false, error: 'Usuário não autenticado.' };
+  }
+
+  try {
+    const response = await DeleteReview(id, cookieHeader);
+
+    if (response.ok) {
+      revalidatePath('/admin/users');
+
+      return { success: true, status: 200 };
+    }
+
+    return { success: false, status: response.status, error: 'Erro ao excluir review.' };
   } catch (error) {
     console.error('Falha na conexão:', error);
     return { success: false, error: 'Erro de conexão com o servidor.' };
