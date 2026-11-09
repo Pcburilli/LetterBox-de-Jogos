@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify
+from flask import Blueprint, jsonify, request
 from app import db
 from app.models import Games, Games_Users, Reviews, Users
 from app.utils.decorators import admin_required
@@ -9,11 +9,24 @@ users_bp = Blueprint('users', __name__, url_prefix='/api/users')
 @users_bp.route('/', methods=['GET'])
 @admin_required
 def get_info_users():
-    users_search = db.select(Users.id, Users.username, Users.icon_url)
-    users_data = db.session.execute(users_search).mappings().all()
-    users_dict = [dict(u) for u in users_data]
+    page = request.args.get('page', default=1, type=int)
 
-    return jsonify({'users': users_dict}), 200
+    pagination = Users.query.with_entities(
+        Users.id, 
+        Users.username, 
+        Users.icon_url
+    ).paginate(page=page, per_page=12, error_out=False)
+
+    users_dict = [
+        {
+            "id": u.id,
+            "username": u.username,
+            "icon_url": u.icon_url
+        }
+        for u in pagination.items
+    ]
+
+    return jsonify({'users': users_dict, 'total_page': pagination.pages}), 200
 
 # Retornar catalog e dados do user (não sensiveis)
 @users_bp.route('/<username>', methods=['GET'])
@@ -75,12 +88,55 @@ def delete_user(id):
 @users_bp.route('/reviews', methods=['GET'])
 @admin_required
 def get_info_reviews():
-    reviews_search = db.select(Reviews.id, Reviews.rate, Reviews.review, Users.icon_url, Users.username, Games.cover_url, Games.name, Games.name_slug)\
-            .where(Reviews.review.is_not(None), Reviews.review != '')\
-            .join(Games)\
-            .join(Users)\
-            .order_by(Reviews.id.desc())
-    result_reviews = db.session.execute(reviews_search).mappings().all()
-    reviews_dict = [dict(r) for r in result_reviews]
+    page = request.args.get('page', default=1, type=int)
 
-    return jsonify({'reviews': reviews_dict}), 200
+    pagination = Reviews.query\
+        .join(Games)\
+        .join(Users)\
+        .filter(Reviews.review.is_not(None), Reviews.review != '')\
+        .with_entities(
+            Reviews.id,
+            Reviews.rate,
+            Reviews.review,
+            Users.icon_url,
+            Users.username,
+            Games.cover_url,
+            Games.name.label('game_name'),
+            Games.name_slug
+        )\
+        .order_by(Reviews.id.desc())\
+        .paginate(page=page, per_page=12, error_out=False)
+
+    reviews_dict = [
+        {
+            "id": r.id,
+            "rate": r.rate,
+            "review": r.review,
+            "icon_url": r.icon_url,
+            "username": r.username,
+            "cover_url": r.cover_url,
+            "name": r.game_name,
+            "name_slug": r.name_slug
+        }
+        for r in pagination.items
+    ]
+
+    return jsonify({'reviews': reviews_dict, 'total_page': pagination.pages}), 200
+
+# Excluir review
+@users_bp.route('/reviews/<int:id>', methods=['DELETE'])
+@admin_required
+def delete_review(id):
+    try:
+        review = Reviews.query.get(id)
+        
+        if not review:
+            return jsonify({'error': 'Review inexistente.'}), 404
+        
+        db.session.delete(review)
+        db.session.commit()
+
+        return jsonify({'message': f"Review '{review.id}' foi excluido com sucesso."}), 200
+    except:
+        db.session.rollback()
+        return jsonify({'error': 'Erro ao excluir review no banco de dados.'}), 500
