@@ -41,7 +41,7 @@ export default async function GamesPage({ searchParams }) {
     <div id="div_principal" className="flex flex-col md:flex-row w-full max-w-6xl mx-auto mt-2 md:mt-8 gap-2">
       <GamesFilter genres={genresData} tags={tagsData} devs={devsData}/>
 
-      <TableGames gamesData={gamesData}/>
+      <TableGames gamesData={gamesData} PageAtual={page || 1}/>
     </div>
   );
 };

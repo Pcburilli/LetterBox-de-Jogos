@@ -3,17 +3,47 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { deletarGameAction } from '@/actions/gameAdmin';
 
-export default function TableGames({jogos, totalPage}) {
+export default function TableGames({jogos, totalPage, PageAtual}) {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const PagList = (total) => {
-    let resultado = []
-    for (let p = 1; p <= total; p++) {
-        resultado.push(p)
-    }
-    return resultado  
-    }
+    const PagList = (totalStr, vizinhos = 1) => {
+        const total = Number(totalStr);
+        const pageAtual = Number(PageAtual);
+
+        if (total <= 7) {
+        return Array.from({ length: total }, (_, i) => i + 1);
+        }
+
+        let inicio = Math.max(1, pageAtual - vizinhos);
+        let fim = Math.min(total, pageAtual + vizinhos);
+
+        if (pageAtual <= 3) {
+        inicio = 1;
+        fim = 5;
+        } else if (pageAtual >= total - 2) {
+        inicio = total - 4;
+        fim = total;
+        }
+
+        const paginas = [];
+
+        if (inicio > 1) {
+        paginas.push(1);
+        if (inicio > 2);
+        }
+
+        for (let p = inicio; p <= fim; p++) {
+        paginas.push(p);
+        }
+
+        if (fim < total) {
+        if (fim < total - 1);
+        paginas.push(total);
+        }
+
+        return paginas;
+    };
     
     const TrocarPage = (NewPage) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -67,7 +97,7 @@ export default function TableGames({jogos, totalPage}) {
 
             <div className='flex justify-center gap-3'>
             {PagList(totalPage)?.map((pag) => (
-                <button key={pag} onClick={() => TrocarPage(pag)} className='text-2xl cursor-pointer text-primary-300 hover:text-primary-200'>●</button>
+                <button key={pag} onClick={() => TrocarPage(pag)} className='cursor-pointer text-primary-300 hover:text-primary-200'>{pag}</button>
             ))}
             </div>
         </div>

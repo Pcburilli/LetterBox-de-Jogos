@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function TableGames({ gamesData }) {
+export default function TableGames({ gamesData, PageAtual }) {
     const searchParams = useSearchParams();
     const router = useRouter();
 
@@ -16,13 +16,43 @@ export default function TableGames({ gamesData }) {
         router.replace(`/games?${params.toString()}`);
     }
 
-    const PagList = (total) => {
-        let resultado = []
-        for (let p = 1; p <= total; p++) {
-            resultado.push(p)
+    const PagList = (totalStr, vizinhos = 1) => {
+        const total = Number(totalStr);
+        const pageAtual = Number(PageAtual);
+
+        if (total <= 7) {
+        return Array.from({ length: total }, (_, i) => i + 1);
         }
-        return resultado
-    }
+
+        let inicio = Math.max(1, pageAtual - vizinhos);
+        let fim = Math.min(total, pageAtual + vizinhos);
+
+        if (pageAtual <= 3) {
+        inicio = 1;
+        fim = 5;
+        } else if (pageAtual >= total - 2) {
+        inicio = total - 4;
+        fim = total;
+        }
+
+        const paginas = [];
+
+        if (inicio > 1) {
+        paginas.push(1);
+        if (inicio > 2);
+        }
+
+        for (let p = inicio; p <= fim; p++) {
+        paginas.push(p);
+        }
+
+        if (fim < total) {
+        if (fim < total - 1);
+        paginas.push(total);
+        }
+
+        return paginas;
+    };
 
     const totalPage = PagList(gamesData?.total_page) || [];
     
@@ -49,7 +79,7 @@ export default function TableGames({ gamesData }) {
 
             <div className='flex justify-center gap-3'>
             {totalPage?.map((pag) => (
-                <button key={pag} onClick={() => TrocarPag(pag)} className='text-2xl cursor-pointer text-primary-300 hover:text-primary-200'>●</button>
+                <button key={pag} onClick={() => TrocarPag(pag)} className='cursor-pointer text-primary-300 hover:text-primary-200'>{pag}</button>
             ))}
             </div>
       </div>

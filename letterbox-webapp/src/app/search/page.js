@@ -14,7 +14,7 @@ export default async function SearchGame({ searchParams }) {
 
   return (
     <div id="div_principal" className="w-full max-w-6xl mx-auto mt-8">
-      <TableGames gamesData={gamesData} search={search}/>
+      <TableGames gamesData={gamesData} search={search} PageAtual={page || 1}/>
     </div>
   );
 }

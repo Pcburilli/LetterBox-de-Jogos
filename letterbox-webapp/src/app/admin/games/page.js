@@ -9,7 +9,10 @@ export default async function GamesPage({ searchParams }) {
   const name = query.q || '';
   const page = query.page || '';
 
-  const dados_jogos = await ObterJogosSearch(name, page)
+  const dados_jogos = await (await ObterJogosSearch(name, page).catch((error) => {
+    console.error('Erro ao buscar usuários:', error);
+    return null;
+  }))
 
   const listaJogos = dados_jogos?.games || [];
   const totalPaginas = dados_jogos?.total_page || 1;
@@ -20,7 +23,7 @@ export default async function GamesPage({ searchParams }) {
 
       <SearchGame />
 
-      <TableGames jogos={listaJogos} totalPage={totalPaginas}/>
+      <TableGames jogos={listaJogos} totalPage={totalPaginas} PageAtual={page || 1}/>
 
     </div>
   );

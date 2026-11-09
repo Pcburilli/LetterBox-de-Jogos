@@ -7,7 +7,7 @@ export default function AdminPage() {
     <div className='grid place-items-center mt-2 w-full max-w-6xl mx-auto gap-2'>
       <NavBarAdmin/>
       <div>
-        Página inicial Admin
+        Dashboard para admin.
       </div>
     </div>
   )
