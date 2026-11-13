@@ -34,12 +34,14 @@ def create_app():
     from app.routes.catalog import catalog_bp 
     from app.routes.index import index_bp
     from app.routes.users import users_bp
+    from app.routes.dashboard import dashboard_bp
 
     app.register_blueprint(games_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(catalog_bp)
     app.register_blueprint(index_bp)
     app.register_blueprint(users_bp)
+    app.register_blueprint(dashboard_bp)
 
     return app
 
