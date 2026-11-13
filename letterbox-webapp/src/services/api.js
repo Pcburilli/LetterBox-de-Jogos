@@ -291,3 +291,14 @@ export async function DeleteReview(id, cookieHeader) {
 
   return response;
 }
+
+export async function ObterDashboard(cookieHeader) {
+  const response = await fetch(`${API_BASE}/dashboard/`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json',
+      Cookie: cookieHeader || ''},
+  });
+
+  const dados = await response.json();
+  return dados;
+}
