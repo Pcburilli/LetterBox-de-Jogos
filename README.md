@@ -192,6 +192,23 @@ npm run dev
 
 ---
 
+### Primeiro acesso (Administrador)
+
+Após iniciar a aplicação pela primeira vez:
+
+1. Acesse a interface web e crie um usuário utilizando exatamente o username **`admin`** (com qualquer senha de sua preferência).
+2. Reinicie o serviço do back-end para ativar as permissões administrativas:
+
+```bash
+# Com Docker Compose:
+docker compose restart webapi
+
+# Sem Docker (desenvolvimento local):
+# Pare o terminal da API (Ctrl + C) e execute novamente: py run.py
+```
+
+---
+
 ## Variáveis de ambiente
 
 Com Docker, o projeto usa um único arquivo `.env`, na raiz, que **não deve ser versionado**. Para desenvolvimento local (sem Docker), o front-end usa também um `.env` próprio.
