@@ -8,16 +8,16 @@ O **LetterBox de Jogos** é uma aplicação web para descobrir, organizar e aval
 
 ## Sumário
 
-- [Funcionalidades](#-funcionalidades)
-- [Tecnologias](#-tecnologias)
-- [Arquitetura](#-arquitetura)
-- [Estrutura do repositório](#-estrutura-do-repositório)
-- [Pré-requisitos](#-pré-requisitos)
-- [Como executar](#-como-executar)
-- [Variáveis de ambiente](#-variáveis-de-ambiente)
-- [Endpoints da API](#-endpoints-da-api)
-- [Documentação](#-documentação)
-- [Autor](#-autor)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias](#tecnologias)
+- [Arquitetura](#arquitetura)
+- [Estrutura do repositório](#estrutura-do-repositório)
+- [Pré-requisitos](#pré-requisitos)
+- [Como executar](#como-executar)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Endpoints da API](#endpoints-da-api)
+- [Documentação](#documentação)
+- [Autor](#autor)
 
 ---
 
@@ -333,7 +333,7 @@ Os diagramas e demais documentos do projeto estão na pasta [`docs/`](./docs).
 
 ---
 
-## 👤 Autor
+## Autor
 
 **Pcburilli**
 
