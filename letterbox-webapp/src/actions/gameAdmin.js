@@ -83,3 +83,27 @@ export async function alterarGameAction(gameId, data, slug) {
     return { success: false, error: 'Erro de conexão com o servidor.' };
   }
 }
+
+export async function buscaRawgAction(busca) {
+  const apiKey = process.env.KEY_API;
+
+  const response = await fetch(`https://api.rawg.io/api/games?key=${apiKey}&search=${encodeURIComponent(busca)}&stores=1,2,3,5,6,11`);
+
+  if (!response.ok) {
+    throw new Error('Erro ao buscar na API RAWG');
+  }
+
+  return await response.json();
+}
+
+export async function buscaRawgIdAction(jogoid) {
+  const apiKey = process.env.KEY_API;
+
+  const response = await fetch(`https://api.rawg.io/api/games/${jogoid}?key=${apiKey}`)
+
+  if (!response.ok) {
+    throw new Error('Erro ao buscar na API RAWG');
+  }
+
+  return await response.json();
+}

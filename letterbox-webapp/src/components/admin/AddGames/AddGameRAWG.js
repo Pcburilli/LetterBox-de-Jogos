@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react';
-import { addGameAction } from '@/actions/gameAdmin';
+import { addGameAction, buscaRawgAction, buscaRawgIdAction } from '@/actions/gameAdmin';
 
 export default function AddGameRAWG() {
     // Busca API
@@ -11,43 +11,39 @@ export default function AddGameRAWG() {
 
     const PesquisarJogo = async (e) => {
         e.preventDefault()
-        const key_RAWG = 'bf7ce09f1afa45a4b7fb51ac39492f01'
+        
+        if (!busca.trim()) return;
+        setCarregando(true);
 
         try {
-        const response = await fetch(`https://api.rawg.io/api/games?key=${key_RAWG}&search=${busca}&stores=1,2,3,5,6,11`)
-
-        if (response.ok) {
-            const resultado = await response.json();
-            if (resultado['count'] > 0) {
-            setDados(resultado);
+            const resultado = await buscaRawgAction(busca);
+            
+            if (resultado?.count > 0) {
+                setDados(resultado);
             } else {
-            setDados([])
+                setDados([]);
             }
-        }
-        } catch(error) {
-        console.error('Erro na pesquisa:', error);
+        } catch (error) {
+            console.error('Erro na pesquisa:', error);
         } finally {
-        setCarregando(true);
+            setCarregando(false);
         }
     }
 
     const PesquisarJogoID = async (jogoid) => {
-        const key_RAWG = 'bf7ce09f1afa45a4b7fb51ac39492f01'
 
         try {
-        const response = await fetch(`https://api.rawg.io/api/games/${jogoid}?key=${key_RAWG}`)
-
-        if (response.ok) {
-            const resultado = await response.json();
+            const resultado = await buscaRawgIdAction(jogoid);
             return resultado
-        }
+
         } catch(error) {
-        console.error('Erro na pesquisa:', error);
+            console.error('Erro na pesquisa:', error);
         }
     }
 
     const AdicionarJogo = async (e, jogo) => {
         e.preventDefault()
+        
         const dados_jogo = await PesquisarJogoID(jogo.id);
         dados_jogo.source = 'rawg';
         
@@ -87,19 +83,30 @@ export default function AddGameRAWG() {
                     Pesquisar Jogo
                 </button>
             </form>
-            {carregando && (
+            {carregando ? (
+            <p>Carregando...</p>
+            ) : (
             dados?.results?.map((jogo) => (
-                <form key={jogo?.id} className="flex w-full gap-2 p-1 rounded-xl border-2 border-primary-600" onSubmit={(e) => AdicionarJogo(e, jogo, 'rawg')}>
-                    <img loading="lazy" src={jogo?.background_image} className="w-15 h-20 object-cover rounded-md"></img>
-                    <div className='flex flex-col w-full justify-between'>
-                        <h3 className='text-center text-sm'>{jogo?.name}</h3>
-                        <button
-                        type="submit"
-                        className="w-full justify-center rounded-md bg-primary-700 hover:bg-primary-400 cursor-pointer"
-                        >
-                        Adicionar Jogo
-                        </button>
-                    </div>
+                <form
+                key={jogo?.id}
+                className="flex w-full gap-2 p-1 rounded-xl border-2 border-primary-600"
+                onSubmit={(e) => AdicionarJogo(e, jogo)}
+                >
+                <img
+                    loading="lazy"
+                    src={jogo?.background_image}
+                    alt={jogo?.name || 'Capa do jogo'}
+                    className="w-15 h-20 object-cover rounded-md"
+                />
+                <div className="flex flex-col w-full justify-between">
+                    <h3 className="text-center text-sm">{jogo?.name}</h3>
+                    <button
+                    type="submit"
+                    className="w-full justify-center rounded-md bg-primary-700 hover:bg-primary-400 cursor-pointer"
+                    >
+                    Adicionar Jogo
+                    </button>
+                </div>
                 </form>
             ))
             )}
