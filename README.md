@@ -106,7 +106,7 @@ Todos os serviços sobem juntos via Docker Compose. O Nginx é a porta de entrad
 
 ```
 LetterBox-de-Jogos/
-├── docs/                 # Documentação do projeto (TCC, diagramas, etc.)
+├── docs/                 # Documentação do projeto (diagramas)
 ├── letterbox-webapi/     # API Flask (back-end)
 ├── letterbox-webapp/     # Aplicação Next.js (front-end)
 ├── nginx/                # Configuração do Nginx (nginx.conf)
