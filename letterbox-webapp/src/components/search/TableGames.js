@@ -23,34 +23,34 @@ export default function TableGames({ gamesData, search, PageAtual }) {
         const pageAtual = Number(PageAtual);
 
         if (total <= 7) {
-        return Array.from({ length: total }, (_, i) => i + 1);
+            return Array.from({ length: total }, (_, i) => i + 1);
         }
 
         let inicio = Math.max(1, pageAtual - vizinhos);
         let fim = Math.min(total, pageAtual + vizinhos);
 
         if (pageAtual <= 3) {
-        inicio = 1;
-        fim = 5;
+            inicio = 1;
+            fim = 5;
         } else if (pageAtual >= total - 2) {
-        inicio = total - 4;
-        fim = total;
+            inicio = total - 4;
+            fim = total;
         }
 
         const paginas = [];
 
         if (inicio > 1) {
-        paginas.push(1);
-        if (inicio > 2);
+            paginas.push(1);
+            if (inicio > 2);
         }
 
         for (let p = inicio; p <= fim; p++) {
-        paginas.push(p);
+            paginas.push(p);
         }
 
         if (fim < total) {
-        if (fim < total - 1);
-        paginas.push(total);
+            if (fim < total - 1);
+            paginas.push(total);
         }
 
         return paginas;

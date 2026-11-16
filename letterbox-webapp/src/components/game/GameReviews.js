@@ -6,7 +6,7 @@ export default function GameReviews({ reviews }) {
     if (!reviews || reviews?.length === 0) { 
         return (
         <>
-            <h1 className='font-bold text-2xl'>Reviews</h1>
+            <h1 className='font-bold text-2xl text-primary-200'>Reviews</h1>
             <div className='w-full mb-2'>Sem reviews disponíveis.</div>
         </>
         )
@@ -14,7 +14,7 @@ export default function GameReviews({ reviews }) {
     
     return (
         <>
-            <h1 className='font-bold text-2xl'>Reviews</h1>
+            <h1 className='font-bold text-2xl text-primary-200'>Reviews</h1>
             <div className='flex max-h-42 items-stretch gap-2 p-2 pb-1 mb-2 w-full overflow-x-auto scrollbar-none sm:scrollbar-thin scrollbar-gutter-auto snap-x snap-mandatory scrollbar-thumb-primary-400'>
                 {reviews?.map((review) => (
                 <div key={review?.id} className='shrink-0 focus:outline-none flex flex-col gap-1 p-2 h-auto w-55 md:w-60 rounded-xl bg-primary-800/70'>

@@ -29,7 +29,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex flex-col min-h-full justify-center items-center px-6 py-12 lg:px-8">
-      <div className='w-2/5 min-w-100 bg-primary-900 p-5 rounded-4xl border-5 border-primary-400'>
+      <div className='w-2/5 min-w-90 bg-primary-900 p-5 rounded-4xl border-5 border-primary-400'>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             alt="StockG"
