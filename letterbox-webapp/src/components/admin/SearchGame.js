@@ -25,10 +25,7 @@ export default function SearchGame() {
                     />
                     <button 
                     type="submit" 
-                    className='flex items-center justify-center w-8 h-full text-primary-300 hover:text-white rounded-r-2xl cursor-pointer transition-colors shrink-0'
-                    >
-                    🔍︎
-                    </button>
+                    className="flex items-center justify-center w-8 h-full rounded-r-2xl cursor-pointer transition-all shrink-0 bg-[url('/lupa.png')] hover:bg-[url('/lupa_hover.png')] bg-no-repeat bg-center bg-size-[16px_16px]" />
                 </form>
             </div>
         </div>

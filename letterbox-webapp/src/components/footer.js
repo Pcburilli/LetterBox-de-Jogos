@@ -1,13 +1,11 @@
 import Link from 'next/link';
 
 export default function Footer() {
-
   return (
     <footer className="w-full bg-primary-900 text-slate-400 border-t border-slate-800 mt-auto">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          {/*Logo e Descrição*/}
           <div className="space-y-3 md:col-span-1">
             <Link 
               href="/" 
@@ -20,7 +18,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/*Navegação*/}
           <div>
             <h3 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
               Navegação
@@ -33,18 +30,16 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/sobre" className="hover:text-white transition-colors">
-                  {/* Sobre */}
                 </Link>
               </li>
             </ul>
           </div>
-          {/*Redes Sociais*/}
+
           <div>
             <h3 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
               Redes Sociais
             </h3>
             <div className="flex space-x-4">
-              {/* GitHub */}
               <a 
                 href="https://github.com/Pcburilli" 
                 target="_blank" 
@@ -61,9 +56,19 @@ export default function Footer() {
 
         </div>
 
-        {/* Linha de Copyright */}
-        <div className="border-t border-slate-800 mt-2 pt-2 text-center text-xs text-slate-500">
-          <p>2026 StockG. Todos os direitos reservados.</p>
+        <div className="border-t border-slate-800 mt-4 pt-3 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500">
+          <p>© 2026 StockG. Todos os direitos reservados.</p>
+          <p>
+            Dados de jogos fornecidos por{' '}
+            <a 
+              href="https://rawg.io" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-slate-400 underline hover:text-primary-200 transition-colors"
+            >
+              RAWG API
+            </a>
+          </p>
         </div>
       </div>
     </footer>

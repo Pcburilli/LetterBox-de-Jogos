@@ -83,12 +83,11 @@ export default function Header({ isLoggedIn }) {
               onChange={(e) => setSearch(e.target.value)}
               className='w-full pl-3 pr-1 text-xs text-primary-100 placeholder:text-primary-300 bg-transparent focus:outline-none'
             />
-            <button 
-              type="submit" 
-              className='flex items-center justify-center w-8 h-full text-primary-300 hover:text-white rounded-r-2xl cursor-pointer transition-colors shrink-0'
-            >
-              🔍︎
-            </button>
+            <button
+              type="submit"
+              aria-label="Pesquisar"
+              className="flex items-center justify-center w-8 h-full rounded-r-2xl cursor-pointer transition-all shrink-0 bg-[url('/lupa.png')] hover:bg-[url('/lupa_hover.png')] bg-no-repeat bg-center bg-size-[16px_16px]"
+            />
           </form>
           {isLoggedIn && (
             <button

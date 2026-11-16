@@ -15,7 +15,7 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
   // Three Points
   const [windowThreePoints, setWindowThreePoints] = useState('hidden')
   // TAGS
-  const [lenTags, setLenTags] = useState(3)
+  const [lenTags, setLenTags] = useState(5)
   const [buttonTags, setButtonTags] = useState('+')
   // Edit
   const [windowEdit, setWindowEdit] = useState('hidden')
@@ -100,7 +100,7 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
       setLenTags(jogo.tags.length)
       setButtonTags('-')
     } else {
-      setLenTags(3)
+      setLenTags(5)
       setButtonTags('+')
     }
   }
@@ -143,10 +143,11 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
                 <button className='z-1 bg-primary-300 hover:bg-primary-200 text-primary-900 w-7/8 rounded-3xl p-2 font-bold cursor-pointer' onClick={() => AdjustWindowStatus()}>
                 {statusJogo}
                 </button>
-                <button className='z-1 bg-primary-700 hover:bg-primary-500 w-1/8 rounded-2xl cursor-pointer' onClick={() => AdjustWindowThreePoints()}>⋮</button>
+                <button className="z-1 w-1/8 p-1 bg-primary-700 hover:bg-primary-500 rounded-2xl cursor-pointer transition-colors bg-[url('/tres-pontos.png')] bg-no-repeat bg-center bg-size-[16px_16px]" onClick={() => AdjustWindowThreePoints()} />
                 <div className={`absolute flex flex-col w-[calc(12.5%-0.5px)] h-30 -top-20 right-0 rounded-2xl  bg-primary-700 gap-2`} style={{ visibility: `${windowThreePoints}`}}>
-                  <button className='p-1 bg-primary-700 hover:bg-red-800 rounded-2xl cursor-pointer' onClick={(e) => {DeleteGame(e), setNota(null)}}>🗑</button>
-                  <button className='p-1 bg-primary-700 hover:bg-primary-500 rounded-2xl cursor-pointer' onClick={() => setWindowEdit('Visible')}>🖍</button>
+                  <button
+                    className="w-full h-8 p-1 bg-primary-700 hover:bg-red-800 rounded-2xl cursor-pointer transition-colors bg-[url('/lixo.png')] bg-no-repeat bg-center bg-size-[16px_16px]" onClick={(e) => {DeleteGame(e); setNota(null);}} />
+                  <button className="w-full h-8 p-1 bg-primary-700 hover:bg-primary-500 rounded-2xl cursor-pointer transition-colors bg-[url('/lapis.png')] bg-no-repeat bg-center bg-size-[16px_16px]" onClick={() => setWindowEdit('Visible')} />
                 </div>
               </div>
             ) : (
@@ -186,11 +187,14 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
               <p>Reviews</p>
             </div>
           </div>
-          <div className='bg-primary-600 h-fit p-3 rounded-2xl'>
+          <div className='bg-primary-800/30 border border-primary-700/50 h-fit p-5 rounded-2xl'>
             <h2 className='text-primary-200 font-bold text-2xl mt-2'>Desenvolvedores</h2>
-            <div className='grid grid-cols-2'>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {jogo?.developers?.map((dev) => (
-                <p key={dev}>{dev}</p>
+                <p key={dev} className="text-white font-medium flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary-400"></span>
+                  {dev}
+                </p>
               ))}
             </div>
           </div>
@@ -205,13 +209,15 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
             {jogo?.tags?.slice(0,lenTags).map((tag) => (
               <p key={tag} className='border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200'>{tag}</p>
             ))}
-            <button className='bg-primary-700 hover:bg-primary-500 border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-8 whitespace-nowrap text-primary-200 cursor-pointer' onClick={() => LimitTags()}>{buttonTags}</button>
+            { jogo?.tags?.length > 5 && (
+              <button className='bg-primary-700 hover:bg-primary-500 border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-8 whitespace-nowrap text-primary-200 cursor-pointer' onClick={() => LimitTags()}>{buttonTags}</button>
+            )}
           </div>
         </div>
       </div>
       <div className='h-fit mb-2'>
-        <h2 className='font-bold text-2xl'>Descrição</h2>
-        <p className='text-justify text-primary-200'>
+        <h2 className='font-bold text-2xl text-primary-200'>Descrição</h2>
+        <p className='text-justify'>
           {jogo?.description}
         </p>
       </div>
