@@ -16,8 +16,8 @@ class Reviews(db.Model):
     def to_dict(self):
         return {
             'id': self.id,
-            'game_id': self.game_id,
-            'user_id': self.user_id,
             'rate': self.rate,
             'review': self.review,
+            'user_id': self.user_id,
+            'game_id': self.game_id
         }

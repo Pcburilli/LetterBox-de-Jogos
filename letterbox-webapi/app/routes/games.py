@@ -62,7 +62,7 @@ def get_games_filters():
             if tag_clean:
                 games = games.join(Games.tags).where(Tags.name.ilike(f'%{tag_clean}%'))
     if dev_param:
-        games = games.where(Games.developers).where(Developers.name.ilike(f'%{dev_param}%'))
+        games = games.join(Games.developers).where(Developers.name.ilike(f'%{dev_param}%'))
 
     pagination = db.paginate(
             select=games,
