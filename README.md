@@ -44,13 +44,6 @@ O **LetterBox de Jogos** é uma aplicação web para descobrir, organizar e aval
 - Excluir usuários comuns
 - Excluir reviews
 
-### Regras de negócio
-
-- Para publicar uma review, o jogo precisa estar na biblioteca do usuário.
-- A review pode conter só a nota, só a resenha ou ambas.
-- Retirar o jogo da biblioteca apaga a review correspondente.
-- O administrador não pode excluir usuários que também sejam administradores (`is_admin = True`).
-
 ---
 
 ## Tecnologias
@@ -113,7 +106,7 @@ Todos os serviços sobem juntos via Docker Compose. O Nginx é a porta de entrad
 
 ```
 LetterBox-de-Jogos/
-├── docs/                 # Documentação do projeto (TCC, diagramas, etc.)
+├── docs/                 # Documentação do projeto (diagramas)
 ├── letterbox-webapi/     # API Flask (back-end)
 ├── letterbox-webapp/     # Aplicação Next.js (front-end)
 ├── nginx/                # Configuração do Nginx (nginx.conf)
@@ -187,7 +180,7 @@ cd letterbox-webapi
 python -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-gunicorn --reload --bind 0.0.0.0:5000 run:app
+py run.py                         # Linux/macOS: gunicorn --reload --bind 0.0.0.0:5000 run:app
 
 # Aplicação web (Next.js)
 cd letterbox-webapp
@@ -196,6 +189,27 @@ npm run dev
 ```
 
 > Nesse modo, é necessário ter um PostgreSQL rodando e as variáveis `DATABASE_URL` (com host `localhost`) e `SECRET_KEY` definidas no ambiente da API. Para o front-end, crie o `letterbox-webapp/.env` (veja [Variáveis de ambiente](#-variáveis-de-ambiente)). Por padrão, o front-end acessa a API em `http://localhost:5000/api`; para usar outro endereço, defina `NEXT_PUBLIC_API_URL` (navegador) e `INTERNAL_API_URL` (servidor Next.js).
+
+---
+
+### Primeiro acesso (Administrador)
+
+Após iniciar a aplicação pela primeira vez:
+
+1. Acesse a interface web e crie um usuário utilizando exatamente o username **`admin`** (com qualquer senha de sua preferência).
+2. Reinicie o serviço do back-end para ativar as permissões administrativas:
+
+```bash
+# Com Docker Compose:
+docker compose restart webapi
+
+# Sem Docker (desenvolvimento local):
+# Pare o terminal da API (Ctrl + C) e execute novamente: py run.py
+```
+
+Após reiniciar, faça login com a conta admin e acesse o painel administrativo pela rota /admin (http://localhost/admin).
+
+Controle de acesso: A rota /admin é restrita a administradores. Caso um visitante ou usuário comum tente acessá-la diretamente, ele será redirecionado automaticamente para a página anterior
 
 ---
 
@@ -311,11 +325,11 @@ Os diagramas e demais documentos do projeto estão na pasta [`docs/`](./docs).
 
 ### Diagrama de casos de uso
 
-![Diagrama de casos de uso](./docs/Caso_de_Uso_StockG.png)
+![Diagrama de casos de uso](./docs/Caso%20de%20Uso%20StockG.png)
 
 ### Diagrama de classes
 
-![Diagrama de classes](./docs/Diagrama_de_Classes_StockG.png)
+![Diagrama de classes](./docs/Diagrama%20de%20Classes%20StockG.png)
 
 ---
 
@@ -326,7 +340,3 @@ Os diagramas e demais documentos do projeto estão na pasta [`docs/`](./docs).
 - GitHub: [@Pcburilli](https://github.com/Pcburilli)
 
 Projeto desenvolvido como Trabalho de Conclusão de Curso na **Faculdade Impacta (EAD)**.
-
----
-
-Projeto desenvolvido como Trabalho de Conclusão de Curso na Faculdade Impacta (EAD) para fins acadêmicos.
