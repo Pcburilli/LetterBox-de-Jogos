@@ -207,6 +207,10 @@ docker compose restart webapi
 # Pare o terminal da API (Ctrl + C) e execute novamente: py run.py
 ```
 
+Após reiniciar, faça login com a conta admin e acesse o painel administrativo pela rota /admin (http://localhost/admin).
+
+Controle de acesso: A rota /admin é restrita a administradores. Caso um visitante ou usuário comum tente acessá-la diretamente, ele será redirecionado automaticamente para a página anterior
+
 ---
 
 ## Variáveis de ambiente
