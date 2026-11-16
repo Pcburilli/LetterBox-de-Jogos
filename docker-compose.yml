@@ -1,0 +1,80 @@
+
+services:
+  # 1. Banco de Dados PostgreSQL
+  postgres:
+    image: postgres:latest
+    container_name: letterbox-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql
+
+  # 2. Gerenciador Banco de Dados
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: meu-pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${EMAIL_PG}
+      PGADMIN_DEFAULT_PASSWORD: ${PASSWORD_PG}
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+
+  # 3. Backend Flask API
+  webapi:
+    build:
+      context: ./letterbox-webapi
+      dockerfile: Dockerfile
+    container_name: letterbox-webapi
+    restart: always
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - postgres
+
+  # 4. Frontend Next.js WebApp
+  webapp:
+    build:
+      context: ./letterbox-webapp
+      dockerfile: Dockerfile
+      target: runner
+      args:
+        - NEXT_PUBLIC_API_URL=/api
+    container_name: letterbox-webapp
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=/api
+      - INTERNAL_API_URL=http://webapi:5000/api
+      - KEY_API=${KEY_API}
+    depends_on:
+      - webapi
+
+  proxy:
+    image: nginx:alpine
+    container_name: letterbox-proxy
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - webapp
+      - webapi
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: letterbox-tunnel
+    restart: always
+    command: tunnel --url http://proxy:80
+    depends_on:
+      - proxy
+  
+volumes:
+  postgres_data:
