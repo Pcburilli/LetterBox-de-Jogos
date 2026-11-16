@@ -180,7 +180,7 @@ cd letterbox-webapi
 python -m venv venv
 source venv/bin/activate          # Windows: venv\Scripts\activate
 pip install -r requirements.txt
-gunicorn --reload --bind 0.0.0.0:5000 run:app
+py run.py                         # Linux/macOS: gunicorn --reload --bind 0.0.0.0:5000 run:app
 
 # Aplicação web (Next.js)
 cd letterbox-webapp
