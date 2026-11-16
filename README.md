@@ -44,13 +44,6 @@ O **LetterBox de Jogos** é uma aplicação web para descobrir, organizar e aval
 - Excluir usuários comuns
 - Excluir reviews
 
-### Regras de negócio
-
-- Para publicar uma review, o jogo precisa estar na biblioteca do usuário.
-- A review pode conter só a nota, só a resenha ou ambas.
-- Retirar o jogo da biblioteca apaga a review correspondente.
-- O administrador não pode excluir usuários que também sejam administradores (`is_admin = True`).
-
 ---
 
 ## Tecnologias
