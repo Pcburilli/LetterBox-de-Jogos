@@ -311,11 +311,11 @@ Os diagramas e demais documentos do projeto estão na pasta [`docs/`](./docs).
 
 ### Diagrama de casos de uso
 
-![Diagrama de casos de uso](./docs/Caso_de_Uso_StockG.png)
+![Diagrama de casos de uso](./docs/Caso%20de%20Uso%20StockG.png)
 
 ### Diagrama de classes
 
-![Diagrama de classes](./docs/Diagrama_de_Classes_StockG.png)
+![Diagrama de classes](./docs/Diagrama%20de%20Classes%20StockG.png)
 
 ---
 
