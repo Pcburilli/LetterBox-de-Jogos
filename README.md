@@ -326,7 +326,3 @@ Os diagramas e demais documentos do projeto estão na pasta [`docs/`](./docs).
 - GitHub: [@Pcburilli](https://github.com/Pcburilli)
 
 Projeto desenvolvido como Trabalho de Conclusão de Curso na **Faculdade Impacta (EAD)**.
-
----
-
-Projeto desenvolvido como Trabalho de Conclusão de Curso na Faculdade Impacta (EAD) para fins acadêmicos.
