@@ -178,7 +178,7 @@ docker compose down -v     # remove também o volume do banco
 # API (Flask)
 cd letterbox-webapi
 python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+venv\Scripts\activate             # Linux/macOS: source venv/bin/activate
 pip install -r requirements.txt
 py run.py                         # Linux/macOS: gunicorn --reload --bind 0.0.0.0:5000 run:app
 
