@@ -14,7 +14,7 @@ login_manager = LoginManager()
 def create_app():
     app = Flask(__name__)
 
-    app.config['SECRET_KEY'] = os.getenv('PASSWORD')
+    app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
     app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL') # Utilizando PostgreSQL
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
