@@ -35,14 +35,14 @@ export default function RegisterPage() {
 
   return (
       <div className="flex flex-col min-h-full justify-center items-center px-6 py-12 lg:px-8">
-        <div className='w-2/5 min-w-100 bg-primary-900 p-5 rounded-4xl border-5 border-primary-400'>
+        <div className='w-2/5 min-w-90 bg-primary-900 p-5 rounded-4xl border-5 border-primary-400'>
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
             <img
               alt="Letterbox"
               src="/icone_site.png"
               className="mx-auto h-20 w-auto"
             />
-            <h2 className="mt-5 text-center text-2xl/9 font-bold tracking-tight text-white">Registra-se e aproveite!</h2>
+            <h2 className="mt-5 text-center text-2xl/9 font-bold tracking-tight text-primary-50">Registre-se e aproveite!</h2>
           </div>
 
           <div className="mt-5 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -57,7 +57,7 @@ export default function RegisterPage() {
                     type='text'
                     required
                     autoComplete="username"
-                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-primary-50 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -74,7 +74,7 @@ export default function RegisterPage() {
                     type="password"
                     required
                     autoComplete="current-password"
-                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-white outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
+                    className="block w-full rounded-md bg-white/5 px-3 py-1.5 text-base text-primary-50 outline-1 -outline-offset-1 outline-white/10 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-primary-400 sm:text-sm/6"
                   />
                 </div>
               </div>
@@ -82,7 +82,7 @@ export default function RegisterPage() {
               <div>
                 <button
                   type="submit"
-                  className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm/6 font-semibold text-white hover:bg-primary-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
+                  className="flex w-full justify-center rounded-md bg-primary-500 px-3 py-1.5 text-sm/6 font-semibold text-primary-50 hover:bg-primary-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-400"
                 >
                   Cadastrar-se
                 </button>

@@ -47,12 +47,12 @@ export default function CustomInfoWindow({ slug, jogo, windowEdit, setWindowEdit
                 <div className='h-3/4 w-2/3 bg-cover bg-center bg-no-repeat mt-10 rounded-2xl' style={{ backgroundImage: `url(${jogo?.cover_url})`}}></div>
             </div>
             <div className='relative flex flex-col w-full p-3 gap-2 rounded-t-2xl bg-primary-700 sm:w-160 sm:h-fit sm:rounded-2xl sm:border-6 sm:border-primary-800'>
-                <button className='z-1 absolute text-3xl right-0 top-0 mr-3 mt-1 text-primary-800 hover:text-primary-300 cursor-pointer' onClick={() => setWindowEdit('hidden')}>×</button>
-                <h1 className='text-3xl font-bold max-w-full'>{jogo?.name}</h1>
+                <button className='z-1 absolute text-3xl right-0 top-0 mr-3 mt-1 text-primary-50 hover:text-primary-300 cursor-pointer' onClick={() => setWindowEdit('hidden')}>×</button>
+                <h1 className='text-3xl font-bold max-w-full text-primary-50'>{jogo?.name}</h1>
                 <div className='flex items-center justify-between overflow-x-auto overflow-y-hidden scrollbar-none w-full gap-2 py-0'>
                     {notas.map((nota) => {
                     const isSelected = notaSelecionada === nota;
-                    return (<button key={nota} className={`min-w-10 min-h-10 hover:bg-primary-500 rounded-4xl font-bold cursor-pointer ${isSelected ? 'bg-primary-500' : 'bg-primary-800'}`} onClick={() => setNotaSelecionada(nota)}>
+                    return (<button key={nota} className={`min-w-10 min-h-10 hover:bg-primary-500 rounded-4xl font-bold text-primary-50 cursor-pointer ${isSelected ? 'bg-primary-500' : 'bg-primary-800'}`} onClick={() => setNotaSelecionada(nota)}>
                         {nota}
                     </button>
                     )
@@ -64,7 +64,7 @@ export default function CustomInfoWindow({ slug, jogo, windowEdit, setWindowEdit
                     value={review}
                     onChange={(e) => setReview(e.target.value)}
                     maxLength={300}
-                    className="w-full min-h-40 max-h-fit p-3 bg-primary-800 rounded-xl placeholder:text-primary-300 focus:outline-none scrollbar-none resize-none"
+                    className="w-full min-h-40 max-h-fit p-3 text-primary-50 bg-primary-800 rounded-xl placeholder:text-primary-300 focus:outline-none scrollbar-none resize-none"
                 />
                 <button disabled={isIgual} className={`w-full p-3 text-primary-800 font-bold rounded-xl ${isIgual ? 'bg-gray-500 disabled:cursor-not-allowed' : 'bg-primary-300 hover:bg-primary-200 cursor-pointer'}`} onClick={(e) => AtualizarAvaliacao(e)}>Salvar</button>
             </div>

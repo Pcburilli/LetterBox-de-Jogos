@@ -97,7 +97,7 @@ export default function TableGames({jogos, totalPage, PageAtual}) {
 
             <div className='flex justify-center gap-3'>
             {PagList(totalPage)?.map((pag) => (
-                <button key={pag} onClick={() => TrocarPage(pag)} className='cursor-pointer text-primary-300 hover:text-primary-200'>{pag}</button>
+                <button key={pag} onClick={() => TrocarPage(pag)} className='text-xl cursor-pointer text-primary-200 hover:text-primary-300'>{pag}</button>
             ))}
             </div>
         </div>

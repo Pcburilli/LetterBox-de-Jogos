@@ -19,24 +19,25 @@ export default function Footer() {
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
+            <h3 className="text-sm font-semibold text-primary-50 tracking-wider uppercase mb-4">
               Navegação
             </h3>
             <ul className="space-y-2 text-sm">
               <li>
-                <Link href="/" className="hover:text-white transition-colors">
+                <Link href="/" className="hover:text-primary-50 transition-colors">
                   Início
                 </Link>
               </li>
               <li>
-                <Link href="/sobre" className="hover:text-white transition-colors">
+                <Link href="/games" className="hover:text-primary-50 transition-colors">
+                  Games
                 </Link>
               </li>
             </ul>
           </div>
 
           <div>
-            <h3 className="text-sm font-semibold text-white tracking-wider uppercase mb-4">
+            <h3 className="text-sm font-semibold text-primary-50 tracking-wider uppercase mb-4">
               Redes Sociais
             </h3>
             <div className="flex space-x-4">

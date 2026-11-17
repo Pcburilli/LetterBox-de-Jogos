@@ -122,14 +122,14 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
   }
 
   if (!jogo) {
-    return <p className='w-full text-center mt-2'>Jogo inexistente.</p>;
+    return <p className='w-full text-center mt-2 md:mt-8 text-primary-200'>Jogo inexistente.</p>;
   }
   return (
     <div>
-      <div className='flex flex-col mt-8 mb-2 gap-8 md:flex-row'>
+      <div className='flex flex-col mt-2 md:mt-8 mb-2 gap-8 md:flex-row'>
         <div id='lateral' className='grow-2 flex flex-col items-center md:min-w-90 md:max-w-90 h-fit gap-2'>
           <div className='relative h-130 w-full center bg-cover bg-center bg-no-repeat md:w-full rounded-2xl' style={{ backgroundImage: `url(${jogo?.cover_url})`}}>
-            {nota ? (<div className='flex absolute right-0 top-0 mr-5 mt-5 w-10 h-10 rounded-4xl bg-primary-800 font-bold justify-center items-center'>{nota}</div>) : null}
+            {nota ? (<div className='flex absolute right-0 top-0 mr-5 mt-5 w-10 h-10 rounded-4xl bg-primary-800 font-bold justify-center items-center text-white'>{nota}</div>) : null}
           </div>
           {isLoggedIn ? (
             statusJogo ? (
@@ -159,7 +159,7 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
         </div>
 
         <div id='principal' className='flex flex-col grow-2 h-fit gap-2'>
-          <h1 className='text-4xl font-bold'>{jogo?.name}</h1>
+          <h1 className='text-4xl font-bold text-white'>{jogo?.name}</h1>
           <input type="date" value={jogo?.year} disabled className='text-2xl text-primary-200'></input>
           <div className='w-full h-fit rounded-2xl grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2'>
             <div className='min-h-18 min-w-28 rounded-2xl text-center p-2 border text-primary-200 font-bold'>
@@ -198,13 +198,13 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
               ))}
             </div>
           </div>
-          <h2 className='font-bold text-2xl'>Gêneros</h2>
+          <h2 className='font-bold text-2xl text-white'>Gêneros</h2>
           <div className='flex flex-wrap gap-2 justify-normal'>
             {jogo?.genres?.map((genre) => (
               <p key={genre} className='border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200'>{genre}</p>
             ))}
           </div>
-          <h2 className='font-bold text-2xl'>Tags</h2>
+          <h2 className='font-bold text-2xl text-white'>Tags</h2>
           <div className='flex flex-wrap gap-2 justify-normal'>
             {jogo?.tags?.slice(0,lenTags).map((tag) => (
               <p key={tag} className='border rounded-2xl p-1 pr-2 pl-2 text-center h-fit w-fit min-w-15 whitespace-nowrap text-primary-200'>{tag}</p>
@@ -217,7 +217,7 @@ export default function GamePage({ jogo, infoGame, isLoggedIn, slug }) {
       </div>
       <div className='h-fit mb-2'>
         <h2 className='font-bold text-2xl text-primary-200'>Descrição</h2>
-        <p className='text-justify'>
+        <p className='text-justify text-white'>
           {jogo?.description}
         </p>
       </div>

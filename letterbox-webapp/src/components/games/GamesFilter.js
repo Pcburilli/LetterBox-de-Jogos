@@ -68,12 +68,12 @@ export default function GamesFilter({genres, tags, devs}) {
 
     return(
         <div id='filter' className='w-full h-fit md:max-w-60 bg-primary-800 rounded-2xl p-3'>
-            <button className='w-full h-8 bg-primary-700 hover:bg-primary-500 rounded-2xl md:hidden cursor-pointer' onClick={() => setFilterVisibility(prev => !prev)}>Filtros</button>
+            <button className='w-full h-8 bg-primary-700 hover:bg-primary-500 rounded-2xl md:hidden cursor-pointer text-primary-200' onClick={() => setFilterVisibility(prev => !prev)}>Filtros</button>
             <div className={`${filterVisibility ? 'block' : 'hidden'} md:grid`}>
                 <div className='flex flex-col gap-2'>
                     {filtersList?.map((filter) => (
                         <div key={filter['label']}>
-                            <label htmlFor={filter['label']}>{filter['label']}</label>
+                            <label htmlFor={filter['label']} className='text-primary-100'>{filter['label']}</label>
                             <div className="relative group flex bg-primary-700 h-10">
                                 <input type="text" id={filter['label']} name={filter['slug']} value={inputs[filter['label']] || ''} onChange={(e) => {InputChange(filter['label'], e.target.value)}} className="w-full pl-2 text-sm focus:outline-none"/>
                                 <ul className="hidden group-focus-within:block z-10 absolute left-0 top-10 h-fit max-h-40 bg-primary-400 w-full overflow-y-auto overflow-x-hidden scrollbar snap-y snap-mandatory">

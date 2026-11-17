@@ -7,7 +7,7 @@ export default function GameReviews({ reviews }) {
         return (
         <>
             <h1 className='font-bold text-2xl text-primary-200'>Reviews</h1>
-            <div className='w-full mb-2'>Sem reviews disponíveis.</div>
+            <div className='w-full mb-2 text-primary-50'>Sem reviews disponíveis.</div>
         </>
         )
     }
@@ -22,17 +22,17 @@ export default function GameReviews({ reviews }) {
                     <Link href={`/users/${review?.username}`} prefetch={false}>
                         <img src={review?.icon_url} alt={review?.username} className='w-8 h-8 object-cover rounded-full hover:bg-primary-700' />
                     </Link>
-                    <h1 className='text-lx font-medium truncate capitalize'>{review?.username}</h1>
+                    <h1 className='text-lx font-medium truncate capitalize text-primary-100'>{review?.username}</h1>
                     </div>
 
                     <div id='inferior' className='flex gap-2 max-h-full overflow-hidden'>
                     <div className='flex flex-col flex-1 wrap-anywhere overflow-hidden'>
                         {review?.rate ? (
-                        <div className='flex w-fit font-bold justify-center items-center'>
+                        <div className='flex w-fit font-bold justify-center items-center text-primary-100'>
                             ☆ {review.rate}
                         </div>
-                        ) : <p className='flex w-fit font-bold justify-center items-center'>☆ Sem nota</p>}
-                        <p className="text-sm line-clamp-4 text-ellipsis">
+                        ) : <p className='flex w-fit font-bold justify-center items-center text-primary-100'>☆ Sem nota</p>}
+                        <p className="text-sm line-clamp-4 text-ellipsis text-primary-50">
                         {review?.review}
                         </p>
                     </div>

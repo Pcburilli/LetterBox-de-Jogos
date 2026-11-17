@@ -92,7 +92,7 @@ export default function Header({ isLoggedIn }) {
           {isLoggedIn && (
             <button
               onClick={LogoutAction}
-              className="hidden md:flex px-5 py-2 ml-8 text-sm font-semibold text-primary-900 bg-primary-700 hover:bg-red-900 rounded-lg transition-all focus:ring-2 cursor-pointer"
+              className="hidden md:flex px-5 py-2 ml-8 text-sm font-semibold [word-spacing:0.5em] text-primary-50 bg-primary-600 hover:bg-primary-800 rounded-lg transition-all focus:ring-2 cursor-pointer"
             >
               SAIR
             </button>
@@ -168,9 +168,9 @@ export default function Header({ isLoggedIn }) {
                   setIsMenuOpen(false);
                   LogoutAction(e);
                 }}
-                className="block w-full text-center px-4 py-2 text-sm font-semibold text-primary-900 bg-primary-700 hover:bg-red-900 transition-all rounded-lg cursor-pointer"
+                className="block w-full text-center px-4 py-2 text-sm font-semibold [word-spacing:0.5em] text-primary-50 bg-primary-600 hover:bg-primary-800 transition-all rounded-lg cursor-pointer"
                 >
-                Sair
+                SAIR
               </button>
             ) : (
               <></>

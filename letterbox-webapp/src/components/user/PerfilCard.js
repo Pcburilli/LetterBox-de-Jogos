@@ -68,12 +68,12 @@ export default function PerfilCard({dadosUsuario, lengthCatalog, isUser}) {
         </img>
         {isUser && (
           <div id='alternar_icone' className='z-10 flex absolute bg-primary-800 w-6 h-6 top-0 right-0 rounded-tr-2xl rounded-bl-2xl justify-center items-center -m-0.5'>
-            <button className='mt-0.5 mr-0.2 hover:text-primary-200 cursor-pointer' onClick={() => setAba('visible')}>
+            <button className='mt-0.5 mr-0.2 text-primary-200 hover:text-primary-600 cursor-pointer' onClick={() => setAba('visible')}>
               +
             </button>
             <div className='absolute w-30 bg-primary-800 top-0.5 right-0.5 rounded-bl-2xl rounded-tr-2xl' style={{visibility: aba}}>
               <div className='relative mt-1.5'>
-                <button className='absolute right-[5.5] top-[-7] hover:text-primary-200 cursor-pointer w-fit' onClick={() => setAba('hidden')}>
+                <button className='absolute right-[5.5] top-[-7] text-primary-200 hover:text-primary-600 cursor-pointer w-fit' onClick={() => setAba('hidden')}>
                   ×
                 </button>
                 <div className='flex flex-wrap justify-start w-full pl-2.5 pb-1 gap-1 '>
@@ -105,7 +105,7 @@ export default function PerfilCard({dadosUsuario, lengthCatalog, isUser}) {
                   maxLength={12}
                   onChange={(e) => setUsername(e.target.value.replace(/[^a-zA-Z0-9_-]/g, ''))}
                   value={username}
-                  className="capitalize ml-1 pl-1.5 rounded bg-primary-900 text-white focus:outline-none max-w-32"
+                  className="capitalize ml-1 pl-1.5 rounded bg-primary-900 text-primary-50 focus:outline-none max-w-32"
                 />
 
                 {podeAlterar && (
@@ -118,15 +118,15 @@ export default function PerfilCard({dadosUsuario, lengthCatalog, isUser}) {
                 )}
               </>
             ) : (
-              <p className="capitalize ml-1 pl-1.5 rounded text-white focus:outline-none">{username}</p>
+              <p className="capitalize ml-1 pl-1.5 rounded text-primary-50 focus:outline-none">{username}</p>
             )}
             
           </div>
         </div>
         <div id='info' className='flex w-full items-center justify-end p-2'>
           <div className='flex flex-col items-center justify-center'>
-            <p className='w-max text-xl font-bold'>{lengthCatalog}</p>
-            <p className='text-xs w-max'>Jogos</p>
+            <p className='w-max text-xl font-bold text-primary-50'>{lengthCatalog}</p>
+            <p className='text-xs w-max text-primary-50'>Jogos</p>
           </div>
         </div>
       </div>
