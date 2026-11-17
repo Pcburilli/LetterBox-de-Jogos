@@ -2,7 +2,7 @@
 
 > Projeto de Conclusão de Curso — Faculdade Impacta (EAD)
 
-O **LetterBox de Jogos** é uma aplicação web para descobrir, organizar e avaliar jogos, inspirada no Letterboxd. Qualquer visitante pode explorar o acervo, ver detalhes, reviews e perfis. Usuários cadastrados montam a sua biblioteca pessoal, acompanham o status de cada jogo e publicam reviews com nota e/ou resenha. Administradores gerenciam o acervo (inclusive importando jogos de uma API externa), os usuários e as reviews.
+O **LetterBox de Jogos** é uma aplicação web para descobrir, organizar e avaliar jogos, inspirada no Letterboxd e Stash. Qualquer visitante pode explorar o acervo, ver detalhes, reviews e perfis. Usuários cadastrados montam a sua biblioteca pessoal, acompanham o status de cada jogo e publicam reviews com nota e/ou resenha. Administradores gerenciam o acervo (inclusive importando jogos de uma API externa), os usuários e as reviews.
 
 ---
 
