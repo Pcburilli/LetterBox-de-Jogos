@@ -8,16 +8,16 @@ O **LetterBox de Jogos** é uma aplicação web para descobrir, organizar e aval
 
 ## Sumário
 
-- [Funcionalidades](#-funcionalidades)
-- [Tecnologias](#-tecnologias)
-- [Arquitetura](#-arquitetura)
-- [Estrutura do repositório](#-estrutura-do-repositório)
-- [Pré-requisitos](#-pré-requisitos)
-- [Como executar](#-como-executar)
-- [Variáveis de ambiente](#-variáveis-de-ambiente)
-- [Endpoints da API](#-endpoints-da-api)
-- [Documentação](#-documentação)
-- [Autor](#-autor)
+- [Funcionalidades](#funcionalidades)
+- [Tecnologias](#tecnologias)
+- [Arquitetura](#arquitetura)
+- [Estrutura do repositório](#estrutura-do-repositório)
+- [Pré-requisitos](#pré-requisitos)
+- [Como executar](#como-executar)
+- [Variáveis de ambiente](#variáveis-de-ambiente)
+- [Endpoints da API](#endpoints-da-api)
+- [Documentação](#documentação)
+- [Autor](#autor)
 
 ---
 
@@ -178,7 +178,7 @@ docker compose down -v     # remove também o volume do banco
 # API (Flask)
 cd letterbox-webapi
 python -m venv venv
-source venv/bin/activate          # Windows: venv\Scripts\activate
+venv\Scripts\activate             # Linux/macOS: source venv/bin/activate
 pip install -r requirements.txt
 py run.py                         # Linux/macOS: gunicorn --reload --bind 0.0.0.0:5000 run:app
 
@@ -333,7 +333,7 @@ Os diagramas e demais documentos do projeto estão na pasta [`docs/`](./docs).
 
 ---
 
-## 👤 Autor
+## Autor
 
 **Pcburilli**
 
